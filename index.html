@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>باشگاه مشتریان کاریز طب</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body { font-family: Tahoma, sans-serif; background: #f4f7f6; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 15px; box-sizing: border-box; }
+        .card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 100%; max-width: 400px; text-align: center; }
+        h2 { color: #2c3e50; margin-bottom: 10px; font-size: 20px; }
+        p { color: #7f8c8d; font-size: 13px; line-height: 1.6; }
+        input, select { width: 100%; padding: 12px; margin: 8px 0 15px 0; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-size: 14px; font-family: Tahoma, sans-serif; }
+        label { display: block; text-align: right; font-size: 12px; color: #333; font-weight: bold; margin-top: 5px; }
+        button { width: 100%; background: #27ae60; color: white; border: none; padding: 12px; border-radius: 6px; font-size: 16px; cursor: pointer; font-weight: bold; }
+        button:hover { background: #219150; }
+        .result-box { display: none; margin-top: 20px; padding: 15px; background: #e8f8f5; border: 1px solid #a3e4d7; border-radius: 6px; }
+        .code-display { font-size: 24px; font-weight: bold; color: #16a085; letter-spacing: 2px; margin: 10px 0; }
+        .sms-btn { background: #2980b9; margin-top: 15px; }
+        .sms-btn:hover { background: #1c5980; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2>باشگاه مشتریان کاریز طب</h2>
+    <p>جهت دریافت کد اختصاصی و ثبت امتیازهای خود، اطلاعات زیر را وارد کنید:</p>
+    
+    <div id="form-container">
+        <label for="fullName">نام و نام خانوادگی / نام مرکز:</label>
+        <input type="text" id="fullName" placeholder="مثلاً: دکتر احمدی / کلینیک شفا">
+
+        <label for="centerType">نوع مرکز:</label>
+        <select id="centerType">
+            <option value="مطب">مطب</option>
+            <option value="پزشکی هسته‌ای">پزشکی هسته‌ای</option>
+            <option value="کلینیک / درمانگاه">کلینیک / درمانگاه</option>
+        </select>
+
+        <label for="mobile">شماره موبایل:</label>
+        <input type="tel" id="mobile" placeholder="۰۹۱۲۳۴۵۶۷۸۹" maxlength="11">
+
+        <button onclick="submitMobile()">دریافت کد اختصاصی</button>
+    </div>
+
+    <div id="result" class="result-box">
+        <p>کد اختصاصی شما:</p>
+        <div id="customer-code" class="code-display">---</div>
+        <p style="font-size: 12px; color: #888;">لطفاً این کد را برای همکاران ما پیامک کنید.</p>
+        
+        <button class="sms-btn" onclick="sendSMS()">ارسال اطلاعات و کد از طریق پیامک</button>
+    </div>
+</div>
+
+<script>
+    const SUPABASE_URL = 'https://esyxpmatbfxtzsujzkka.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable__M2-Cr_placeholder_key'; 
+    const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    // متغیرهایی برای ذخیره موقت اطلاعات جهت ارسال در پیامک
+    let savedName = '';
+    let savedCenter = '';
+    let savedMobile = '';
+
+    async function submitMobile() {
+        const fullNameInput = document.getElementById('fullName').value.trim();
+        const centerTypeInput = document.getElementById('centerType').value;
+        const mobileInput = document.getElementById('mobile').value.trim();
+
+        if(!fullNameInput) {
+            alert('لطفاً نام یا نام مرکز خود را وارد کنید.');
+            return;
+        }
+
+        if(!mobileInput || mobileInput.length < 11) {
+            alert('لطفاً شماره موبایل ۱۱ رقمی معتبر وارد کنید.');
+            return;
+        }
+
+        savedName = fullNameInput;
+        savedCenter = centerTypeInput;
+        savedMobile = mobileInput;
+
+        try {
+            const generatedCode = 'KT-' + Math.floor(100000 + Math.random() * 900000);
+            
+            document.getElementById('form-container').style.display = 'none';
+            document.getElementById('customer-code').innerText = generatedCode;
+            document.getElementById('result').style.display = 'block';
+
+            // ذخیره همه اطلاعات درون دیتابیس Supabase
+            await _supabase
+                .from('Customers')
+                .insert([{ 
+                    name: fullNameInput, 
+                    center_type: centerTypeInput, 
+                    mobile: mobileInput, 
+                    customer_code: generatedCode 
+                }]);
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
+    function sendSMS() {
+        const code = document.getElementById('customer-code').innerText;
+        const adminNumber = '09398490440'; 
+        
+        // ساخت متن کامل پیامک شامل نام، مرکز و کد اختصاصی
+        const message = `کد باشگاه: ${code}\nنام: ${savedName}\nمرکز: ${savedCenter}\nموبایل: ${savedMobile}`;
+        
+        window.location.href = `sms:${adminNumber}?body=${encodeURIComponent(message)}`;
+    }
+</script>
+
+</body>
+</html>
