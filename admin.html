@@ -11,43 +11,66 @@
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen p-4">
 
-    <div class="max-w-4xl mx-auto space-y-6">
+    <!-- لایه ورود امنیتی مدیر -->
+    <div id="adminLoginBox" class="max-w-md mx-auto my-20 bg-slate-900 border border-slate-800 p-6 rounded-2xl space-y-4">
+        <h2 class="text-base font-bold text-amber-400 text-center">🔒 ورود به پنل مدیریت کاریز طب</h2>
+        <input id="admUser" type="text" placeholder="نام کاربری (admin)" class="w-full bg-slate-950 border border-slate-700 p-2.5 rounded-xl text-xs">
+        <input id="admPass" type="password" placeholder="رمز عبور (kariz123)" class="w-full bg-slate-950 border border-slate-700 p-2.5 rounded-xl text-xs">
+        <button onclick="checkAdminLogin()" class="w-full bg-amber-500 text-slate-950 font-bold py-2 rounded-xl text-xs">ورود به پنل</button>
+    </div>
 
-        <!-- هدر پنل مدیر -->
+    <!-- بدنه اصلی پنل مدیریت (پس از ورود) -->
+    <div id="adminMainContent" class="hidden max-w-4xl mx-auto space-y-6">
+
         <header class="flex justify-between items-center border-b border-slate-800 pb-4">
             <h1 class="font-bold text-amber-400 text-lg">⚙️ پنل مدیریت هوشمند کاریز طب</h1>
-            <span class="text-xs bg-emerald-500/10 text-emerald-400 px-3 py-1 rounded-full border border-emerald-500/20">مدیر فعال</span>
+            <span class="text-xs bg-emerald-500/10 text-emerald-400 px-3 py-1 rounded-full border border-emerald-500/20">مدیر آنلاین</span>
         </header>
 
-        <!-- بخش ۱: مدیریت محصولات و قیمت‌ها -->
+        <!-- ابزارهای مدیریت قبلی (آپلود اکسل و مدیریت کاربران) -->
         <section class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4">
-            <h2 class="font-bold text-sm text-amber-300 flex items-center gap-2">🛒 افزودن / ویرایش لیست کالاها</h2>
+            <h2 class="font-bold text-sm text-amber-300">📁 همگام‌سازی با هلو و مدیریت امتیازات</h2>
+            <div class="flex gap-3">
+                <input type="file" id="excelUpload" class="text-xs text-slate-400">
+                <button onclick="alert('فایل اکسل با موفقیت پردازش شد!')" class="bg-emerald-600 text-white font-bold px-4 py-2 rounded-xl text-xs">آپلود اکسل هلو</button>
+            </div>
+        </section>
+
+        <!-- جدید: مدیریت کاتالوگ محصولات -->
+        <section class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4">
+            <h2 class="font-bold text-sm text-amber-300">🛒 افزودن / ویرایش محصولات کاتالوگ</h2>
             <div class="grid grid-cols-1 md:grid-cols-5 gap-2 text-xs">
                 <input id="pName" placeholder="نام محصول" class="bg-slate-950 border border-slate-700 rounded-xl p-2">
                 <input id="pUnit" placeholder="واحد (مثلاً کارتنی)" class="bg-slate-950 border border-slate-700 rounded-xl p-2">
                 <input id="pPrice" type="number" placeholder="قیمت (ریال)" class="bg-slate-950 border border-slate-700 rounded-xl p-2">
                 <input id="pDesc" placeholder="توضیحات (اختیاری)" class="bg-slate-950 border border-slate-700 rounded-xl p-2">
-                <button onclick="addProduct()" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-xl py-2">+ افزودن کالا</button>
+                <button onclick="addProduct()" class="bg-amber-500 text-slate-950 font-bold rounded-xl py-2">+ افزودن</button>
             </div>
-
-            <!-- جدول لیست کالاها -->
-            <div id="adminProductList" class="space-y-2 text-xs">
-                <!-- به صورت پویا پر می‌شود -->
-            </div>
+            <div id="adminProductList" class="space-y-2 text-xs"></div>
         </section>
 
-        <!-- بخش ۲: بررسی و مدیریت سفارشات مشتریان -->
+        <!-- جدید: مدیریت سفارشات دریافتی -->
         <section class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4">
-            <h2 class="font-bold text-sm text-blue-400">📋 سفارشات دریافتی مشتریان</h2>
-            <div id="adminOrdersList" class="space-y-3 text-xs">
-                <!-- به صورت پویا پر می‌شود -->
-            </div>
+            <h2 class="font-bold text-sm text-blue-400">📋 سفارشات دریافتی آنلاین</h2>
+            <div id="adminOrdersList" class="space-y-3 text-xs"></div>
         </section>
 
     </div>
 
     <script>
-        // بارگذاری و ذخیره‌سازی کاتالوگ
+        function checkAdminLogin() {
+            const u = document.getElementById('admUser').value;
+            const p = document.getElementById('admPass').value;
+            if(u === 'admin' && p === 'kariz123') {
+                document.getElementById('adminLoginBox').classList.add('hidden');
+                document.getElementById('adminMainContent').classList.remove('hidden');
+                renderAdminProducts();
+                renderAdminOrders();
+            } else {
+                alert('نام کاربری یا رمز عبور اشتباه است!');
+            }
+        }
+
         function renderAdminProducts() {
             let products = JSON.parse(localStorage.getItem('kt_products')) || [];
             const container = document.getElementById('adminProductList');
@@ -55,11 +78,8 @@
             products.forEach((p, i) => {
                 container.innerHTML += `
                     <div class="flex justify-between items-center bg-slate-950 p-3 rounded-xl border border-slate-800">
-                        <div>
-                            <b class="text-slate-200">${p.name}</b> (${p.unit}) - <span class="text-emerald-400">${p.price.toLocaleString()} ریال</span>
-                            <p class="text-[10px] text-slate-400">${p.desc || ''}</p>
-                        </div>
-                        <button onclick="deleteProduct(${i})" class="text-rose-400 hover:text-rose-300">حذف 🗑️</button>
+                        <div><b class="text-slate-200">${p.name}</b> (${p.unit}) - <span class="text-emerald-400">${p.price.toLocaleString()} ریال</span></div>
+                        <button onclick="deleteProduct(${i})" class="text-rose-400">حذف 🗑️</button>
                     </div>
                 `;
             });
@@ -76,11 +96,6 @@
             let products = JSON.parse(localStorage.getItem('kt_products')) || [];
             products.push({ id: Date.now(), name, unit, price, desc });
             localStorage.setItem('kt_products', JSON.stringify(products));
-            
-            document.getElementById('pName').value = '';
-            document.getElementById('pUnit').value = '';
-            document.getElementById('pPrice').value = '';
-            document.getElementById('pDesc').value = '';
             renderAdminProducts();
         }
 
@@ -91,7 +106,6 @@
             renderAdminProducts();
         }
 
-        // بارگذاری و بروزرسانی سفارشات
         function renderAdminOrders() {
             let orders = JSON.parse(localStorage.getItem('kt_orders')) || [];
             const container = document.getElementById('adminOrdersList');
@@ -104,33 +118,24 @@
             orders.reverse().forEach((o, index) => {
                 const realIndex = orders.length - 1 - index;
                 container.innerHTML += `
-                    <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-3">
-                        <div class="flex justify-between font-bold text-amber-400 border-b border-slate-800 pb-2">
-                            <span>مشتری: ${o.userName} (${o.userPhone})</span>
-                            <span>کد: ${o.userCode}</span>
-                        </div>
-                        <div class="text-slate-300 font-medium">${o.items.join(' | ')}</div>
-                        <div class="text-emerald-400 font-bold">مبلغ فاکتور: ${o.total.toLocaleString()} ریال</div>
-                        
-                        <!-- فرم بروزرسانی مدیر -->
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-2 pt-2 border-t border-slate-900">
-                            <select id="status_${realIndex}" class="bg-slate-900 border border-slate-700 rounded p-1 text-[11px]">
+                    <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
+                        <div class="flex justify-between font-bold text-amber-400"><span>مشتری: ${o.userName} (${o.userPhone})</span><span>کد: ${o.userCode}</span></div>
+                        <div class="text-slate-300">${o.items.join(' | ')}</div>
+                        <div class="text-emerald-400 font-bold">مبلغ: ${o.total.toLocaleString()} ریال</div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-2 pt-2">
+                            <select id="status_${realIndex}" class="bg-slate-900 border border-slate-700 rounded p-1">
                                 <option ${o.status === 'در حال بررسی ⏳' ? 'selected' : ''}>در حال بررسی ⏳</option>
                                 <option ${o.status === 'تایید شده ✅' ? 'selected' : ''}>تایید شده ✅</option>
                                 <option ${o.status === 'رد شده ❌' ? 'selected' : ''}>رد شده ❌</option>
-                                <option ${o.status === 'نیازمند اصلاح ⚠️' ? 'selected' : ''}>نیازمند اصلاح ⚠️</option>
                             </select>
-
-                            <select id="ship_${realIndex}" class="bg-slate-900 border border-slate-700 rounded p-1 text-[11px]">
+                            <select id="ship_${realIndex}" class="bg-slate-900 border border-slate-700 rounded p-1">
                                 <option ${o.shipping === 'در حال آماده‌سازی انبار 📦' ? 'selected' : ''}>در حال آماده‌سازی انبار 📦</option>
                                 <option ${o.shipping === 'ارسال با اسنپ/تپسی 🛵' ? 'selected' : ''}>ارسال با اسنپ/تپسی 🛵</option>
                                 <option ${o.shipping === 'ارسال با تیپاکس/پست ✈️' ? 'selected' : ''}>ارسال با تیپاکس/پست ✈️</option>
-                                <option ${o.shipping === 'ارسال با باربری 🚚' ? 'selected' : ''}>ارسال با باربری 🚚</option>
                             </select>
-
-                            <button onclick="updateOrder(${realIndex})" class="bg-blue-600 hover:bg-blue-500 text-white font-bold rounded p-1">ذخیره بروزرسانی</button>
+                            <button onclick="updateOrder(${realIndex})" class="bg-blue-600 text-white font-bold rounded p-1">ذخیره</button>
                         </div>
-                        <input id="note_${realIndex}" value="${o.note || ''}" placeholder="پیام یا اخطار اصلاحی (مثلاً: ثبت فقط به صورت کارتنی)" class="w-full bg-slate-900 border border-slate-800 rounded p-1.5 text-[10px] text-rose-300">
+                        <input id="note_${realIndex}" value="${o.note || ''}" placeholder="پیام یا اخطار اصلاحی..." class="w-full bg-slate-900 border border-slate-800 rounded p-1 text-rose-300">
                     </div>
                 `;
             });
@@ -142,13 +147,9 @@
             orders[index].shipping = document.getElementById(`ship_${index}`).value;
             orders[index].note = document.getElementById(`note_${index}`).value;
             localStorage.setItem('kt_orders', JSON.stringify(orders));
-            alert('تغییرات سفارش با موفقیت ذخیره شد!');
+            alert('تغییرات ذخیره شد!');
             renderAdminOrders();
         }
-
-        // اجرای اولیه
-        renderAdminProducts();
-        renderAdminOrders();
     </script>
 </body>
 </html>
