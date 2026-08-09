@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>کارت هدیه باشگاه مشتریان کاریز طب</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
+    <!-- کتابخانه ساخت QR کد پویا -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        body { font-family: 'Vazirmatn', sans-serif; }
+        .gold-gradient-text {
+            background: linear-gradient(135deg, #BF953F 0%, #FCF6BA 25%, #B38728 50%, #FBF5B7 75%, #AA771C 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .gold-border {
+            border-image: linear-gradient(to bottom right, #BF953F, #FCF6BA, #AA771C) 1;
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex items-center justify-center p-4 print:p-0 print:bg-white">
+
+    <!-- پوستر اصلی کارت هدیه -->
+    <div class="w-full max-w-xl bg-slate-900 border-2 border-[#D4AF37]/40 rounded-3xl p-6 md:p-8 shadow-2xl relative overflow-hidden print:border-none print:shadow-none print:bg-slate-900">
+        
+        <!-- نورپردازی پس‌زمینه -->
+        <div class="absolute -top-20 -right-20 w-48 h-48 bg-[#D4AF37]/10 rounded-full blur-3xl"></div>
+        <div class="absolute -bottom-20 -left-20 w-48 h-48 bg-blue-600/10 rounded-full blur-3xl"></div>
+
+        <!-- هدر لوگو و برند -->
+        <div class="text-center space-y-2 border-b border-[#D4AF37]/20 pb-5">
+            <div class="w-14 h-14 mx-auto bg-gradient-to-br from-[#BF953F] to-[#AA771C] rounded-2xl flex items-center justify-center text-slate-950 font-black text-xl shadow-lg">
+                KT
+            </div>
+            <h1 class="text-2xl font-black gold-gradient-text">کاریز طب</h1>
+            <p class="text-[11px] tracking-widest text-slate-400 font-medium">KARIZ TEB • تأمین‌کننده تجهیزات و ملزومات پزشکی</p>
+        </div>
+
+        <!-- پیام خوش‌آمدگویی -->
+        <div class="text-center my-5 space-y-1">
+            <h2 class="text-base font-bold text-white">مشتری ارزشمند، از همراهی شما سپاسگزاریم</h2>
+            <p class="text-xs text-slate-300">این کارت، هدیه ویژه کاریز طب جهت فعال‌سازی باشگاه مشتریان شماست.</p>
+        </div>
+
+        <!-- باکس اصلی QR کد و مراحل ۳گانه -->
+        <div class="bg-slate-950/80 border border-[#D4AF37]/30 rounded-2xl p-5 grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+            
+            <!-- QR کد اختصاصی -->
+            <div class="flex flex-col items-center justify-center space-y-2 md:border-l md:border-[#D4AF37]/20 md:pl-2">
+                <div class="p-2 bg-white rounded-xl shadow-md" id="qrcode"></div>
+                <span class="text-[10px] text-[#D4AF37] font-bold">👆 اسکن کنید</span>
+            </div>
+
+            <!-- مراحل فعال‌سازی -->
+            <div class="md:col-span-2 space-y-3">
+                <h3 class="text-xs font-bold text-emerald-400">راهنمای دریافت هدیه و فعال‌سازی:</h3>
+                
+                <div class="flex items-start gap-2.5 text-xs text-slate-300">
+                    <span class="w-5 h-5 bg-[#D4AF37]/20 text-[#D4AF37] font-bold rounded-full flex items-center justify-center text-[10px] shrink-0 mt-0.5">۱</span>
+                    <p>کد QR را اسکن کنید یا وارد <b class="text-white">karizteb.ir</b> شوید.</p>
+                </div>
+
+                <div class="flex items-start gap-2.5 text-xs text-slate-300">
+                    <span class="w-5 h-5 bg-[#D4AF37]/20 text-[#D4AF37] font-bold rounded-full flex items-center justify-center text-[10px] shrink-0 mt-0.5">۲</span>
+                    <p>ثبت‌نام اولیه را انجام داده و <b class="text-white">کد اختصاصی</b> بگیرید.</p>
+                </div>
+
+                <div class="flex items-start gap-2.5 text-xs text-slate-300">
+                    <span class="w-5 h-5 bg-[#D4AF37]/20 text-[#D4AF37] font-bold rounded-full flex items-center justify-center text-[10px] shrink-0 mt-0.5">۳</span>
+                    <p>کد را به شماره <b class="text-amber-300">09398490440</b> پیامک کنید.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- مزایای باشگاه -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-2 mt-5 text-center text-[11px]">
+            <div class="bg-slate-800/50 p-2.5 rounded-xl border border-slate-700">
+                <span class="block text-lg mb-0.5">🎁</span>
+                <span class="font-bold text-slate-200">هدایای ویژه</span>
+            </div>
+            <div class="bg-slate-800/50 p-2.5 rounded-xl border border-slate-700">
+                <span class="block text-lg mb-0.5">⭐</span>
+                <span class="font-bold text-slate-200">امتیاز خرید</span>
+            </div>
+            <div class="bg-slate-800/50 p-2.5 rounded-xl border border-slate-700">
+                <span class="block text-lg mb-0.5">👑</span>
+                <span class="font-bold text-slate-200">تالار VIP</span>
+            </div>
+            <div class="bg-slate-800/50 p-2.5 rounded-xl border border-slate-700">
+                <span class="block text-lg mb-0.5">🎧</span>
+                <span class="font-bold text-slate-200">پشتیبانی اختصاصی</span>
+            </div>
+        </div>
+
+        <!-- فوتر و اطلاعات تماس -->
+        <div class="mt-6 pt-4 border-t border-[#D4AF37]/20 flex flex-wrap justify-between items-center text-[11px] text-slate-400 gap-2">
+            <div>📞 پشتیبانی: <b>09398490440</b></div>
+            <div>🌐 <b>karizteb.ir</b></div>
+        </div>
+
+    </div>
+
+    <script>
+        // ساخت خودکار QR کد پویا متصل به سایت کاریز طب
+        new QRCode(document.getElementById("qrcode"), {
+            text: "https://mehranh13677-dev.github.io/karizteb-club/",
+            width: 90,
+            height: 90,
+            colorDark : "#0f172a",
+            colorLight : "#ffffff",
+            correctLevel : QRCode.CorrectLevel.H
+        });
+    </script>
+</body>
+</html>
