@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
@@ -18,6 +19,7 @@
             <p class="text-xs text-slate-400 mt-1">سامانه دریافت کد اختصاصی و پیگیری امتیازات</p>
         </div>
 
+        <!-- دکمه‌های سوئیچ -->
         <div id="authTabs" class="grid grid-cols-2 bg-slate-900 p-1 rounded-xl mb-6">
             <button type="button" id="btnLoginTab" class="py-2 text-sm font-bold rounded-lg bg-blue-600 text-white transition-all">ورود به حساب</button>
             <button type="button" id="btnRegisterTab" class="py-2 text-sm font-bold rounded-lg text-slate-400 hover:text-white transition-all">ثبت‌نام جدید</button>
@@ -143,9 +145,10 @@
             try {
                 const clubCode = 'KT-' + Math.floor(1000 + Math.random() * 9000);
 
+                // ارسال با فرمت ستون‌های شناسا در دیتابیس شما
                 const { data, error } = await _supabase.from('Customers').insert([
                     {
-                        full_name: fullName,
+                        Name: fullName,
                         phone: phone,
                         city: city,
                         club_code: clubCode,
@@ -156,17 +159,36 @@
                     }
                 ]).select();
 
-                if (error) throw error;
+                if (error) {
+                    // در صورت تفاوت اسامی ستون‌ها، روش منعطف پشتیبان
+                    const fallback = await _supabase.from('Customers').insert([
+                        {
+                            full_name: fullName,
+                            phone: phone,
+                            city: city,
+                            club_code: clubCode,
+                            username: username,
+                            password: password,
+                            points: 0
+                        }
+                    ]).select();
+                    if (fallback.error) throw fallback.error;
+                    if (fallback.data && fallback.data.length > 0) {
+                        localStorage.setItem('karizteb_user', JSON.stringify(fallback.data[0]));
+                        showDashboard(fallback.data[0]);
+                        return;
+                    }
+                }
 
                 if (data && data.length > 0) {
                     localStorage.setItem('karizteb_user', JSON.stringify(data[0]));
                     showDashboard(data[0]);
                 } else {
-                    showMsg('ثبت انجام شد. لطفاً وارد شوید.', 'success');
+                    showMsg('ثبت‌نام انجام شد. حالا وارد شوید.', 'success');
                 }
 
             } catch (err) {
-                showMsg('خطا در ارتباط: VPN خود را خاموش کرده و مجدد تلاش کنید.', 'error');
+                showMsg('خطا در ثبت اطلاعات: ' + err.message, 'error');
             } finally {
                 btn.innerText = 'ثبت‌نام و دریافت کد اختصاصی';
                 btn.disabled = false;
@@ -209,8 +231,8 @@
             registerForm.classList.add('hidden');
             document.getElementById('userDashboard').classList.remove('hidden');
 
-            document.getElementById('dashCustomerName').innerText = user.full_name;
-            document.getElementById('dashCustomerPhone').innerText = user.phone + ' (' + (user.city || '') + ')';
+            document.getElementById('dashCustomerName').innerText = user.Name || user.full_name || 'مشتری کاریز طب';
+            document.getElementById('dashCustomerPhone').innerText = (user.phone || '') + ' (' + (user.city || '') + ')';
             document.getElementById('dashClubCode').innerText = user.club_code || '---';
             document.getElementById('dashPoints').innerText = user.points || 0;
 
