@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
@@ -26,15 +27,15 @@
         <form id="loginForm" class="space-y-4">
             <div>
                 <label class="block text-xs font-medium text-slate-300 mb-1">نام کاربری</label>
-                <input type="text" id="loginUsername" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-blue-500 text-white" placeholder="نام کاربری خود را وارد کنید">
+                <input type="text" id="loginUsername" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white" placeholder="نام کاربری">
             </div>
             <div>
                 <label class="block text-xs font-medium text-slate-300 mb-1">رمز عبور</label>
-                <input type="password" id="loginPassword" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-blue-500 text-white" placeholder="******">
+                <input type="password" id="loginPassword" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white" placeholder="******">
             </div>
-            <button type="submit" id="loginSubmitBtn" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-xl text-sm shadow-lg transition-all">ورود به داشبورد</button>
+            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-xl text-sm shadow-lg transition-all">ورود به داشبورد</button>
             <div class="text-center mt-3">
-                <button type="button" onclick="showForgotPassword()" class="text-xs text-blue-400 hover:underline">نام کاربری یا رمز عبور را فراموش کرده‌اید؟</button>
+                <button type="button" onclick="showForgotPassword()" class="text-xs text-blue-400 hover:underline">فراموشی رمز عبور؟</button>
             </div>
         </form>
 
@@ -42,10 +43,10 @@
         <form id="registerForm" class="space-y-3 hidden">
             <div>
                 <label class="block text-xs font-medium text-slate-300 mb-1">نام و نام خانوادگی / نام مرکز</label>
-                <input type="text" id="regFullName" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white" placeholder="مثال: کلینیک حسینی / دکتر حسینی">
+                <input type="text" id="regFullName" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white" placeholder="مثال: کلینیک حسینی">
             </div>
             <div>
-                <label class="block text-xs font-medium text-slate-300 mb-1">شماره همراه (امکان استفاده برای چند مرکز)</label>
+                <label class="block text-xs font-medium text-slate-300 mb-1">شماره همراه</label>
                 <input type="tel" id="regPhone" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white" placeholder="09123456789">
             </div>
             <div>
@@ -53,49 +54,41 @@
                 <input type="text" id="regCity" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white" placeholder="مثال: کرج">
             </div>
             <div>
-                <label class="block text-xs font-medium text-slate-300 mb-1">تعیین نام کاربری (انگلیسی و منحصر‌به‌فرد)</label>
-                <input type="text" id="regUsername" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white" placeholder="مثال: hoseini_clinic">
+                <label class="block text-xs font-medium text-slate-300 mb-1">تعیین نام کاربری (انگلیسی)</label>
+                <input type="text" id="regUsername" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white" placeholder="hoseini_clinic">
             </div>
             <div>
                 <label class="block text-xs font-medium text-slate-300 mb-1">تعیین رمز عبور</label>
                 <input type="password" id="regPassword" required minlength="4" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white" placeholder="حداقل ۴ کاراکتر">
             </div>
-            <button type="submit" id="regSubmitBtn" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl text-sm shadow-lg transition-all mt-2">ثبت‌نام و دریافت کد اختصاصی</button>
+            <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl text-sm shadow-lg transition-all mt-2">ثبت‌نام و دریافت کد اختصاصی</button>
         </form>
 
-        <!-- داشبورد اختصاصی -->
+        <!-- داشبورد مشتری -->
         <div id="userDashboard" class="hidden space-y-4">
             <div class="bg-slate-900/80 border border-slate-700 p-4 rounded-xl flex items-center justify-between">
                 <div>
                     <h2 id="dashCustomerName" class="font-bold text-white text-base">---</h2>
                     <p id="dashCustomerPhone" class="text-xs text-slate-400 mt-0.5">---</p>
+                    <span id="dashTier" class="inline-block mt-1 bg-amber-500/20 text-amber-300 text-[10px] px-2 py-0.5 rounded-md border border-amber-500/30">سطح عادی</span>
                 </div>
-                <!-- دکمه خروج کامل از حساب -->
-                <button type="button" onclick="logout()" class="bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs px-3.5 py-2 rounded-xl shadow-md transition-all">
-                    🚪 خروج از حساب
-                </button>
+                <button type="button" onclick="logout()" class="bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs px-3.5 py-2 rounded-xl shadow-md transition-all">🚪 خروج</button>
             </div>
 
-            <!-- راهنمای ارسال پیامک کد اختصاصی -->
             <div class="bg-blue-600/10 border border-blue-500/30 p-3.5 rounded-xl text-xs space-y-2">
                 <p class="text-blue-300 font-bold">📲 ارسال کد اختصاصی به مدیریت:</p>
-                <p class="text-slate-300 text-[11px] leading-relaxed">لطفاً کد اختصاصی خود را جهت فعال‌سازی نهایی امتیازات به شماره **09398490440** پیامک فرمایید.</p>
-                <button type="button" id="btnSendSms" onclick="sendClubCodeSMS()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-2 rounded-lg transition-all text-xs flex items-center justify-center gap-1">
-                    📩 ارسال سریع کد با پیامک
-                </button>
+                <p class="text-slate-300 text-[11px] leading-relaxed">کد خود را جهت فعال‌سازی نهایی به شماره **09398490440** پیامک فرمایید.</p>
+                <button type="button" onclick="sendClubCodeSMS()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-2 rounded-lg text-xs">📩 ارسال سریع کد با پیامک</button>
             </div>
 
-            <!-- کادر پیام اختصاصی مدیر -->
             <div id="adminNoteBox" class="bg-amber-500/10 border border-amber-500/30 p-3.5 rounded-xl text-xs text-amber-200 hidden">
-                <div class="font-bold mb-1 flex items-center gap-1 text-amber-400">
-                    <span>📣 پیام ویژه مدیریت کاریز طب:</span>
-                </div>
+                <div class="font-bold mb-1 text-amber-400">📣 پیام مدیریت:</div>
                 <p id="dashAdminNote" class="leading-relaxed"></p>
             </div>
 
             <div class="grid grid-cols-2 gap-3">
                 <div class="bg-blue-600/10 border border-blue-500/30 p-4 rounded-xl text-center">
-                    <span class="text-xs text-blue-300 block mb-1">کد اختصاصی شما</span>
+                    <span class="text-xs text-blue-300 block mb-1">کد اختصاصی</span>
                     <span id="dashClubCode" class="text-lg font-black text-blue-400 tracking-wider">----</span>
                 </div>
                 <div class="bg-amber-600/10 border border-amber-500/30 p-4 rounded-xl text-center">
@@ -105,9 +98,9 @@
             </div>
 
             <div>
-                <h3 class="text-xs font-bold text-slate-300 mb-2">📋 ریز خریدها و تسویه‌ها</h3>
-                <div id="dashTransactions" class="bg-slate-900 border border-slate-700 rounded-xl p-3 max-h-48 overflow-y-auto divide-y divide-slate-800 text-xs">
-                    <p class="text-slate-500 text-center py-4">هنوز خرید یا تسویه‌ای ثبت نشده است.</p>
+                <h3 class="text-xs font-bold text-slate-300 mb-2">📋 ریز خریدها و فاکتورها</h3>
+                <div id="dashTransactions" class="bg-slate-900 border border-slate-700 rounded-xl p-3 max-h-60 overflow-y-auto divide-y divide-slate-800 text-xs">
+                    <p class="text-slate-500 text-center py-4">هنوز خرید یا فاکتوری ثبت نشده است.</p>
                 </div>
             </div>
         </div>
@@ -168,7 +161,7 @@
 
             const db = getDB();
             if (db.find(u => u.username === username)) {
-                showMsg('این نام کاربری قبلاً انتخاب شده است. لطفاً یک نام کاربری دیگر وارد کنید.', 'error');
+                showMsg('این نام کاربری قبلاً انتخاب شده است.', 'error');
                 return;
             }
 
@@ -181,6 +174,7 @@
                 password,
                 clubCode,
                 points: 0,
+                tier: 'عادی',
                 adminNote: '',
                 transactions: []
             };
@@ -221,6 +215,7 @@
             document.getElementById('dashCustomerPhone').innerText = (user.phone || '') + ' (' + (user.city || '') + ')';
             document.getElementById('dashClubCode').innerText = user.clubCode || '---';
             document.getElementById('dashPoints').innerText = user.points || 0;
+            document.getElementById('dashTier').innerText = 'سطح: ' + (user.tier || 'عادی');
 
             const noteBox = document.getElementById('adminNoteBox');
             if (user.adminNote && user.adminNote.trim() !== '') {
@@ -233,14 +228,13 @@
             const txContainer = document.getElementById('dashTransactions');
             if (user.transactions && user.transactions.length > 0) {
                 txContainer.innerHTML = user.transactions.map(t => `
-                    <div class="py-2 flex justify-between items-center">
-                        <div>
+                    <div class="py-3 space-y-1">
+                        <div class="flex justify-between items-center">
                             <p class="font-bold text-white">${t.title || 'خرید محصولات'}</p>
-                            <p class="text-[10px] text-slate-400">${t.date || ''}</p>
+                            <span class="font-bold text-emerald-400">${t.amount || ''}</span>
                         </div>
-                        <span class="font-bold ${t.type === 'plus' ? 'text-emerald-400' : 'text-slate-300'}">
-                            ${t.amount || ''}
-                        </span>
+                        <p class="text-[10px] text-slate-400">${t.date || ''}</p>
+                        ${t.image ? `<img src="${t.image}" class="w-full rounded-xl mt-2 border border-slate-700 shadow-md">` : ''}
                     </div>
                 `).join('');
             } else {
@@ -248,14 +242,12 @@
             }
         }
 
-        // ارسال مستقیم پیامک حاوی کد اختصاصی
         function sendClubCodeSMS() {
             if (!currentActiveUser) return;
-            const message = encodeURIComponent(`سلام، کد اختصاصی من در باشگاه مشتریان کاریز طب: ${currentActiveUser.clubCode}\nنام مرکز: ${currentActiveUser.fullName}`);
+            const message = encodeURIComponent(`سلام، کد اختصاصی من در باشگاه کاریز طب: ${currentActiveUser.clubCode}\nمرکز: ${currentActiveUser.fullName}`);
             window.location.href = `sms:09398490440?body=${message}`;
         }
 
-        // خروج و رفتن به صفحه ورود برای ثبت‌نام مرکز دیگر
         function logout() {
             localStorage.removeItem('karizteb_current_user');
             location.reload();
