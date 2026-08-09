@@ -15,9 +15,6 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
-        .gold-border {
-            border-image: linear-gradient(to bottom right, #BF953F, #FCF6BA, #AA771C) 1;
-        }
     </style>
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen flex items-center justify-center p-4 print:p-0 print:bg-white">
@@ -47,7 +44,7 @@
         <!-- باکس اصلی QR کد و مراحل ۳گانه -->
         <div class="bg-slate-950/80 border border-[#D4AF37]/30 rounded-2xl p-5 grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
             
-            <!-- QR کد اختصاصی -->
+            <!-- QR کد اختصاصی متصل به karizteb.ir -->
             <div class="flex flex-col items-center justify-center space-y-2 md:border-l md:border-[#D4AF37]/20 md:pl-2">
                 <div class="p-2 bg-white rounded-xl shadow-md" id="qrcode"></div>
                 <span class="text-[10px] text-[#D4AF37] font-bold">👆 اسکن کنید</span>
@@ -103,9 +100,9 @@
     </div>
 
     <script>
-        // ساخت خودکار QR کد پویا متصل به سایت کاریز طب
+        // ساخت خودکار QR کد متصل مستقیم به دامنه اصلی karizteb.ir
         new QRCode(document.getElementById("qrcode"), {
-            text: "https://mehranh13677-dev.github.io/karizteb-club/",
+            text: "https://karizteb.ir",
             width: 90,
             height: 90,
             colorDark : "#0f172a",
