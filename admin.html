@@ -1,91 +1,121 @@
+
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>پنل مدیریت پیشرفته کاریز طب</title>
+    <title>پنل مدیریت کاریز طب</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <style> body { font-family: 'Vazirmatn', sans-serif; } </style>
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen p-4 md:p-8">
 
-    <div class="max-w-6xl mx-auto space-y-6">
+    <!-- فرم ورود مدیر -->
+    <div id="adminLoginForm" class="max-w-md mx-auto my-12 bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-2xl space-y-4">
+        <div class="text-center">
+            <h1 class="text-xl font-black text-white">ورود به پنل مدیریت کاریز طب</h1>
+            <p class="text-xs text-slate-400 mt-1">لطفاً اطلاعات امنیتی مدیر را وارد کنید</p>
+        </div>
+        <div>
+            <label class="block text-xs text-slate-300 mb-1">نام کاربری مدیر</label>
+            <input type="text" id="adminUser" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-2.5 text-xs text-white" placeholder="admin">
+        </div>
+        <div>
+            <label class="block text-xs text-slate-300 mb-1">رمز عبور</label>
+            <input type="password" id="adminPass" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-2.5 text-xs text-white" placeholder="******">
+        </div>
+        <button onclick="loginAdmin()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-2.5 rounded-xl text-xs shadow-lg transition-all">ورود به سیستم مدیریت</button>
+        <p id="loginError" class="text-xs text-rose-400 text-center hidden">نام کاربری یا رمز عبور مدیریت اشتباه است.</p>
+    </div>
+
+    <!-- محتوای اصلی پنل مدیریت -->
+    <div id="adminPanelContent" class="max-w-6xl mx-auto space-y-6 hidden">
         
         <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl flex flex-wrap justify-between items-center gap-4 shadow-xl">
             <div>
-                <h1 class="text-xl font-black text-white">پنل مدیریت باشگاه مشتریان کاریز طب</h1>
-                <p class="text-xs text-slate-400 mt-1">ورود اطلاعات از هلو، ارسال پیام اختصاصی و مدیریت امتیازات</p>
+                <h1 class="text-xl font-black text-white">مدیریت باشگاه مشتریان کاریز طب</h1>
+                <p class="text-xs text-slate-400 mt-1">مدیریت اعضا، تالارها، فاکتورها و بازیابی حساب</p>
             </div>
             
-            <div class="flex items-center gap-3">
-                <label class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-4 py-2.5 rounded-xl cursor-pointer transition-all flex items-center gap-2">
-                    📁 آپلود اکسل هلو
-                    <input type="file" id="excelFileInput" accept=".xlsx, .xls, .csv" class="hidden" onchange="handleExcelUpload(event)">
-                </label>
-                <button onclick="loadData()" class="bg-blue-600 hover:bg-blue-500 text-white text-xs px-4 py-2.5 rounded-xl transition-all">
-                    🔄 بروزرسانی
-                </button>
-            </div>
+            <button onclick="logoutAdmin()" class="bg-rose-600/20 hover:bg-rose-600 text-rose-300 hover:text-white border border-rose-500/30 text-xs px-4 py-2.5 rounded-xl transition-all">
+                🚪 خروج مدیر
+            </button>
         </div>
 
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl overflow-x-auto">
-            <h2 class="text-sm font-bold text-white mb-4">لیست اعضا و مدیریت حساب‌ها</h2>
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl overflow-x-auto space-y-4">
+            <div class="flex justify-between items-center">
+                <h2 class="text-sm font-bold text-white">لیست تمامی اعضا (<span id="totalCount">0</span> نفر)</h2>
+                <input type="text" id="searchBox" oninput="loadData()" placeholder="جستجوی نام، تلفن یا کد..." class="bg-slate-950 border border-slate-800 rounded-xl px-3 py-1.5 text-xs text-white w-60">
+            </div>
             
             <table class="w-full text-right text-xs text-slate-300">
                 <thead class="bg-slate-800 text-slate-400 uppercase text-[10px]">
                     <tr>
                         <th class="p-3 rounded-r-xl">مشتری / مرکز</th>
-                        <th class="p-3">شماره تماس / شهر</th>
+                        <th class="p-3">اطلاعات کاربری (ورود)</th>
                         <th class="p-3">کد اختصاصی</th>
-                        <th class="p-3">امتیاز فعلی</th>
-                        <th class="p-3">آخرین پیام اختصاصی مدیر</th>
-                        <th class="p-3 rounded-l-xl text-center">عملیات</th>
+                        <th class="p-3">سطح تالار</th>
+                        <th class="p-3">امتیاز</th>
+                        <th class="p-3 rounded-l-xl text-center">عملیات مدیریت</th>
                     </tr>
                 </thead>
                 <tbody id="adminCustomersTable" class="divide-y divide-slate-800">
-                    <tr><td colspan="6" class="p-4 text-center text-slate-500">در حال بارگذاری اطلاعات...</td></tr>
+                    <tr><td colspan="6" class="p-4 text-center text-slate-500">در حال بارگذاری...</td></tr>
                 </tbody>
             </table>
         </div>
 
     </div>
 
-    <div id="customerModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+    <!-- مودال ویرایش و آپلود فاکتور -->
+    <div id="customerModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 hidden z-50">
         <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 w-full max-w-lg space-y-4 max-h-[90vh] overflow-y-auto">
-            <h3 class="text-sm font-bold text-white border-b border-slate-800 pb-3">مدیریت حساب مشتری</h3>
+            <h3 class="text-sm font-bold text-white border-b border-slate-800 pb-3">مدیریت جامع حساب مشتری</h3>
             
             <p id="modalCustomerTitle" class="text-xs font-bold text-blue-400">مشتری: ---</p>
             <input type="hidden" id="modalUserUsername">
 
-            <div class="space-y-1">
-                <label class="block text-xs text-amber-400 font-bold">💬 پیام اختصاصی مدیر (قابل مشاهده در صفحه شخصی مشتری)</label>
-                <textarea id="modalAdminNote" rows="3" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-amber-500" placeholder="مثلاً: دکتر عزیز، با خرید ۲ کارتن دیگر در این هفته، شانس برنده شدن در قرعه‌کشی VIP را خواهید داشت!"></textarea>
+            <!-- تعیین سطح تالار VIP -->
+            <div>
+                <label class="block text-xs text-amber-400 font-bold mb-1">🏅 سطح عضویت / تالار مشتری</label>
+                <select id="modalTier" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs text-white">
+                    <option value="عادی">عادی</option>
+                    <option value="برنزی 🥉">تالار برنزی 🥉</option>
+                    <option value="نقره‌ای 🥈">تالار نقره‌ای 🥈</option>
+                    <option value="طلایی 🥇">تالار طلایی 🥇</option>
+                    <option value="VIP 💎">تالار VIP 💎</option>
+                </select>
             </div>
 
-            <div class="grid grid-cols-2 gap-3">
+            <!-- پیام اختصاصی -->
+            <div>
+                <label class="block text-xs text-amber-400 font-bold mb-1">💬 پیام اختصاصی مدیر</label>
+                <textarea id="modalAdminNote" rows="2" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs text-white" placeholder="متن پیام..."></textarea>
+            </div>
+
+            <!-- تغییر امتیاز -->
+            <div class="grid grid-cols-2 gap-2">
                 <div>
                     <label class="block text-xs text-slate-400 mb-1">افزایش/کسر امتیاز</label>
-                    <input type="number" id="modalAddPoints" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white" placeholder="مثلا: 100 یا -50">
+                    <input type="number" id="modalAddPoints" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white" placeholder="مثلا: 100">
                 </div>
                 <div>
-                    <label class="block text-xs text-slate-400 mb-1">بابت / بابت چه خریدی؟</label>
-                    <input type="text" id="modalPointsReason" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white" placeholder="مثال: خرید فاکتور ۱۲۰۴">
+                    <label class="block text-xs text-slate-400 mb-1">بابت</label>
+                    <input type="text" id="modalPointsReason" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white" placeholder="خرید اخیر">
                 </div>
             </div>
 
+            <!-- آپلود تصویر فاکتور -->
             <div class="border-t border-slate-800 pt-3 space-y-2">
-                <p class="text-xs font-bold text-emerald-400">📦 ثبت دستی فاکتور / واریزی جدید</p>
-                <div class="grid grid-cols-2 gap-2">
-                    <input type="text" id="txTitle" placeholder="شرح اقلام (مثلاً: ۵ کارتن دستکش لاتکس)" class="bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
-                    <input type="text" id="txAmount" placeholder="مبلغ / واریزی (مثلاً: ۱۲,۵۰۰,۰۰۰ تومان)" class="bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
-                </div>
+                <p class="text-xs font-bold text-emerald-400">🖼️ آپلود تصویر فاکتور برای مشتری</p>
+                <input type="text" id="txTitle" placeholder="عنوان فاکتور (مثلا: فاکتور خرید دستکش)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white mb-2">
+                <input type="file" id="invoiceImageInput" accept="image/*" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2 text-xs text-slate-300">
             </div>
 
             <div class="flex gap-2 pt-4 border-t border-slate-800">
-                <button onclick="saveCustomerChanges()" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 rounded-xl text-xs transition-all">ذخیره تغییرات</button>
-                <button onclick="closeModal()" class="flex-1 bg-slate-800 text-slate-400 hover:text-white py-2.5 rounded-xl text-xs transition-all">انصراف</button>
+                <button onclick="saveCustomerChanges()" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 rounded-xl text-xs">ذخیره تغییرات</button>
+                <button onclick="closeModal()" class="flex-1 bg-slate-800 text-slate-400 py-2.5 rounded-xl text-xs">انصراف</button>
             </div>
         </div>
     </div>
@@ -99,28 +129,63 @@
             localStorage.setItem('karizteb_db', JSON.stringify(data));
         }
 
-        window.onload = loadData;
+        function loginAdmin() {
+            const u = document.getElementById('adminUser').value.trim();
+            const p = document.getElementById('adminPass').value.trim();
+            if (u === 'admin' && p === 'kariz123') {
+                sessionStorage.setItem('kariz_admin_logged', 'true');
+                checkAdminAuth();
+            } else {
+                document.getElementById('loginError').classList.remove('hidden');
+            }
+        }
+
+        function logoutAdmin() {
+            sessionStorage.removeItem('kariz_admin_logged');
+            checkAdminAuth();
+        }
+
+        function checkAdminAuth() {
+            if (sessionStorage.getItem('kariz_admin_logged') === 'true') {
+                document.getElementById('adminLoginForm').classList.add('hidden');
+                document.getElementById('adminPanelContent').classList.remove('hidden');
+                loadData();
+            } else {
+                document.getElementById('adminLoginForm').classList.remove('hidden');
+                document.getElementById('adminPanelContent').classList.add('hidden');
+            }
+        }
+
+        window.onload = checkAdminAuth;
 
         function loadData() {
             const db = getDB();
+            const query = (document.getElementById('searchBox')?.value || '').toLowerCase();
             const table = document.getElementById('adminCustomersTable');
+            document.getElementById('totalCount').innerText = db.length;
 
-            if (db.length === 0) {
-                table.innerHTML = '<tr><td colspan="6" class="p-4 text-center text-slate-500">هنوز هیچ مشتری در سیستم ثبت نام نکرده است.</td></tr>';
+            const filtered = db.filter(u => 
+                (u.fullName || '').toLowerCase().includes(query) ||
+                (u.phone || '').includes(query) ||
+                (u.username || '').toLowerCase().includes(query) ||
+                (u.clubCode || '').toLowerCase().includes(query)
+            );
+
+            if (filtered.length === 0) {
+                table.innerHTML = '<tr><td colspan="6" class="p-4 text-center text-slate-500">هیچ مشتری یافت نشد.</td></tr>';
                 return;
             }
 
-            table.innerHTML = db.map(u => `
+            table.innerHTML = filtered.map(u => `
                 <tr class="hover:bg-slate-800/50 transition-all">
-                    <td class="p-3 font-bold text-white">${u.fullName || '---'}</td>
-                    <td class="p-3 text-slate-400">${u.phone || '---'}<br><span class="text-[10px] text-slate-500">${u.city || ''}</span></td>
+                    <td class="p-3 font-bold text-white">${u.fullName || '---'}<br><span class="text-[10px] font-normal text-slate-400">${u.phone || ''} (${u.city || ''})</span></td>
+                    <td class="p-3 text-amber-300 font-mono text-[11px]">یوزر: <b>${u.username}</b><br>رمز: <b>${u.password}</b></td>
                     <td class="p-3 font-mono font-bold text-blue-400">${u.clubCode || '---'}</td>
+                    <td class="p-3"><span class="bg-slate-800 text-amber-400 px-2.5 py-1 rounded-lg text-[10px] border border-amber-500/20">${u.tier || 'عادی'}</span></td>
                     <td class="p-3 font-bold text-emerald-400">${u.points || 0}</td>
-                    <td class="p-3 text-slate-400 text-[11px] max-w-xs truncate">${u.adminNote || '---'}</td>
-                    <td class="p-3 text-center">
-                        <button onclick="openModal('${u.username}')" class="bg-blue-600/20 hover:bg-blue-600 text-blue-400 hover:text-white px-3 py-1.5 rounded-lg border border-blue-500/30 transition-all">
-                            ⚙️ مدیریت و پیام
-                        </button>
+                    <td class="p-3 text-center space-x-1 space-x-reverse">
+                        <button onclick="openModal('${u.username}')" class="bg-blue-600/20 text-blue-400 px-2.5 py-1 rounded-lg border border-blue-500/30 text-[11px]">⚙️ مدیریت</button>
+                        <button onclick="deleteCustomer('${u.username}')" class="bg-rose-600/20 text-rose-400 px-2.5 py-1 rounded-lg border border-rose-500/30 text-[11px]">🗑️ حذف</button>
                     </td>
                 </tr>
             `).join('');
@@ -132,12 +197,12 @@
             if (!user) return;
 
             document.getElementById('modalUserUsername').value = user.username;
-            document.getElementById('modalCustomerTitle').innerText = `مشتری: ${user.fullName} (${user.clubCode})`;
+            document.getElementById('modalCustomerTitle').innerText = `مدیریت مشتری: ${user.fullName} (${user.clubCode})`;
+            document.getElementById('modalTier').value = user.tier || 'عادی';
             document.getElementById('modalAdminNote').value = user.adminNote || '';
             document.getElementById('modalAddPoints').value = '';
             document.getElementById('modalPointsReason').value = '';
             document.getElementById('txTitle').value = '';
-            document.getElementById('txAmount').value = '';
 
             document.getElementById('customerModal').classList.remove('hidden');
         }
@@ -146,25 +211,34 @@
             document.getElementById('customerModal').classList.add('hidden');
         }
 
+        function deleteCustomer(username) {
+            if (confirm(`آیا از حذف حساب مشتری (${username}) اطمینان دارید؟`)) {
+                let db = getDB();
+                db = db.filter(u => u.username !== username);
+                saveDB(db);
+                loadData();
+            }
+        }
+
         function saveCustomerChanges() {
             const username = document.getElementById('modalUserUsername').value;
             const db = getDB();
-            const userIndex = db.findIndex(u => u.username === username);
+            const idx = db.findIndex(u => u.username === username);
 
-            if (userIndex === -1) return;
+            if (idx === -1) return;
 
-            const adminNote = document.getElementById('modalAdminNote').value.trim();
+            db[idx].tier = document.getElementById('modalTier').value;
+            db[idx].adminNote = document.getElementById('modalAdminNote').value.trim();
+
             const addPoints = parseInt(document.getElementById('modalAddPoints').value) || 0;
             const pointsReason = document.getElementById('modalPointsReason').value.trim();
             const txTitle = document.getElementById('txTitle').value.trim();
-            const txAmount = document.getElementById('txAmount').value.trim();
-
-            db[userIndex].adminNote = adminNote;
+            const fileInput = document.getElementById('invoiceImageInput');
 
             if (addPoints !== 0) {
-                db[userIndex].points = (db[userIndex].points || 0) + addPoints;
-                if (!db[userIndex].transactions) db[userIndex].transactions = [];
-                db[userIndex].transactions.unshift({
+                db[idx].points = (db[idx].points || 0) + addPoints;
+                if (!db[idx].transactions) db[idx].transactions = [];
+                db[idx].transactions.unshift({
                     title: pointsReason || 'تغییر امتیاز توسط مدیریت',
                     amount: (addPoints > 0 ? '+' : '') + addPoints + ' امتیاز',
                     type: addPoints > 0 ? 'plus' : 'minus',
@@ -172,65 +246,38 @@
                 });
             }
 
-            if (txTitle) {
-                if (!db[userIndex].transactions) db[userIndex].transactions = [];
-                db[userIndex].transactions.unshift({
-                    title: txTitle,
-                    amount: txAmount || 'ثبت شده',
-                    type: 'plus',
-                    date: new Date().toLocaleDateString('fa-IR')
-                });
-            }
-
-            saveDB(db);
-            closeModal();
-            loadData();
-            alert('اطلاعات با موفقیت ذخیره شد.');
-        }
-
-        function handleExcelUpload(e) {
-            const file = e.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = function(evt) {
-                const data = new Uint8Array(evt.target.result);
-                const workbook = XLSX.read(data, { type: 'array' });
-                const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-                const rows = XLSX.utils.sheet_to_json(firstSheet);
-
-                if (rows.length === 0) {
-                    alert('فایل اکسل خالی است.');
-                    return;
+            if (fileInput.files && fileInput.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    if (!db[idx].transactions) db[idx].transactions = [];
+                    db[idx].transactions.unshift({
+                        title: txTitle || 'فاکتور خرید جدید',
+                        amount: 'فاکتور تصویری',
+                        image: e.target.result,
+                        type: 'plus',
+                        date: new Date().toLocaleDateString('fa-IR')
+                    });
+                    saveDB(db);
+                    closeModal();
+                    loadData();
+                    alert('فاکتور تصویری با موفقیت ثبت شد.');
+                };
+                reader.readAsDataURL(fileInput.files[0]);
+            } else {
+                if (txTitle) {
+                    if (!db[idx].transactions) db[idx].transactions = [];
+                    db[idx].transactions.unshift({
+                        title: txTitle,
+                        amount: 'ثبت شده',
+                        type: 'plus',
+                        date: new Date().toLocaleDateString('fa-IR')
+                    });
                 }
-
-                const db = getDB();
-                let importedCount = 0;
-
-                rows.forEach(row => {
-                    const phone = row['تلفن'] || row['همراه'] || row['Phone'];
-                    const clubCode = row['کد باشگاه'] || row['Code'];
-                    const txTitle = row['شرح فاکتور'] || row['اقلام'] || row['توضیحات'];
-                    const txAmount = row['مبلغ'] || row['واریزی'];
-
-                    const user = db.find(u => (phone && u.phone == phone) || (clubCode && u.clubCode == clubCode));
-                    if (user) {
-                        if (!user.transactions) user.transactions = [];
-                        user.transactions.unshift({
-                            title: txTitle || 'فاکتور خرید جدید',
-                            amount: txAmount ? txAmount + ' تومان' : 'تایید شده',
-                            type: 'plus',
-                            date: new Date().toLocaleDateString('fa-IR')
-                        });
-                        importedCount++;
-                    }
-                });
-
                 saveDB(db);
+                closeModal();
                 loadData();
-                alert(`تعداد ${importedCount} فاکتور از اکسل با موفقیت به حساب مشتریان افزوده شد.`);
-            };
-            reader.readAsArrayBuffer(file);
+                alert('تغییرات با موفقیت ذخیره شد.');
+            }
         }
     </script>
 </body>
