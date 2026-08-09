@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
@@ -12,59 +11,68 @@
         .gold-bg { background: linear-gradient(135deg, #BF953F 0%, #FCF6BA 25%, #B38728 50%, #FBF5B7 75%, #AA771C 100%); }
     </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen p-4 pb-20">
+<body class="bg-slate-950 text-slate-100 min-h-screen p-4 pb-24">
 
-    <!-- هدر سایت -->
+    <!-- هدر -->
     <header class="max-w-2xl mx-auto flex justify-between items-center border-b border-slate-800 pb-4 mb-6">
         <div class="flex items-center gap-3">
-            <div class="w-10 h-10 gold-bg rounded-xl flex items-center justify-center font-black text-slate-950">KT</div>
+            <div class="w-12 h-12 gold-bg rounded-2xl flex items-center justify-center font-black text-slate-950 text-xl shadow-lg">KT</div>
             <div>
                 <h1 class="font-bold text-lg text-amber-400">کاریز طب</h1>
-                <p class="text-[10px] text-slate-400">باشگاه مشتریان و سامانه سفارش‌گیری اختصاصی</p>
+                <p class="text-[11px] text-slate-400">باشگاه مشتریان و سامانه سفارش‌گیری اختصاصی</p>
             </div>
         </div>
-        <div id="userInfo" class="hidden text-xs bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-lg text-emerald-400 font-bold"></div>
+        <div id="userInfo" class="hidden text-xs bg-slate-900 border border-amber-500/30 px-3 py-1.5 rounded-xl text-emerald-400 font-bold"></div>
     </header>
 
     <main class="max-w-2xl mx-auto space-y-6">
 
-        <!-- ورود/ثبت‌نام مشتری -->
-        <section id="authBox" class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4">
-            <h2 class="text-sm font-bold text-amber-300">🔑 ورود / ثبت‌نام سریع</h2>
+        <!-- ورود/ثبت نام -->
+        <section id="authBox" class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4 shadow-xl">
+            <h2 class="text-sm font-bold text-amber-300 flex items-center gap-2">🔑 ورود / ثبت‌نام در باشگاه مشتریان</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                <input id="custName" type="text" placeholder="نام و نام خانوادگی / مرکز درمانی" class="bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs focus:outline-none">
-                <input id="custPhone" type="tel" placeholder="شماره همراه (مثلاً 09123456789)" class="bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs focus:outline-none">
+                <input id="custName" type="text" placeholder="نام و نام خانوادگی / مرکز درمانی" class="bg-slate-950 border border-slate-700 rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400">
+                <input id="custPhone" type="tel" placeholder="شماره همراه (مثلاً 09123456789)" class="bg-slate-950 border border-slate-700 rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-amber-400">
             </div>
-            <button onclick="loginCustomer()" class="w-full gold-bg text-slate-950 font-bold py-2.5 rounded-xl text-xs">ورود به پنل اختصاصی</button>
+            <button onclick="loginCustomer()" class="w-full gold-bg text-slate-950 font-bold py-2.5 rounded-xl text-xs hover:opacity-90">ورود به پنل اختصاصی</button>
         </section>
 
-        <!-- پنل کاربری اصلی -->
+        <!-- داشبورد اصلی مشتری -->
         <div id="mainPanel" class="hidden space-y-6">
 
-            <!-- کارت وضعیت حساب مشتری -->
-            <div class="bg-slate-900 border border-amber-500/30 rounded-2xl p-4 grid grid-cols-3 gap-2 text-center text-xs">
-                <div class="bg-slate-950 p-2.5 rounded-xl">
-                    <span class="block text-slate-400 text-[10px] mb-1">سطح شما</span>
-                    <span id="userTier" class="font-bold text-amber-400">عادی ⚪</span>
+            <!-- کارت VIP -->
+            <div class="bg-gradient-to-r from-slate-900 via-slate-900 to-amber-950/40 border border-amber-500/40 rounded-3xl p-5 shadow-2xl">
+                <div class="flex justify-between items-center mb-4">
+                    <span class="text-xs text-slate-400">کارت عضویت اختصاصی</span>
+                    <span id="userTier" class="gold-bg text-slate-950 font-black text-[11px] px-3 py-1 rounded-full">سطح طلا 🥇</span>
                 </div>
-                <div class="bg-slate-950 p-2.5 rounded-xl">
-                    <span class="block text-slate-400 text-[10px] mb-1">امتیاز خرید</span>
-                    <span id="userPoints" class="font-bold text-emerald-400">۰</span>
-                </div>
-                <div class="bg-slate-950 p-2.5 rounded-xl">
-                    <span class="block text-slate-400 text-[10px] mb-1">کد اختصاصی</span>
-                    <span id="userCode" class="font-bold text-blue-400">---</span>
+                <div class="flex justify-between items-end">
+                    <div>
+                        <div id="displayName" class="text-lg font-black text-white mb-1">نام کاربر</div>
+                        <div class="text-xs text-slate-400">کد باشگاه: <b id="userCode" class="text-amber-400">KT-0000</b></div>
+                    </div>
+                    <div class="text-left">
+                        <span class="text-[10px] text-slate-400 block">امتیاز کل:</span>
+                        <span id="userPoints" class="text-2xl font-black text-emerald-400">۰</span>
+                    </div>
                 </div>
             </div>
 
-            <!-- پیام ویژه مدیر -->
-            <div id="adminNotice" class="hidden bg-amber-500/10 border border-amber-500/30 text-amber-200 p-3 rounded-xl text-xs"></div>
+            <div id="adminNotice" class="hidden bg-amber-500/10 border border-amber-500/30 text-amber-200 p-3.5 rounded-2xl text-xs"></div>
 
-            <!-- کاتالوگ هوشمند همراه با عکس محصول -->
-            <section class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4">
+            <!-- تب‌بندی -->
+            <div class="flex border-b border-slate-800 text-xs font-bold gap-2 overflow-x-auto pb-2">
+                <button onclick="switchTab('tabCatalog')" id="btnTabCatalog" class="px-4 py-2 rounded-xl bg-amber-500 text-slate-950 shrink-0">🛒 ثبت سفارش کالا</button>
+                <button onclick="switchTab('tabTracking')" id="btnTabTracking" class="px-4 py-2 rounded-xl bg-slate-900 text-slate-400 shrink-0">📦 پیگیری فاکتور و ارسال</button>
+                <button onclick="switchTab('tabWheel')" id="btnTabWheel" class="px-4 py-2 rounded-xl bg-slate-900 text-slate-400 shrink-0">🎡 گردونه شانس</button>
+                <button onclick="switchTab('tabInvoice')" id="btnTabInvoice" class="px-4 py-2 rounded-xl bg-slate-900 text-slate-400 shrink-0">📄 آپلود فاکتور دستی</button>
+            </div>
+
+            <!-- تب ۱: کاتالوگ -->
+            <section id="tabCatalog" class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4">
                 <div class="flex justify-between items-center border-b border-slate-800 pb-3">
-                    <h3 class="font-bold text-sm text-emerald-400">🛒 کاتالوگ و ثبت سفارش کالا</h3>
-                    <span class="text-[10px] text-slate-400">قیمت‌ها به ریال</span>
+                    <h3 class="font-bold text-sm text-emerald-400">🛒 کاتالوگ محصولات کاریز طب</h3>
+                    <span class="text-[10px] text-slate-400">مبالغ به ریال</span>
                 </div>
 
                 <div class="overflow-x-auto">
@@ -74,7 +82,7 @@
                                 <th class="p-2">تصویر</th>
                                 <th class="p-2">محصول</th>
                                 <th class="p-2">واحد</th>
-                                <th class="p-2">قیمت unit</th>
+                                <th class="p-2">قیمت واحد</th>
                                 <th class="p-2">تعداد</th>
                                 <th class="p-2">جمع</th>
                             </tr>
@@ -88,23 +96,32 @@
                         <span class="text-xs text-slate-400 block">جمع کل فاکتور:</span>
                         <span id="grandTotal" class="text-base font-black text-amber-400">۰ ریال</span>
                     </div>
-                    <button onclick="submitOrder()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-4 py-2 rounded-xl text-xs flex items-center gap-2">
-                        <span>📲 نهایی‌سازی و ارسال پیامک به 09398490440</span>
+                    <button onclick="submitOrder()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-4 py-2.5 rounded-xl text-xs">
+                        📲 نهایی‌سازی و ارسال پیامک به 09398490440
                     </button>
                 </div>
             </section>
 
-            <!-- پیگیری زنده سفارشات و وضعیت ارسال بار -->
-            <section class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-3">
-                <h3 class="font-bold text-sm text-blue-400">📦 پیگیری زنده فاکتور و ارسال بار</h3>
+            <!-- تب ۲: پیگیری سفارشات -->
+            <section id="tabTracking" class="hidden bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-3">
+                <h3 class="font-bold text-sm text-blue-400">📦 پیگیری زنده سفارشات و وضعیت ارسال</h3>
                 <div id="ordersList" class="space-y-3 text-xs"></div>
             </section>
 
-            <!-- آپلود فاکتور خرید توسط مشتری (بخش قبلی) -->
-            <section class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-3">
-                <h3 class="font-bold text-sm text-amber-300">📄 آپلود فاکتور دستی جهت دریافت امتیاز</h3>
-                <input type="file" id="custInvoiceFile" class="text-xs text-slate-400">
-                <button onclick="alert('فاکتور ارسال شد و پس از بررسی امتیاز ثبت می‌شود.')" class="bg-amber-500 text-slate-950 font-bold px-4 py-2 rounded-xl text-xs w-full">ارسال فاکتور</button>
+            <!-- تب ۳: گردونه شانس -->
+            <section id="tabWheel" class="hidden bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4 text-center">
+                <h3 class="font-bold text-sm text-amber-300">🎡 گردونه شانس</h3>
+                <div class="w-40 h-40 mx-auto border-4 border-amber-400 rounded-full flex items-center justify-center bg-slate-950 font-black text-amber-400 shadow-xl">
+                    🎁 چرخش گردونه
+                </div>
+                <button onclick="alert('۱۰۰ امتیاز هدیه برنده شدید!')" class="gold-bg text-slate-950 font-bold px-6 py-2 rounded-xl text-xs">چرخش گردونه</button>
+            </section>
+
+            <!-- تب ۴: آپلود فاکتور -->
+            <section id="tabInvoice" class="hidden bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-3">
+                <h3 class="font-bold text-sm text-amber-300">📄 ثبت و آپلود فاکتور دستی</h3>
+                <input type="file" id="custInvoiceFile" class="text-xs text-slate-400 w-full bg-slate-950 p-2 rounded-xl border border-slate-800">
+                <button onclick="alert('فاکتور با موفقیت ارسال شد.')" class="bg-amber-500 text-slate-950 font-bold px-4 py-2.5 rounded-xl text-xs w-full">ارسال فاکتور جهت بررسی</button>
             </section>
 
         </div>
@@ -124,10 +141,20 @@
             document.getElementById('mainPanel').classList.remove('hidden');
             document.getElementById('userInfo').innerText = `${name} (${currentUser.code})`;
             document.getElementById('userInfo').classList.remove('hidden');
+            document.getElementById('displayName').innerText = name;
             document.getElementById('userCode').innerText = currentUser.code;
 
             loadCatalog();
             loadUserOrderHistory();
+        }
+
+        function switchTab(tabId) {
+            ['tabCatalog', 'tabTracking', 'tabWheel', 'tabInvoice'].forEach(t => document.getElementById(t).classList.add('hidden'));
+            document.getElementById(tabId).classList.remove('hidden');
+
+            const btns = { tabCatalog: 'btnTabCatalog', tabTracking: 'btnTabTracking', tabWheel: 'btnTabWheel', tabInvoice: 'btnTabInvoice' };
+            Object.values(btns).forEach(bId => document.getElementById(bId).className = 'px-4 py-2 rounded-xl bg-slate-900 text-slate-400 shrink-0');
+            document.getElementById(btns[tabId]).className = 'px-4 py-2 rounded-xl bg-amber-500 text-slate-950 font-bold shrink-0';
         }
 
         function loadCatalog() {
@@ -136,7 +163,7 @@
             tbody.innerHTML = '';
 
             if(products.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" class="text-center py-4 text-slate-500">کالایی در سیستم ثبت نشده است.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="6" class="text-center py-4 text-slate-500">هیچ کالایی ثبت نشده است.</td></tr>';
                 return;
             }
 
@@ -180,7 +207,7 @@
                 }
             });
 
-            if(orderItems.length === 0) return alert('لطفاً حداقل یک محصول انتخاب کنید.');
+            if(orderItems.length === 0) return alert('لطفاً حداقل یک محصول را انتخاب کنید.');
 
             const orderData = {
                 id: Date.now(),
@@ -201,6 +228,7 @@
             const smsText = encodeURIComponent(`سفارش جدید کاریز طب\nمشتری: ${currentUser.name}\nکد: ${currentUser.code}\nمبلغ: ${total.toLocaleString()} ریال`);
             window.open(`sms:09398490440?body=${smsText}`, '_blank');
             loadUserOrderHistory();
+            alert('سفارش شما با موفقیت ثبت گردید.');
         }
 
         function loadUserOrderHistory() {
@@ -216,7 +244,7 @@
             container.innerHTML = '';
             userOrders.reverse().forEach(o => {
                 container.innerHTML += `
-                    <div class="bg-slate-950 border border-slate-800 p-3 rounded-xl space-y-1.5">
+                    <div class="bg-slate-950 border border-slate-800 p-3.5 rounded-xl space-y-1.5">
                         <div class="flex justify-between font-bold"><span>تاریخ: ${o.date}</span><span class="text-amber-400">${o.status}</span></div>
                         <div class="text-slate-300 text-[11px]">${o.items.join(' ، ')}</div>
                         <div class="flex justify-between text-[11px] pt-1 border-t border-slate-900"><span>وضعیت ارسال: <b class="text-blue-400">${o.shipping}</b></span><span class="text-emerald-400 font-bold">${o.total.toLocaleString()} ریال</span></div>
