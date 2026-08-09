@@ -14,12 +14,13 @@
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen p-4 pb-20">
 
+    <!-- هدر سایت -->
     <header class="max-w-2xl mx-auto flex justify-between items-center border-b border-slate-800 pb-4 mb-6">
         <div class="flex items-center gap-3">
             <div class="w-10 h-10 gold-bg rounded-xl flex items-center justify-center font-black text-slate-950">KT</div>
             <div>
                 <h1 class="font-bold text-lg text-amber-400">کاریز طب</h1>
-                <p class="text-[10px] text-slate-400">سامانه جامع باشگاه مشتریان و ثبت سفارش آنلاین</p>
+                <p class="text-[10px] text-slate-400">باشگاه مشتریان و سامانه سفارش‌گیری اختصاصی</p>
             </div>
         </div>
         <div id="userInfo" class="hidden text-xs bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-lg text-emerald-400 font-bold"></div>
@@ -27,9 +28,9 @@
 
     <main class="max-w-2xl mx-auto space-y-6">
 
-        <!-- ورود/ثبت‌نام -->
+        <!-- ورود/ثبت‌نام مشتری -->
         <section id="authBox" class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4">
-            <h2 class="text-sm font-bold text-amber-300">🔑 ورود به حساب کاربری</h2>
+            <h2 class="text-sm font-bold text-amber-300">🔑 ورود / ثبت‌نام سریع</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <input id="custName" type="text" placeholder="نام و نام خانوادگی / مرکز درمانی" class="bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs focus:outline-none">
                 <input id="custPhone" type="tel" placeholder="شماره همراه (مثلاً 09123456789)" class="bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs focus:outline-none">
@@ -37,9 +38,10 @@
             <button onclick="loginCustomer()" class="w-full gold-bg text-slate-950 font-bold py-2.5 rounded-xl text-xs">ورود به پنل اختصاصی</button>
         </section>
 
+        <!-- پنل کاربری اصلی -->
         <div id="mainPanel" class="hidden space-y-6">
 
-            <!-- خلاصه امتیازات و کارت VIP (قبلی) -->
+            <!-- کارت وضعیت حساب مشتری -->
             <div class="bg-slate-900 border border-amber-500/30 rounded-2xl p-4 grid grid-cols-3 gap-2 text-center text-xs">
                 <div class="bg-slate-950 p-2.5 rounded-xl">
                     <span class="block text-slate-400 text-[10px] mb-1">سطح شما</span>
@@ -55,18 +57,24 @@
                 </div>
             </div>
 
+            <!-- پیام ویژه مدیر -->
             <div id="adminNotice" class="hidden bg-amber-500/10 border border-amber-500/30 text-amber-200 p-3 rounded-xl text-xs"></div>
 
-            <!-- جدید: کاتالوگ و ثبت سفارش آنلاین -->
+            <!-- کاتالوگ هوشمند همراه با عکس محصول -->
             <section class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4">
-                <h3 class="font-bold text-sm text-emerald-400">🛒 ثبت سفارش آنلاین محصولات</h3>
+                <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+                    <h3 class="font-bold text-sm text-emerald-400">🛒 کاتالوگ و ثبت سفارش کالا</h3>
+                    <span class="text-[10px] text-slate-400">قیمت‌ها به ریال</span>
+                </div>
+
                 <div class="overflow-x-auto">
                     <table class="w-full text-right text-xs">
                         <thead class="bg-slate-950 text-slate-400">
                             <tr>
+                                <th class="p-2">تصویر</th>
                                 <th class="p-2">محصول</th>
                                 <th class="p-2">واحد</th>
-                                <th class="p-2">قیمت (ریال)</th>
+                                <th class="p-2">قیمت unit</th>
                                 <th class="p-2">تعداد</th>
                                 <th class="p-2">جمع</th>
                             </tr>
@@ -74,28 +82,29 @@
                         <tbody id="catalogTableBody" class="divide-y divide-slate-800/50"></tbody>
                     </table>
                 </div>
-                <div class="bg-slate-950 p-4 rounded-xl flex justify-between items-center">
+
+                <div class="bg-slate-950 p-4 rounded-xl flex flex-wrap justify-between items-center gap-3">
                     <div>
                         <span class="text-xs text-slate-400 block">جمع کل فاکتور:</span>
                         <span id="grandTotal" class="text-base font-black text-amber-400">۰ ریال</span>
                     </div>
-                    <button onclick="submitOrder()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-4 py-2 rounded-xl text-xs">
-                        📲 ثبت و ارسال پیامک به 09398490440
+                    <button onclick="submitOrder()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-4 py-2 rounded-xl text-xs flex items-center gap-2">
+                        <span>📲 نهایی‌سازی و ارسال پیامک به 09398490440</span>
                     </button>
                 </div>
             </section>
 
-            <!-- جدید: پیگیری زنده سفارشات و ارسال بار -->
+            <!-- پیگیری زنده سفارشات و وضعیت ارسال بار -->
             <section class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-3">
-                <h3 class="font-bold text-sm text-blue-400">📦 پیگیری زنده سفارشات و وضعیت ارسال</h3>
+                <h3 class="font-bold text-sm text-blue-400">📦 پیگیری زنده فاکتور و ارسال بار</h3>
                 <div id="ordersList" class="space-y-3 text-xs"></div>
             </section>
 
-            <!-- بخش قبلی: ثبت فاکتور توسط مشتری -->
+            <!-- آپلود فاکتور خرید توسط مشتری (بخش قبلی) -->
             <section class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-3">
-                <h3 class="font-bold text-sm text-amber-300">📄 آپلود فاکتور جهت دریافت امتیاز</h3>
+                <h3 class="font-bold text-sm text-amber-300">📄 آپلود فاکتور دستی جهت دریافت امتیاز</h3>
                 <input type="file" id="custInvoiceFile" class="text-xs text-slate-400">
-                <button onclick="alert('فاکتور با موفقیت ارسال شد و پس از بررسی امتیاز آن اعمال می‌شود.')" class="bg-amber-500 text-slate-950 font-bold px-4 py-2 rounded-xl text-xs w-full">ارسال فاکتور</button>
+                <button onclick="alert('فاکتور ارسال شد و پس از بررسی امتیاز ثبت می‌شود.')" class="bg-amber-500 text-slate-950 font-bold px-4 py-2 rounded-xl text-xs w-full">ارسال فاکتور</button>
             </section>
 
         </div>
@@ -104,7 +113,6 @@
 
     <script>
         let currentUser = null;
-        let products = JSON.parse(localStorage.getItem('kt_products')) || [];
 
         function loginCustomer() {
             const name = document.getElementById('custName').value.trim();
@@ -123,19 +131,24 @@
         }
 
         function loadCatalog() {
+            let products = JSON.parse(localStorage.getItem('kt_products')) || [];
             const tbody = document.getElementById('catalogTableBody');
             tbody.innerHTML = '';
+
             if(products.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="5" class="text-center py-3 text-slate-500">محصولی در کاتالوگ تعریف نشده است.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="6" class="text-center py-4 text-slate-500">کالایی در سیستم ثبت نشده است.</td></tr>';
                 return;
             }
+
             products.forEach((p) => {
+                const imgTag = p.img ? `<img src="${p.img}" class="w-10 h-10 object-cover rounded-lg border border-slate-700">` : `<div class="w-10 h-10 bg-slate-800 rounded-lg flex items-center justify-center text-[10px] text-slate-500">بدون عکس</div>`;
                 tbody.innerHTML += `
                     <tr>
-                        <td class="p-2"><b class="text-slate-200">${p.name}</b><br><span class="text-[10px] text-amber-400">${p.desc||''}</span></td>
+                        <td class="p-2">${imgTag}</td>
+                        <td class="p-2"><b class="text-slate-200">${p.name}</b><br><span class="text-[10px] text-amber-400/80">${p.desc||''}</span></td>
                         <td class="p-2 text-slate-400">${p.unit}</td>
                         <td class="p-2 font-mono">${p.price.toLocaleString()}</td>
-                        <td class="p-2"><input type="number" min="0" value="0" id="qty_${p.id}" onchange="calculateTotal()" class="w-12 bg-slate-950 border border-slate-700 text-center rounded"></td>
+                        <td class="p-2"><input type="number" min="0" value="0" id="qty_${p.id}" onchange="calculateTotal()" class="w-12 bg-slate-950 border border-slate-700 text-center rounded py-1"></td>
                         <td class="p-2 font-mono text-emerald-400" id="rowTotal_${p.id}">۰</td>
                     </tr>
                 `;
@@ -143,6 +156,7 @@
         }
 
         function calculateTotal() {
+            let products = JSON.parse(localStorage.getItem('kt_products')) || [];
             let grandTotal = 0;
             products.forEach(p => {
                 const qty = parseInt(document.getElementById(`qty_${p.id}`)?.value) || 0;
@@ -154,8 +168,10 @@
         }
 
         function submitOrder() {
+            let products = JSON.parse(localStorage.getItem('kt_products')) || [];
             let orderItems = [];
             let total = 0;
+
             products.forEach(p => {
                 const qty = parseInt(document.getElementById(`qty_${p.id}`)?.value) || 0;
                 if(qty > 0) {
@@ -164,7 +180,7 @@
                 }
             });
 
-            if(orderItems.length === 0) return alert('لطفاً حداقل یک محصول را انتخاب کنید.');
+            if(orderItems.length === 0) return alert('لطفاً حداقل یک محصول انتخاب کنید.');
 
             const orderData = {
                 id: Date.now(),
@@ -200,11 +216,11 @@
             container.innerHTML = '';
             userOrders.reverse().forEach(o => {
                 container.innerHTML += `
-                    <div class="bg-slate-950 border border-slate-800 p-3 rounded-xl space-y-1">
+                    <div class="bg-slate-950 border border-slate-800 p-3 rounded-xl space-y-1.5">
                         <div class="flex justify-between font-bold"><span>تاریخ: ${o.date}</span><span class="text-amber-400">${o.status}</span></div>
-                        <div class="text-slate-300">${o.items.join(' ، ')}</div>
-                        <div class="flex justify-between text-[11px] pt-1"><span>ارسال: <b class="text-blue-400">${o.shipping}</b></span><span class="text-emerald-400 font-bold">${o.total.toLocaleString()} ریال</span></div>
-                        ${o.note ? `<div class="bg-rose-500/10 text-rose-300 p-1.5 rounded text-[10px]">⚠️ مدیر: ${o.note}</div>` : ''}
+                        <div class="text-slate-300 text-[11px]">${o.items.join(' ، ')}</div>
+                        <div class="flex justify-between text-[11px] pt-1 border-t border-slate-900"><span>وضعیت ارسال: <b class="text-blue-400">${o.shipping}</b></span><span class="text-emerald-400 font-bold">${o.total.toLocaleString()} ریال</span></div>
+                        ${o.note ? `<div class="bg-rose-500/10 text-rose-300 p-1.5 rounded text-[10px]">⚠️ پیام مدیر: ${o.note}</div>` : ''}
                     </div>
                 `;
             });
