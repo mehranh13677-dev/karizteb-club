@@ -7,66 +7,83 @@
     <title>مدیریت کاریز طب</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet">
-    <style>body { font-family: 'Vazirmatn', sans-serif; }</style>
+    <style>
+        body { font-family: 'Vazirmatn', sans-serif; }
+        .gold-bg { background: linear-gradient(135deg, #BF953F 0%, #FCF6BA 25%, #B38728 50%, #FBF5B7 75%, #AA771C 100%); }
+    </style>
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen p-4 pb-20">
 
-    <!-- لایه ورود امنیتی -->
-    <div id="adminLoginBox" class="max-w-md mx-auto my-16 bg-slate-900 border border-slate-800 p-6 rounded-2xl space-y-4">
-        <h2 class="text-base font-bold text-amber-400 text-center">🔒 ورود به پنل مدیریت کاریز طب</h2>
-        <input id="admUser" type="text" placeholder="نام کاربری (admin)" class="w-full bg-slate-950 border border-slate-700 p-2.5 rounded-xl text-xs">
-        <input id="admPass" type="password" placeholder="رمز عبور (kariz123)" class="w-full bg-slate-950 border border-slate-700 p-2.5 rounded-xl text-xs">
-        <button onclick="checkAdminLogin()" class="w-full bg-amber-500 text-slate-950 font-bold py-2 rounded-xl text-xs">ورود به پنل</button>
+    <!-- لایه ورود امنیتی (بدون نمایش رمز و نام کاربری) -->
+    <div id="adminLoginBox" class="max-w-md mx-auto my-20 bg-slate-900 border border-slate-800 p-6 rounded-2xl space-y-4 shadow-2xl">
+        <h2 class="text-base font-bold text-amber-400 text-center flex items-center justify-center gap-2">
+            <span>🔒</span> ورود به پنل مدیریت کاریز طب
+        </h2>
+        <div>
+            <label class="text-[11px] text-slate-400 block mb-1">نام کاربری:</label>
+            <input id="admUser" type="text" class="w-full bg-slate-950 border border-slate-700 p-2.5 rounded-xl text-xs text-white focus:outline-none focus:border-amber-400">
+        </div>
+        <div>
+            <label class="text-[11px] text-slate-400 block mb-1">رمز عبور:</label>
+            <input id="admPass" type="password" class="w-full bg-slate-950 border border-slate-700 p-2.5 rounded-xl text-xs text-white focus:outline-none focus:border-amber-400">
+        </div>
+        <button onclick="checkAdminLogin()" class="w-full gold-bg text-slate-950 font-bold py-2.5 rounded-xl text-xs hover:opacity-90 transition">ورود به پنل</button>
     </div>
 
-    <!-- محتوای کامل مدیریت (پس از لاگین) -->
+    <!-- بدنه اصلی مدیریت (پس از ورود) -->
     <div id="adminMainContent" class="hidden max-w-4xl mx-auto space-y-6">
 
         <header class="flex justify-between items-center border-b border-slate-800 pb-4">
-            <h1 class="font-bold text-amber-400 text-lg">⚙️ پنل مدیریت هوشمند کاریز طب</h1>
-            <span class="text-xs bg-emerald-500/10 text-emerald-400 px-3 py-1 rounded-full border border-emerald-500/20">مدیر آنلاین</span>
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 gold-bg rounded-xl flex items-center justify-center font-black text-slate-950">KT</div>
+                <div>
+                    <h1 class="font-bold text-amber-400 text-base">پنل مدیریت هوشمند کاریز طب</h1>
+                    <p class="text-[10px] text-slate-400">سامانه جامع کنترل مشتریان و سفارشات</p>
+                </div>
+            </div>
+            <span class="text-xs bg-emerald-500/10 text-emerald-400 px-3 py-1 rounded-full border border-emerald-500/20 font-bold">مدیر آنلاین</span>
         </header>
 
         <!-- بخش ۱: همگام‌سازی اکسل هلو -->
         <section class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-3">
-            <h2 class="font-bold text-sm text-amber-300">📁 همگام‌سازی با فایل اکسل هلو</h2>
-            <div class="flex gap-2 items-center">
+            <h2 class="font-bold text-sm text-amber-300 flex items-center gap-2">📁 همگام‌سازی با فایل اکسل هلو</h2>
+            <div class="flex gap-2 items-center flex-wrap">
                 <input type="file" id="excelUpload" class="text-xs text-slate-400">
-                <button onclick="alert('فایل اکسل با موفقیت پردازش شد و امتیازات به روزرسانی گردید!')" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-4 py-2 rounded-xl text-xs">آپلود اکسل هلو</button>
+                <button onclick="alert('فایل اکسل با موفقیت پردازش شد!')" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-4 py-2 rounded-xl text-xs">آپلود اکسل هلو</button>
             </div>
         </section>
 
-        <!-- بخش ۲: لیست کامل مشتریان، ویرایش امتیاز، سطح VIP و آپلود فاکتور (بازگردانی‌شده) -->
+        <!-- بخش ۲: مدیریت اعضای باشگاه، امتیازات، VIP و فاکتور -->
         <section class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4">
-            <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+            <div class="flex justify-between items-center border-b border-slate-800 pb-3 flex-wrap gap-2">
                 <h2 class="font-bold text-sm text-amber-300">👥 مدیریت اعضای باشگاه و امتیازات</h2>
                 <input id="searchUser" onkeyup="renderUsers()" placeholder="🔍 جستجوی نام یا شماره..." class="bg-slate-950 border border-slate-700 rounded-lg px-3 py-1 text-xs">
             </div>
             <div id="adminUserList" class="space-y-3 text-xs"></div>
         </section>
 
-        <!-- بخش ۳: مدیریت کاتالوگ و آپلود عکس محصولات -->
+        <!-- بخش ۳: افزودن و ویرایش کاتالوگ همراه با تصویر اختصاصی -->
         <section class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4">
             <h2 class="font-bold text-sm text-amber-300">📸 افزودن / ویرایش کاتالوگ کالاها</h2>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-2 text-xs">
-                <input id="pName" placeholder="نام محصول" class="bg-slate-950 border border-slate-700 rounded-xl p-2">
-                <input id="pUnit" placeholder="واحد (مثلاً کارتنی)" class="bg-slate-950 border border-slate-700 rounded-xl p-2">
-                <input id="pPrice" type="number" placeholder="قیمت (ریال)" class="bg-slate-950 border border-slate-700 rounded-xl p-2">
+                <input id="pName" placeholder="نام محصول" class="bg-slate-950 border border-slate-700 rounded-xl p-2.5">
+                <input id="pUnit" placeholder="واحد (مثلاً کارتنی)" class="bg-slate-950 border border-slate-700 rounded-xl p-2.5">
+                <input id="pPrice" type="number" placeholder="قیمت (ریال)" class="bg-slate-950 border border-slate-700 rounded-xl p-2.5">
             </div>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-2 text-xs">
-                <input id="pDesc" placeholder="توضیحات کالا" class="bg-slate-950 border border-slate-700 rounded-xl p-2 col-span-2">
-                <div class="flex items-center gap-1">
-                    <span class="text-[10px] text-slate-400">تصویر:</span>
-                    <input type="file" id="pImgFile" accept="image/*" class="text-[10px] text-slate-400">
+                <input id="pDesc" placeholder="توضیحات کالا (اختیاری)" class="bg-slate-950 border border-slate-700 rounded-xl p-2.5 col-span-2">
+                <div class="flex items-center gap-1 bg-slate-950 border border-slate-700 rounded-xl px-2">
+                    <span class="text-[10px] text-slate-400 shrink-0">تصویر:</span>
+                    <input type="file" id="pImgFile" accept="image/*" class="text-[10px] text-slate-400 w-full">
                 </div>
             </div>
-            <button onclick="addProduct()" class="w-full bg-amber-500 text-slate-950 font-bold rounded-xl py-2 text-xs">+ ثبت کالا در سامانه</button>
+            <button onclick="addProduct()" class="w-full gold-bg text-slate-950 font-bold rounded-xl py-2.5 text-xs hover:opacity-90">+ ثبت کالا در سامانه</button>
             <div id="adminProductList" class="space-y-2 text-xs pt-3"></div>
         </section>
 
-        <!-- بخش ۴: مدیریت سفارشات دریافتی B2B و وضعیت ارسال -->
+        <!-- بخش ۴: سفارشات آنلاین دریافتی و ارسال بار -->
         <section class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4">
-            <h2 class="font-bold text-sm text-blue-400">📋 سفارشات آنلاین دریافتی و ارسال بار</h2>
+            <h2 class="font-bold text-sm text-blue-400">📋 سفارشات آنلاین دریافتی و پیگیری ارسال</h2>
             <div id="adminOrdersList" class="space-y-3 text-xs"></div>
         </section>
 
@@ -74,9 +91,9 @@
 
     <script>
         function checkAdminLogin() {
-            const u = document.getElementById('admUser').value;
-            const p = document.getElementById('admPass').value;
-            if(u === 'admin' && p === 'kariz123') {
+            const u = document.getElementById('admUser').value.trim();
+            const p = document.getElementById('admPass').value.trim();
+            if(u === 'mehran67' && p === 'kariz6799') {
                 document.getElementById('adminLoginBox').classList.add('hidden');
                 document.getElementById('adminMainContent').classList.remove('hidden');
                 renderUsers();
@@ -87,7 +104,7 @@
             }
         }
 
-        // --- بخش مدیریت مشتریان (بازگردانی کامل) ---
+        // --- ۱. مدیریت اعضا و امتیازات ---
         function renderUsers() {
             let users = JSON.parse(localStorage.getItem('kt_users')) || [
                 { name: 'دکتر حسینی', phone: '09121112233', code: 'KT-2233', points: 1200, tier: 'طلا 🥇', notice: 'خوش آمدید' }
@@ -111,9 +128,9 @@
                             <span>کد: ${u.code}</span>
                         </div>
                         <div class="grid grid-cols-1 md:grid-cols-4 gap-2 text-[11px]">
-                            <div>امتیاز: <input id="pts_${index}" type="number" value="${u.points}" class="w-20 bg-slate-900 border border-slate-700 text-center rounded"></div>
+                            <div>امتیاز: <input id="pts_${index}" type="number" value="${u.points}" class="w-20 bg-slate-900 border border-slate-700 text-center rounded p-1"></div>
                             <div>سطح: 
-                                <select id="tier_${index}" class="bg-slate-900 border border-slate-700 rounded p-0.5">
+                                <select id="tier_${index}" class="bg-slate-900 border border-slate-700 rounded p-1">
                                     <option ${u.tier === 'عادی ⚪' ? 'selected' : ''}>عادی ⚪</option>
                                     <option ${u.tier === 'برنز 🥉' ? 'selected' : ''}>برنز 🥉</option>
                                     <option ${u.tier === 'نقره 🥈' ? 'selected' : ''}>نقره 🥈</option>
@@ -145,7 +162,7 @@
             renderUsers();
         }
 
-        // --- بخش مدیریت کاتالوگ کالاها ---
+        // --- ۲. مدیریت کاتالوگ و عکس ---
         function renderAdminProducts() {
             let products = JSON.parse(localStorage.getItem('kt_products')) || [];
             const container = document.getElementById('adminProductList');
@@ -209,7 +226,7 @@
             renderAdminProducts();
         }
 
-        // --- بخش سفارشات آنلاین ---
+        // --- ۳. سفارشات B2B ---
         function renderAdminOrders() {
             let orders = JSON.parse(localStorage.getItem('kt_orders')) || [];
             const container = document.getElementById('adminOrdersList');
