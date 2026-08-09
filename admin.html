@@ -11,15 +11,15 @@
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen p-4">
 
-    <!-- لایه ورود امنیتی مدیر -->
-    <div id="adminLoginBox" class="max-w-md mx-auto my-20 bg-slate-900 border border-slate-800 p-6 rounded-2xl space-y-4">
+    <!-- قفل امنیتی ورود -->
+    <div id="adminLoginBox" class="max-w-md mx-auto my-16 bg-slate-900 border border-slate-800 p-6 rounded-2xl space-y-4">
         <h2 class="text-base font-bold text-amber-400 text-center">🔒 ورود به پنل مدیریت کاریز طب</h2>
         <input id="admUser" type="text" placeholder="نام کاربری (admin)" class="w-full bg-slate-950 border border-slate-700 p-2.5 rounded-xl text-xs">
         <input id="admPass" type="password" placeholder="رمز عبور (kariz123)" class="w-full bg-slate-950 border border-slate-700 p-2.5 rounded-xl text-xs">
-        <button onclick="checkAdminLogin()" class="w-full bg-amber-500 text-slate-950 font-bold py-2 rounded-xl text-xs">ورود به پنل</button>
+        <button onclick="checkAdminLogin()" class="w-full bg-amber-500 text-slate-950 font-bold py-2 rounded-xl text-xs">ورود به مدیریت</button>
     </div>
 
-    <!-- بدنه اصلی پنل مدیریت (پس از ورود) -->
+    <!-- محتوای کامل مدیریت پس از ورود -->
     <div id="adminMainContent" class="hidden max-w-4xl mx-auto space-y-6">
 
         <header class="flex justify-between items-center border-b border-slate-800 pb-4">
@@ -27,29 +27,37 @@
             <span class="text-xs bg-emerald-500/10 text-emerald-400 px-3 py-1 rounded-full border border-emerald-500/20">مدیر آنلاین</span>
         </header>
 
-        <!-- ابزارهای مدیریت قبلی (آپلود اکسل و مدیریت کاربران) -->
-        <section class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4">
-            <h2 class="font-bold text-sm text-amber-300">📁 همگام‌سازی با هلو و مدیریت امتیازات</h2>
-            <div class="flex gap-3">
+        <!-- ابزارهای قبلی: آپلود اکسل هلو و سیستم فاکتور -->
+        <section class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-3">
+            <h2 class="font-bold text-sm text-amber-300">📁 همگام‌سازی با هلو و دیتابیس</h2>
+            <div class="flex gap-2">
                 <input type="file" id="excelUpload" class="text-xs text-slate-400">
-                <button onclick="alert('فایل اکسل با موفقیت پردازش شد!')" class="bg-emerald-600 text-white font-bold px-4 py-2 rounded-xl text-xs">آپلود اکسل هلو</button>
+                <button onclick="alert('فایل اکسل هلو پردازش شد!')" class="bg-emerald-600 text-white font-bold px-4 py-1.5 rounded-xl text-xs">آپلود اکسل</button>
             </div>
         </section>
 
-        <!-- جدید: مدیریت کاتالوگ محصولات -->
+        <!-- مدیریت کاتالوگ همراه با امکان آپلود تصویر اختصاصی -->
         <section class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4">
-            <h2 class="font-bold text-sm text-amber-300">🛒 افزودن / ویرایش محصولات کاتالوگ</h2>
-            <div class="grid grid-cols-1 md:grid-cols-5 gap-2 text-xs">
+            <h2 class="font-bold text-sm text-amber-300">📸 افزودن کالا همراه با تصویر اختصاصی</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-2 text-xs">
                 <input id="pName" placeholder="نام محصول" class="bg-slate-950 border border-slate-700 rounded-xl p-2">
                 <input id="pUnit" placeholder="واحد (مثلاً کارتنی)" class="bg-slate-950 border border-slate-700 rounded-xl p-2">
                 <input id="pPrice" type="number" placeholder="قیمت (ریال)" class="bg-slate-950 border border-slate-700 rounded-xl p-2">
-                <input id="pDesc" placeholder="توضیحات (اختیاری)" class="bg-slate-950 border border-slate-700 rounded-xl p-2">
-                <button onclick="addProduct()" class="bg-amber-500 text-slate-950 font-bold rounded-xl py-2">+ افزودن</button>
             </div>
-            <div id="adminProductList" class="space-y-2 text-xs"></div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-2 text-xs">
+                <input id="pDesc" placeholder="توضیحات محصول" class="bg-slate-950 border border-slate-700 rounded-xl p-2 col-span-2">
+                <div class="flex items-center gap-1">
+                    <span class="text-[10px] text-slate-400">عکس:</span>
+                    <input type="file" id="pImgFile" accept="image/*" class="text-[10px] text-slate-400">
+                </div>
+            </div>
+            <button onclick="addProduct()" class="w-full bg-amber-500 text-slate-950 font-bold rounded-xl py-2 text-xs">+ ثبت کالا در کاتالوگ</button>
+
+            <!-- لیست کالاهای ثبت شده -->
+            <div id="adminProductList" class="space-y-2 text-xs pt-3"></div>
         </section>
 
-        <!-- جدید: مدیریت سفارشات دریافتی -->
+        <!-- بررسی و مدیریت سفارشات آنلاین B2B -->
         <section class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4">
             <h2 class="font-bold text-sm text-blue-400">📋 سفارشات دریافتی آنلاین</h2>
             <div id="adminOrdersList" class="space-y-3 text-xs"></div>
@@ -67,7 +75,7 @@
                 renderAdminProducts();
                 renderAdminOrders();
             } else {
-                alert('نام کاربری یا رمز عبور اشتباه است!');
+                alert('نام کاربری یا رمز عبور نادرست است.');
             }
         }
 
@@ -76,10 +84,17 @@
             const container = document.getElementById('adminProductList');
             container.innerHTML = '';
             products.forEach((p, i) => {
+                const imgTag = p.img ? `<img src="${p.img}" class="w-8 h-8 object-cover rounded">` : `<span class="text-[10px] text-slate-500">بدون عکس</span>`;
                 container.innerHTML += `
-                    <div class="flex justify-between items-center bg-slate-950 p-3 rounded-xl border border-slate-800">
-                        <div><b class="text-slate-200">${p.name}</b> (${p.unit}) - <span class="text-emerald-400">${p.price.toLocaleString()} ریال</span></div>
-                        <button onclick="deleteProduct(${i})" class="text-rose-400">حذف 🗑️</button>
+                    <div class="flex justify-between items-center bg-slate-950 p-2.5 rounded-xl border border-slate-800">
+                        <div class="flex items-center gap-2">
+                            ${imgTag}
+                            <div>
+                                <b class="text-slate-200">${p.name}</b> (${p.unit}) - <span class="text-emerald-400">${p.price.toLocaleString()} ریال</span>
+                                <p class="text-[10px] text-slate-400">${p.desc||''}</p>
+                            </div>
+                        </div>
+                        <button onclick="deleteProduct(${i})" class="text-rose-400 text-xs">حذف 🗑️</button>
                     </div>
                 `;
             });
@@ -90,13 +105,36 @@
             const unit = document.getElementById('pUnit').value.trim();
             const price = parseInt(document.getElementById('pPrice').value);
             const desc = document.getElementById('pDesc').value.trim();
+            const imgInput = document.getElementById('pImgFile');
 
             if(!name || !unit || !price) return alert('اطلاعات کالا را کامل وارد کنید.');
 
+            let base64Image = '';
+            if(imgInput.files && imgInput.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    base64Image = e.target.result;
+                    saveProductData(name, unit, price, desc, base64Image);
+                };
+                reader.readAsDataURL(imgInput.files[0]);
+            } else {
+                saveProductData(name, unit, price, desc, '');
+            }
+        }
+
+        function saveProductData(name, unit, price, desc, img) {
             let products = JSON.parse(localStorage.getItem('kt_products')) || [];
-            products.push({ id: Date.now(), name, unit, price, desc });
+            products.push({ id: Date.now(), name, unit, price, desc, img });
             localStorage.setItem('kt_products', JSON.stringify(products));
+            
+            document.getElementById('pName').value = '';
+            document.getElementById('pUnit').value = '';
+            document.getElementById('pPrice').value = '';
+            document.getElementById('pDesc').value = '';
+            document.getElementById('pImgFile').value = '';
+
             renderAdminProducts();
+            alert('کالا با موفقیت ذخیره شد!');
         }
 
         function deleteProduct(index) {
@@ -118,24 +156,28 @@
             orders.reverse().forEach((o, index) => {
                 const realIndex = orders.length - 1 - index;
                 container.innerHTML += `
-                    <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
-                        <div class="flex justify-between font-bold text-amber-400"><span>مشتری: ${o.userName} (${o.userPhone})</span><span>کد: ${o.userCode}</span></div>
-                        <div class="text-slate-300">${o.items.join(' | ')}</div>
-                        <div class="text-emerald-400 font-bold">مبلغ: ${o.total.toLocaleString()} ریال</div>
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-2 pt-2">
-                            <select id="status_${realIndex}" class="bg-slate-900 border border-slate-700 rounded p-1">
+                    <div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800 space-y-2">
+                        <div class="flex justify-between font-bold text-amber-400">
+                            <span>مشتری: ${o.userName} (${o.userPhone})</span>
+                            <span>کد: ${o.userCode}</span>
+                        </div>
+                        <div class="text-slate-300 text-[11px]">${o.items.join(' | ')}</div>
+                        <div class="text-emerald-400 font-bold">مبلغ فاکتور: ${o.total.toLocaleString()} ریال</div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-2 pt-1">
+                            <select id="status_${realIndex}" class="bg-slate-900 border border-slate-700 rounded p-1 text-[11px]">
                                 <option ${o.status === 'در حال بررسی ⏳' ? 'selected' : ''}>در حال بررسی ⏳</option>
                                 <option ${o.status === 'تایید شده ✅' ? 'selected' : ''}>تایید شده ✅</option>
                                 <option ${o.status === 'رد شده ❌' ? 'selected' : ''}>رد شده ❌</option>
                             </select>
-                            <select id="ship_${realIndex}" class="bg-slate-900 border border-slate-700 rounded p-1">
+                            <select id="ship_${realIndex}" class="bg-slate-900 border border-slate-700 rounded p-1 text-[11px]">
                                 <option ${o.shipping === 'در حال آماده‌سازی انبار 📦' ? 'selected' : ''}>در حال آماده‌سازی انبار 📦</option>
                                 <option ${o.shipping === 'ارسال با اسنپ/تپسی 🛵' ? 'selected' : ''}>ارسال با اسنپ/تپسی 🛵</option>
                                 <option ${o.shipping === 'ارسال با تیپاکس/پست ✈️' ? 'selected' : ''}>ارسال با تیپاکس/پست ✈️</option>
                             </select>
-                            <button onclick="updateOrder(${realIndex})" class="bg-blue-600 text-white font-bold rounded p-1">ذخیره</button>
+                            <button onclick="updateOrder(${realIndex})" class="bg-blue-600 text-white font-bold rounded p-1 text-[11px]">ذخیره بروزرسانی</button>
                         </div>
-                        <input id="note_${realIndex}" value="${o.note || ''}" placeholder="پیام یا اخطار اصلاحی..." class="w-full bg-slate-900 border border-slate-800 rounded p-1 text-rose-300">
+                        <input id="note_${realIndex}" value="${o.note || ''}" placeholder="پیام یا اخطار اصلاحی برای مشتری..." class="w-full bg-slate-900 border border-slate-800 rounded p-1 text-[10px] text-rose-300">
                     </div>
                 `;
             });
@@ -147,7 +189,7 @@
             orders[index].shipping = document.getElementById(`ship_${index}`).value;
             orders[index].note = document.getElementById(`note_${index}`).value;
             localStorage.setItem('kt_orders', JSON.stringify(orders));
-            alert('تغییرات ذخیره شد!');
+            alert('تغییرات سفارش ذخیره شد!');
             renderAdminOrders();
         }
     </script>
