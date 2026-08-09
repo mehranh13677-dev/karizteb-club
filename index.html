@@ -7,7 +7,6 @@
     <title>باشگاه مشتریان کاریز طب</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style> body { font-family: 'Vazirmatn', sans-serif; } </style>
 </head>
 <body class="bg-slate-900 text-slate-100 min-h-screen flex items-center justify-center p-4">
@@ -97,10 +96,6 @@
     </div>
 
     <script>
-        const SUPABASE_URL = 'https://wzbxytklyytwugkzzsll.supabase.co';
-        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind6Ynh5dGtseXl0d3Vna3p6c2xsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDAzNjM3ODIsImV4cCI6MjA1NTkzOTc4Mn0.0NshT3I_TfIn3vC38x8tBUnH2qL-9a5o-iG_k-jO78o';
-        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
         const btnLoginTab = document.getElementById('btnLoginTab');
         const btnRegisterTab = document.getElementById('btnRegisterTab');
         const loginForm = document.getElementById('loginForm');
@@ -122,19 +117,24 @@
             hideMsg();
         });
 
+        function getDB() {
+            return JSON.parse(localStorage.getItem('karizteb_db') || '[]');
+        }
+
+        function saveDB(data) {
+            localStorage.setItem('karizteb_db', JSON.stringify(data));
+        }
+
         window.onload = function() {
-            const savedUser = localStorage.getItem('karizteb_user');
-            if (savedUser) {
-                showDashboard(JSON.parse(savedUser));
+            const savedSession = localStorage.getItem('karizteb_current_user');
+            if (savedSession) {
+                showDashboard(JSON.parse(savedSession));
             }
         };
 
-        registerForm.addEventListener('submit', async function(e) {
+        registerForm.addEventListener('submit', function(e) {
             e.preventDefault();
             hideMsg();
-            const btn = document.getElementById('regSubmitBtn');
-            btn.innerText = 'در حال ثبت اطلاعات...';
-            btn.disabled = true;
 
             const fullName = document.getElementById('regFullName').value.trim();
             const phone = document.getElementById('regPhone').value.trim();
@@ -142,86 +142,47 @@
             const username = document.getElementById('regUsername').value.trim().toLowerCase();
             const password = document.getElementById('regPassword').value;
 
-            try {
-                const clubCode = 'KT-' + Math.floor(1000 + Math.random() * 9000);
-
-                // ارسال با فرمت ستون‌های شناسا در دیتابیس شما
-                const { data, error } = await _supabase.from('Customers').insert([
-                    {
-                        Name: fullName,
-                        phone: phone,
-                        city: city,
-                        club_code: clubCode,
-                        username: username,
-                        password: password,
-                        points: 0,
-                        transactions: []
-                    }
-                ]).select();
-
-                if (error) {
-                    // در صورت تفاوت اسامی ستون‌ها، روش منعطف پشتیبان
-                    const fallback = await _supabase.from('Customers').insert([
-                        {
-                            full_name: fullName,
-                            phone: phone,
-                            city: city,
-                            club_code: clubCode,
-                            username: username,
-                            password: password,
-                            points: 0
-                        }
-                    ]).select();
-                    if (fallback.error) throw fallback.error;
-                    if (fallback.data && fallback.data.length > 0) {
-                        localStorage.setItem('karizteb_user', JSON.stringify(fallback.data[0]));
-                        showDashboard(fallback.data[0]);
-                        return;
-                    }
-                }
-
-                if (data && data.length > 0) {
-                    localStorage.setItem('karizteb_user', JSON.stringify(data[0]));
-                    showDashboard(data[0]);
-                } else {
-                    showMsg('ثبت‌نام انجام شد. حالا وارد شوید.', 'success');
-                }
-
-            } catch (err) {
-                showMsg('خطا در ثبت اطلاعات: ' + err.message, 'error');
-            } finally {
-                btn.innerText = 'ثبت‌نام و دریافت کد اختصاصی';
-                btn.disabled = false;
+            const db = getDB();
+            const exists = db.find(u => u.username === username);
+            if (exists) {
+                showMsg('این نام کاربری قبلاً ثبت شده است.', 'error');
+                return;
             }
+
+            const clubCode = 'KT-' + Math.floor(1000 + Math.random() * 9000);
+            const newUser = {
+                fullName,
+                phone,
+                city,
+                username,
+                password,
+                clubCode,
+                points: 0,
+                transactions: []
+            };
+
+            db.push(newUser);
+            saveDB(db);
+
+            localStorage.setItem('karizteb_current_user', JSON.stringify(newUser));
+            showDashboard(newUser);
         });
 
-        loginForm.addEventListener('submit', async function(e) {
+        loginForm.addEventListener('submit', function(e) {
             e.preventDefault();
             hideMsg();
-            const btn = document.getElementById('loginSubmitBtn');
-            btn.innerText = 'در حال بررسی...';
-            btn.disabled = true;
 
             const username = document.getElementById('loginUsername').value.trim().toLowerCase();
             const password = document.getElementById('loginPassword').value;
 
-            try {
-                const { data, error } = await _supabase.from('Customers')
-                    .select('*')
-                    .eq('username', username)
-                    .eq('password', password);
+            const db = getDB();
+            const user = db.find(u => u.username === username && u.password === password);
 
-                if (error || !data || data.length === 0) {
-                    showMsg('نام کاربری یا رمز عبور اشتباه است.', 'error');
-                } else {
-                    localStorage.setItem('karizteb_user', JSON.stringify(data[0]));
-                    showDashboard(data[0]);
-                }
-            } catch (err) {
-                showMsg('خطا در ورود به سیستم', 'error');
-            } finally {
-                btn.innerText = 'ورود به داشبورد';
-                btn.disabled = false;
+            if (!user) {
+                showMsg('نام کاربری یا رمز عبور اشتباه است.', 'error');
+            } else {
+                localStorage.setItem('karizteb_current_user', JSON.stringify(user));
+                showDashboard(user);
             }
         });
 
@@ -231,9 +192,9 @@
             registerForm.classList.add('hidden');
             document.getElementById('userDashboard').classList.remove('hidden');
 
-            document.getElementById('dashCustomerName').innerText = user.Name || user.full_name || 'مشتری کاریز طب';
+            document.getElementById('dashCustomerName').innerText = user.fullName || 'مشتری کاریز طب';
             document.getElementById('dashCustomerPhone').innerText = (user.phone || '') + ' (' + (user.city || '') + ')';
-            document.getElementById('dashClubCode').innerText = user.club_code || '---';
+            document.getElementById('dashClubCode').innerText = user.clubCode || '---';
             document.getElementById('dashPoints').innerText = user.points || 0;
 
             const txContainer = document.getElementById('dashTransactions');
@@ -262,7 +223,7 @@
         }
 
         function logout() {
-            localStorage.removeItem('karizteb_user');
+            localStorage.removeItem('karizteb_current_user');
             location.reload();
         }
 
