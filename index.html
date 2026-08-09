@@ -1,27 +1,6 @@
-tringify(data));
-                    showDashboard(data);
-                }
-            } catch (err) {
-                showMsg('خطا در ورود به سیستم', 'error');
-            } finally {
-                btn.innerText = 'ورود به داشبورد';
-                btn.disabled = false;
-            }
-        }
 
-        // نمایش داشبورد اختصاصی
-        function showDashboard(user) {
-            document.getElementById('authTabs').classList.add('hidden');
-            document.getElementById('loginForm').classList.add('hidden');
-            document.getElementById('registerForm').classList.add('hidden');
-            document.getElementById('userDashboard').classList.remove('hidden');
+user.points || 0;
 
-            document.getElementById('dashCustomerName').innerText = user.full_name;
-            document.getElementById('dashCustomerPhone').innerText = user.phone + ' (' + (user.city || '') + ')';
-            document.getElementById('dashClubCode').innerText = user.club_code || '---';
-            document.getElementById('dashPoints').innerText = user.points || 0;
-
-            // لیست تراکنش‌ها
             const txContainer = document.getElementById('dashTransactions');
             if (user.transactions && user.transactions.length > 0) {
                 txContainer.innerHTML = user.transactions.map(t => `
@@ -40,7 +19,6 @@ tringify(data));
             }
         }
 
-        // فراموشی رمز عبور (ارسال پیامک به مدیریت)
         function showForgotPassword() {
             const phone = prompt("لطفاً شماره همراهی که با آن ثبت‌نام کرده‌اید را وارد کنید:");
             if (phone) {
@@ -50,7 +28,6 @@ tringify(data));
             }
         }
 
-        // خروج از حساب
         function logout() {
             localStorage.removeItem('karizteb_user');
             location.reload();
