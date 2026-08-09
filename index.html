@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
@@ -19,13 +18,12 @@
             <p class="text-xs text-slate-400 mt-1">سامانه دریافت کد اختصاصی و پیگیری امتیازات</p>
         </div>
 
-        <!-- دکمه‌های سوئیچ -->
         <div id="authTabs" class="grid grid-cols-2 bg-slate-900 p-1 rounded-xl mb-6">
             <button type="button" id="btnLoginTab" class="py-2 text-sm font-bold rounded-lg bg-blue-600 text-white transition-all">ورود به حساب</button>
             <button type="button" id="btnRegisterTab" class="py-2 text-sm font-bold rounded-lg text-slate-400 hover:text-white transition-all">ثبت‌نام جدید</button>
         </div>
 
-        <!-- ۱. فرم ورود -->
+        <!-- فرم ورود -->
         <form id="loginForm" class="space-y-4">
             <div>
                 <label class="block text-xs font-medium text-slate-300 mb-1">نام کاربری</label>
@@ -41,7 +39,7 @@
             </div>
         </form>
 
-        <!-- ۲. فرم ثبت‌نام -->
+        <!-- فرم ثبت‌نام -->
         <form id="registerForm" class="space-y-3 hidden">
             <div>
                 <label class="block text-xs font-medium text-slate-300 mb-1">نام و نام خانوادگی / نام مرکز</label>
@@ -49,15 +47,15 @@
             </div>
             <div>
                 <label class="block text-xs font-medium text-slate-300 mb-1">شماره همراه</label>
-                <input type="tel" id="regPhone" required pattern="09[0-9]{9}" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white" placeholder="09123456789">
+                <input type="tel" id="regPhone" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white" placeholder="09123456789">
             </div>
             <div>
                 <label class="block text-xs font-medium text-slate-300 mb-1">شهر / استان</label>
-                <input type="text" id="regCity" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white" placeholder="مثال: تهران">
+                <input type="text" id="regCity" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white" placeholder="مثال: کرج">
             </div>
             <div>
                 <label class="block text-xs font-medium text-slate-300 mb-1">تعیین نام کاربری (انگلیسی)</label>
-                <input type="text" id="regUsername" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white" placeholder="مثال: dr_hoseini">
+                <input type="text" id="regUsername" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white" placeholder="مثال: Mehran67">
             </div>
             <div>
                 <label class="block text-xs font-medium text-slate-300 mb-1">تعیین رمز عبور</label>
@@ -66,7 +64,7 @@
             <button type="submit" id="regSubmitBtn" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl text-sm shadow-lg transition-all mt-2">ثبت‌نام و دریافت کد اختصاصی</button>
         </form>
 
-        <!-- ۳. داشبورد اختصاصی -->
+        <!-- داشبورد اختصاصی -->
         <div id="userDashboard" class="hidden space-y-5">
             <div class="bg-slate-900/80 border border-slate-700 p-4 rounded-xl flex items-center justify-between">
                 <div>
@@ -106,7 +104,6 @@
         const loginForm = document.getElementById('loginForm');
         const registerForm = document.getElementById('registerForm');
 
-        // مدیریت تغییر تب‌ها با EventListener مستقیم
         btnLoginTab.addEventListener('click', function() {
             loginForm.classList.remove('hidden');
             registerForm.classList.add('hidden');
@@ -130,7 +127,6 @@
             }
         };
 
-        // فرم ثبت‌نام
         registerForm.addEventListener('submit', async function(e) {
             e.preventDefault();
             hideMsg();
@@ -145,14 +141,6 @@
             const password = document.getElementById('regPassword').value;
 
             try {
-                const { data: existingUser } = await _supabase.from('Customers').select('username').eq('username', username).maybeSingle();
-                if (existingUser) {
-                    showMsg('این نام کاربری قبلاً انتخاب شده است.', 'error');
-                    btn.innerText = 'ثبت‌نام و دریافت کد اختصاصی';
-                    btn.disabled = false;
-                    return;
-                }
-
                 const clubCode = 'KT-' + Math.floor(1000 + Math.random() * 9000);
 
                 const { data, error } = await _supabase.from('Customers').insert([
@@ -166,22 +154,25 @@
                         points: 0,
                         transactions: []
                     }
-                ]).select().single();
+                ]).select();
 
                 if (error) throw error;
 
-                localStorage.setItem('karizteb_user', JSON.stringify(data));
-                showDashboard(data);
+                if (data && data.length > 0) {
+                    localStorage.setItem('karizteb_user', JSON.stringify(data[0]));
+                    showDashboard(data[0]);
+                } else {
+                    showMsg('ثبت انجام شد. لطفاً وارد شوید.', 'success');
+                }
 
             } catch (err) {
-                showMsg('خطا در ثبت‌نام: ' + err.message, 'error');
+                showMsg('خطا در ارتباط: VPN خود را خاموش کرده و مجدد تلاش کنید.', 'error');
             } finally {
                 btn.innerText = 'ثبت‌نام و دریافت کد اختصاصی';
                 btn.disabled = false;
             }
         });
 
-        // فرم ورود
         loginForm.addEventListener('submit', async function(e) {
             e.preventDefault();
             hideMsg();
@@ -196,14 +187,13 @@
                 const { data, error } = await _supabase.from('Customers')
                     .select('*')
                     .eq('username', username)
-                    .eq('password', password)
-                    .maybeSingle();
+                    .eq('password', password);
 
-                if (error || !data) {
+                if (error || !data || data.length === 0) {
                     showMsg('نام کاربری یا رمز عبور اشتباه است.', 'error');
                 } else {
-                    localStorage.setItem('karizteb_user', JSON.stringify(data));
-                    showDashboard(data);
+                    localStorage.setItem('karizteb_user', JSON.stringify(data[0]));
+                    showDashboard(data[0]);
                 }
             } catch (err) {
                 showMsg('خطا در ورود به سیستم', 'error');
@@ -243,11 +233,9 @@
         }
 
         function showForgotPassword() {
-            const phone = prompt("لطفاً شماره همراهی که با آن ثبت‌نام کرده‌اید را وارد کنید:");
+            const phone = prompt("لطفاً شماره همراه خود را وارد کنید:");
             if (phone) {
-                const adminPhone = "09398490440";
-                const message = encodeURIComponent(`درخواست بازیابی رمز عبور کاریزطب\nشماره مشتری: ${phone}`);
-                window.location.href = `sms:${adminPhone}?body=${message}`;
+                window.location.href = `sms:09398490440?body=${encodeURIComponent('درخواست بازیابی رمز عبور کاریزطب: ' + phone)}`;
             }
         }
 
