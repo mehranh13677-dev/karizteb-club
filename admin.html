@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>پنل مدیریت پیشرفته کاریز طب</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <style> body { font-family: 'Vazirmatn', sans-serif; } </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen p-4 md:p-8">
+
+    <div class="max-w-6xl mx-auto space-y-6">
+        
+        <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl flex flex-wrap justify-between items-center gap-4 shadow-xl">
+            <div>
+                <h1 class="text-xl font-black text-white">پنل مدیریت باشگاه مشتریان کاریز طب</h1>
+                <p class="text-xs text-slate-400 mt-1">ورود اطلاعات از هلو، ارسال پیام اختصاصی و مدیریت امتیازات</p>
+            </div>
+            
+            <div class="flex items-center gap-3">
+                <label class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-4 py-2.5 rounded-xl cursor-pointer transition-all flex items-center gap-2">
+                    📁 آپلود اکسل هلو
+                    <input type="file" id="excelFileInput" accept=".xlsx, .xls, .csv" class="hidden" onchange="handleExcelUpload(event)">
+                </label>
+                <button onclick="loadData()" class="bg-blue-600 hover:bg-blue-500 text-white text-xs px-4 py-2.5 rounded-xl transition-all">
+                    🔄 بروزرسانی
+                </button>
+            </div>
+        </div>
+
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl overflow-x-auto">
+            <h2 class="text-sm font-bold text-white mb-4">لیست اعضا و مدیریت حساب‌ها</h2>
+            
+            <table class="w-full text-right text-xs text-slate-300">
+                <thead class="bg-slate-800 text-slate-400 uppercase text-[10px]">
+                    <tr>
+                        <th class="p-3 rounded-r-xl">مشتری / مرکز</th>
+                        <th class="p-3">شماره تماس / شهر</th>
+                        <th class="p-3">کد اختصاصی</th>
+                        <th class="p-3">امتیاز فعلی</th>
+                        <th class="p-3">آخرین پیام اختصاصی مدیر</th>
+                        <th class="p-3 rounded-l-xl text-center">عملیات</th>
+                    </tr>
+                </thead>
+                <tbody id="adminCustomersTable" class="divide-y divide-slate-800">
+                    <tr><td colspan="6" class="p-4 text-center text-slate-500">در حال بارگذاری اطلاعات...</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+    <div id="customerModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 w-full max-w-lg space-y-4 max-h-[90vh] overflow-y-auto">
+            <h3 class="text-sm font-bold text-white border-b border-slate-800 pb-3">مدیریت حساب مشتری</h3>
+            
+            <p id="modalCustomerTitle" class="text-xs font-bold text-blue-400">مشتری: ---</p>
+            <input type="hidden" id="modalUserUsername">
+
+            <div class="space-y-1">
+                <label class="block text-xs text-amber-400 font-bold">💬 پیام اختصاصی مدیر (قابل مشاهده در صفحه شخصی مشتری)</label>
+                <textarea id="modalAdminNote" rows="3" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-amber-500" placeholder="مثلاً: دکتر عزیز، با خرید ۲ کارتن دیگر در این هفته، شانس برنده شدن در قرعه‌کشی VIP را خواهید داشت!"></textarea>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+                <div>
+                    <label class="block text-xs text-slate-400 mb-1">افزایش/کسر امتیاز</label>
+                    <input type="number" id="modalAddPoints" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white" placeholder="مثلا: 100 یا -50">
+                </div>
+                <div>
+                    <label class="block text-xs text-slate-400 mb-1">بابت / بابت چه خریدی؟</label>
+                    <input type="text" id="modalPointsReason" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white" placeholder="مثال: خرید فاکتور ۱۲۰۴">
+                </div>
+            </div>
+
+            <div class="border-t border-slate-800 pt-3 space-y-2">
+                <p class="text-xs font-bold text-emerald-400">📦 ثبت دستی فاکتور / واریزی جدید</p>
+                <div class="grid grid-cols-2 gap-2">
+                    <input type="text" id="txTitle" placeholder="شرح اقلام (مثلاً: ۵ کارتن دستکش لاتکس)" class="bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
+                    <input type="text" id="txAmount" placeholder="مبلغ / واریزی (مثلاً: ۱۲,۵۰۰,۰۰۰ تومان)" class="bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white">
+                </div>
+            </div>
+
+            <div class="flex gap-2 pt-4 border-t border-slate-800">
+                <button onclick="saveCustomerChanges()" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 rounded-xl text-xs transition-all">ذخیره تغییرات</button>
+                <button onclick="closeModal()" class="flex-1 bg-slate-800 text-slate-400 hover:text-white py-2.5 rounded-xl text-xs transition-all">انصراف</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function getDB() {
+            return JSON.parse(localStorage.getItem('karizteb_db') || '[]');
+        }
+
+        function saveDB(data) {
+            localStorage.setItem('karizteb_db', JSON.stringify(data));
+        }
+
+        window.onload = loadData;
+
+        function loadData() {
+            const db = getDB();
+            const table = document.getElementById('adminCustomersTable');
+
+            if (db.length === 0) {
+                table.innerHTML = '<tr><td colspan="6" class="p-4 text-center text-slate-500">هنوز هیچ مشتری در سیستم ثبت نام نکرده است.</td></tr>';
+                return;
+            }
+
+            table.innerHTML = db.map(u => `
+                <tr class="hover:bg-slate-800/50 transition-all">
+                    <td class="p-3 font-bold text-white">${u.fullName || '---'}</td>
+                    <td class="p-3 text-slate-400">${u.phone || '---'}<br><span class="text-[10px] text-slate-500">${u.city || ''}</span></td>
+                    <td class="p-3 font-mono font-bold text-blue-400">${u.clubCode || '---'}</td>
+                    <td class="p-3 font-bold text-emerald-400">${u.points || 0}</td>
+                    <td class="p-3 text-slate-400 text-[11px] max-w-xs truncate">${u.adminNote || '---'}</td>
+                    <td class="p-3 text-center">
+                        <button onclick="openModal('${u.username}')" class="bg-blue-600/20 hover:bg-blue-600 text-blue-400 hover:text-white px-3 py-1.5 rounded-lg border border-blue-500/30 transition-all">
+                            ⚙️ مدیریت و پیام
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function openModal(username) {
+            const db = getDB();
+            const user = db.find(u => u.username === username);
+            if (!user) return;
+
+            document.getElementById('modalUserUsername').value = user.username;
+            document.getElementById('modalCustomerTitle').innerText = `مشتری: ${user.fullName} (${user.clubCode})`;
+            document.getElementById('modalAdminNote').value = user.adminNote || '';
+            document.getElementById('modalAddPoints').value = '';
+            document.getElementById('modalPointsReason').value = '';
+            document.getElementById('txTitle').value = '';
+            document.getElementById('txAmount').value = '';
+
+            document.getElementById('customerModal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('customerModal').classList.add('hidden');
+        }
+
+        function saveCustomerChanges() {
+            const username = document.getElementById('modalUserUsername').value;
+            const db = getDB();
+            const userIndex = db.findIndex(u => u.username === username);
+
+            if (userIndex === -1) return;
+
+            const adminNote = document.getElementById('modalAdminNote').value.trim();
+            const addPoints = parseInt(document.getElementById('modalAddPoints').value) || 0;
+            const pointsReason = document.getElementById('modalPointsReason').value.trim();
+            const txTitle = document.getElementById('txTitle').value.trim();
+            const txAmount = document.getElementById('txAmount').value.trim();
+
+            db[userIndex].adminNote = adminNote;
+
+            if (addPoints !== 0) {
+                db[userIndex].points = (db[userIndex].points || 0) + addPoints;
+                if (!db[userIndex].transactions) db[userIndex].transactions = [];
+                db[userIndex].transactions.unshift({
+                    title: pointsReason || 'تغییر امتیاز توسط مدیریت',
+                    amount: (addPoints > 0 ? '+' : '') + addPoints + ' امتیاز',
+                    type: addPoints > 0 ? 'plus' : 'minus',
+                    date: new Date().toLocaleDateString('fa-IR')
+                });
+            }
+
+            if (txTitle) {
+                if (!db[userIndex].transactions) db[userIndex].transactions = [];
+                db[userIndex].transactions.unshift({
+                    title: txTitle,
+                    amount: txAmount || 'ثبت شده',
+                    type: 'plus',
+                    date: new Date().toLocaleDateString('fa-IR')
+                });
+            }
+
+            saveDB(db);
+            closeModal();
+            loadData();
+            alert('اطلاعات با موفقیت ذخیره شد.');
+        }
+
+        function handleExcelUpload(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                const data = new Uint8Array(evt.target.result);
+                const workbook = XLSX.read(data, { type: 'array' });
+                const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+                const rows = XLSX.utils.sheet_to_json(firstSheet);
+
+                if (rows.length === 0) {
+                    alert('فایل اکسل خالی است.');
+                    return;
+                }
+
+                const db = getDB();
+                let importedCount = 0;
+
+                rows.forEach(row => {
+                    const phone = row['تلفن'] || row['همراه'] || row['Phone'];
+                    const clubCode = row['کد باشگاه'] || row['Code'];
+                    const txTitle = row['شرح فاکتور'] || row['اقلام'] || row['توضیحات'];
+                    const txAmount = row['مبلغ'] || row['واریزی'];
+
+                    const user = db.find(u => (phone && u.phone == phone) || (clubCode && u.clubCode == clubCode));
+                    if (user) {
+                        if (!user.transactions) user.transactions = [];
+                        user.transactions.unshift({
+                            title: txTitle || 'فاکتور خرید جدید',
+                            amount: txAmount ? txAmount + ' تومان' : 'تایید شده',
+                            type: 'plus',
+                            date: new Date().toLocaleDateString('fa-IR')
+                        });
+                        importedCount++;
+                    }
+                });
+
+                saveDB(db);
+                loadData();
+                alert(`تعداد ${importedCount} فاکتور از اکسل با موفقیت به حساب مشتریان افزوده شد.`);
+            };
+            reader.readAsArrayBuffer(file);
+        }
+    </script>
+</body>
+</html>
