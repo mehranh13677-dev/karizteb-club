@@ -6,273 +6,229 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>باشگاه مشتریان کاریز طب</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
-    <style> body { font-family: 'Vazirmatn', sans-serif; } </style>
+    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet">
+    <style>
+        body { font-family: 'Vazirmatn', sans-serif; }
+        .gold-bg { background: linear-gradient(135deg, #BF953F 0%, #FCF6BA 25%, #B38728 50%, #FBF5B7 75%, #AA771C 100%); }
+    </style>
 </head>
-<body class="bg-slate-900 text-slate-100 min-h-screen flex items-center justify-center p-4">
+<body class="bg-slate-950 text-slate-100 min-h-screen p-4 pb-20">
 
-    <div class="w-full max-w-md bg-slate-800 rounded-2xl shadow-2xl border border-slate-700 p-6 relative">
-        <div class="text-center mb-6">
-            <div class="w-16 h-16 bg-blue-600 rounded-2xl mx-auto flex items-center justify-center text-2xl font-bold text-white shadow-lg mb-3">K</div>
-            <h1 class="text-2xl font-black text-white">باشگاه مشتریان کاریز طب</h1>
-            <p class="text-xs text-slate-400 mt-1">سامانه دریافت کد اختصاصی و پیگیری امتیازات</p>
-        </div>
-
-        <div id="authTabs" class="grid grid-cols-2 bg-slate-900 p-1 rounded-xl mb-6">
-            <button type="button" id="btnLoginTab" class="py-2 text-sm font-bold rounded-lg bg-blue-600 text-white transition-all">ورود به حساب</button>
-            <button type="button" id="btnRegisterTab" class="py-2 text-sm font-bold rounded-lg text-slate-400 hover:text-white transition-all">ثبت‌نام جدید</button>
-        </div>
-
-        <!-- فرم ورود -->
-        <form id="loginForm" class="space-y-4">
+    <!-- هدر بالای صفحه -->
+    <header class="max-w-2xl mx-auto flex justify-between items-center border-b border-slate-800 pb-4 mb-6">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 gold-bg rounded-xl flex items-center justify-center font-black text-slate-950">KT</div>
             <div>
-                <label class="block text-xs font-medium text-slate-300 mb-1">نام کاربری</label>
-                <input type="text" id="loginUsername" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white" placeholder="نام کاربری">
-            </div>
-            <div>
-                <label class="block text-xs font-medium text-slate-300 mb-1">رمز عبور</label>
-                <input type="password" id="loginPassword" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white" placeholder="******">
-            </div>
-            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-xl text-sm shadow-lg transition-all">ورود به داشبورد</button>
-            <div class="text-center mt-3">
-                <button type="button" onclick="showForgotPassword()" class="text-xs text-blue-400 hover:underline">فراموشی رمز عبور؟</button>
-            </div>
-        </form>
-
-        <!-- فرم ثبت‌نام -->
-        <form id="registerForm" class="space-y-3 hidden">
-            <div>
-                <label class="block text-xs font-medium text-slate-300 mb-1">نام و نام خانوادگی / نام مرکز</label>
-                <input type="text" id="regFullName" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white" placeholder="مثال: کلینیک حسینی">
-            </div>
-            <div>
-                <label class="block text-xs font-medium text-slate-300 mb-1">شماره همراه</label>
-                <input type="tel" id="regPhone" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white" placeholder="09123456789">
-            </div>
-            <div>
-                <label class="block text-xs font-medium text-slate-300 mb-1">شهر / استان</label>
-                <input type="text" id="regCity" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white" placeholder="مثال: کرج">
-            </div>
-            <div>
-                <label class="block text-xs font-medium text-slate-300 mb-1">تعیین نام کاربری (انگلیسی)</label>
-                <input type="text" id="regUsername" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white" placeholder="hoseini_clinic">
-            </div>
-            <div>
-                <label class="block text-xs font-medium text-slate-300 mb-1">تعیین رمز عبور</label>
-                <input type="password" id="regPassword" required minlength="4" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white" placeholder="حداقل ۴ کاراکتر">
-            </div>
-            <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl text-sm shadow-lg transition-all mt-2">ثبت‌نام و دریافت کد اختصاصی</button>
-        </form>
-
-        <!-- داشبورد مشتری -->
-        <div id="userDashboard" class="hidden space-y-4">
-            <div class="bg-slate-900/80 border border-slate-700 p-4 rounded-xl flex items-center justify-between">
-                <div>
-                    <h2 id="dashCustomerName" class="font-bold text-white text-base">---</h2>
-                    <p id="dashCustomerPhone" class="text-xs text-slate-400 mt-0.5">---</p>
-                    <span id="dashTier" class="inline-block mt-1 bg-amber-500/20 text-amber-300 text-[10px] px-2 py-0.5 rounded-md border border-amber-500/30">سطح عادی</span>
-                </div>
-                <button type="button" onclick="logout()" class="bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs px-3.5 py-2 rounded-xl shadow-md transition-all">🚪 خروج</button>
-            </div>
-
-            <div class="bg-blue-600/10 border border-blue-500/30 p-3.5 rounded-xl text-xs space-y-2">
-                <p class="text-blue-300 font-bold">📲 ارسال کد اختصاصی به مدیریت:</p>
-                <p class="text-slate-300 text-[11px] leading-relaxed">کد خود را جهت فعال‌سازی نهایی به شماره **09398490440** پیامک فرمایید.</p>
-                <button type="button" onclick="sendClubCodeSMS()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-2 rounded-lg text-xs">📩 ارسال سریع کد با پیامک</button>
-            </div>
-
-            <div id="adminNoteBox" class="bg-amber-500/10 border border-amber-500/30 p-3.5 rounded-xl text-xs text-amber-200 hidden">
-                <div class="font-bold mb-1 text-amber-400">📣 پیام مدیریت:</div>
-                <p id="dashAdminNote" class="leading-relaxed"></p>
-            </div>
-
-            <div class="grid grid-cols-2 gap-3">
-                <div class="bg-blue-600/10 border border-blue-500/30 p-4 rounded-xl text-center">
-                    <span class="text-xs text-blue-300 block mb-1">کد اختصاصی</span>
-                    <span id="dashClubCode" class="text-lg font-black text-blue-400 tracking-wider">----</span>
-                </div>
-                <div class="bg-amber-600/10 border border-amber-500/30 p-4 rounded-xl text-center">
-                    <span class="text-xs text-amber-300 block mb-1">امتیاز فعال</span>
-                    <span id="dashPoints" class="text-lg font-black text-amber-400">0</span>
-                </div>
-            </div>
-
-            <div>
-                <h3 class="text-xs font-bold text-slate-300 mb-2">📋 ریز خریدها و فاکتورها</h3>
-                <div id="dashTransactions" class="bg-slate-900 border border-slate-700 rounded-xl p-3 max-h-60 overflow-y-auto divide-y divide-slate-800 text-xs">
-                    <p class="text-slate-500 text-center py-4">هنوز خرید یا فاکتوری ثبت نشده است.</p>
-                </div>
+                <h1 class="font-bold text-lg text-amber-400">کاریز طب</h1>
+                <p class="text-[10px] text-slate-400">سامانه اختصاصی ثبت سفارش و باشگاه مشتریان</p>
             </div>
         </div>
+        <div id="userInfo" class="hidden text-xs bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-lg text-emerald-400 font-bold"></div>
+    </header>
 
-        <div id="msgBox" class="mt-4 p-3 rounded-xl text-xs text-center hidden"></div>
-    </div>
+    <main class="max-w-2xl mx-auto space-y-6">
+
+        <!-- بخش ورود / ثبت‌نام -->
+        <section id="authBox" class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4">
+            <h2 class="text-sm font-bold text-amber-300">🔑 ورود / ثبت‌نام سریع</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <input id="custName" type="text" placeholder="نام و نام خانوادگی / مرکز درمانی" class="bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-amber-400">
+                <input id="custPhone" type="tel" placeholder="شماره همراه (مثلاً 09123456789)" class="bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-amber-400">
+            </div>
+            <button onclick="loginCustomer()" class="w-full gold-bg text-slate-950 font-bold py-2.5 rounded-xl text-xs hover:opacity-90">ورود به پنل اختصاصی</button>
+        </section>
+
+        <!-- پنل اصلی (بعد از ورود) -->
+        <div id="mainPanel" class="hidden space-y-6">
+
+            <!-- کارت وضعیت حساب -->
+            <div class="bg-slate-900 border border-amber-500/30 rounded-2xl p-4 grid grid-cols-3 gap-2 text-center text-xs">
+                <div class="bg-slate-950 p-2.5 rounded-xl">
+                    <span class="block text-slate-400 text-[10px] mb-1">سطح شما</span>
+                    <span id="userTier" class="font-bold text-amber-400">عادی ⚪</span>
+                </div>
+                <div class="bg-slate-950 p-2.5 rounded-xl">
+                    <span class="block text-slate-400 text-[10px] mb-1">امتیاز خرید</span>
+                    <span id="userPoints" class="font-bold text-emerald-400">۰</span>
+                </div>
+                <div class="bg-slate-950 p-2.5 rounded-xl">
+                    <span class="block text-slate-400 text-[10px] mb-1">کد اختصاصی</span>
+                    <span id="userCode" class="font-bold text-blue-400">---</span>
+                </div>
+            </div>
+
+            <!-- پیام مدیر -->
+            <div id="adminNotice" class="hidden bg-amber-500/10 border border-amber-500/30 text-amber-200 p-3 rounded-xl text-xs"></div>
+
+            <!-- فرم ثبت سفارش آنلاین -->
+            <section class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4">
+                <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+                    <h3 class="font-bold text-sm text-emerald-400 flex items-center gap-2">🛒 کاتالوگ و ثبت سفارش آنلاین</h3>
+                    <span class="text-[10px] text-slate-400">قیمت‌ها به ریال</span>
+                </div>
+
+                <!-- جدول کاتالوگ -->
+                <div class="overflow-x-auto">
+                    <table class="w-full text-right text-xs">
+                        <thead class="bg-slate-950 text-slate-400 border-b border-slate-800">
+                            <tr>
+                                <th class="p-2">محصول</th>
+                                <th class="p-2">واحد / بسته</th>
+                                <th class="p-2">قیمت واحد</th>
+                                <th class="p-2">تعداد</th>
+                                <th class="p-2">جمع ردیف</th>
+                            </tr>
+                        </thead>
+                        <tbody id="catalogTableBody" class="divide-y divide-slate-800/50">
+                            <!-- به صورت پویا پر می‌شود -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- جمع کل و دکمه ثبت -->
+                <div class="bg-slate-950 p-4 rounded-xl flex flex-wrap justify-between items-center gap-3">
+                    <div>
+                        <span class="text-xs text-slate-400 block">جمع کل فاکتور:</span>
+                        <span id="grandTotal" class="text-base font-black text-amber-400">۰ ریال</span>
+                    </div>
+                    <button onclick="submitOrder()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-4 py-2 rounded-xl text-xs flex items-center gap-2">
+                        <span>📲 نهایی‌سازی و ارسال به 09398490440</span>
+                    </button>
+                </div>
+            </section>
+
+            <!-- پیگیری وضعیت سفارشات و ارسال -->
+            <section class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-3">
+                <h3 class="font-bold text-sm text-blue-400">📦 پیگیری زنده فاکتور و ارسال بار</h3>
+                <div id="ordersList" class="space-y-3 text-xs">
+                    <p class="text-slate-500 text-center py-2">هیچ سفارشی ثبت نشده است.</p>
+                </div>
+            </section>
+
+        </div>
+
+    </main>
 
     <script>
-        const btnLoginTab = document.getElementById('btnLoginTab');
-        const btnRegisterTab = document.getElementById('btnRegisterTab');
-        const loginForm = document.getElementById('loginForm');
-        const registerForm = document.getElementById('registerForm');
-        let currentActiveUser = null;
+        let currentUser = null;
+        let products = JSON.parse(localStorage.getItem('kt_products')) || [
+            { id: 1, name: 'دستکش لاتکس XS', unit: 'کارتنی (۱۰ بسته)', price: 12000000, desc: 'کیفیت A+ صادراتی' },
+            { id: 2, name: 'سرنگ ۵ سی‌سی', unit: 'عددی', price: 45000, desc: 'حداقل سفارش ۱۰۰ عدد' }
+        ];
 
-        btnLoginTab.addEventListener('click', function() {
-            loginForm.classList.remove('hidden');
-            registerForm.classList.add('hidden');
-            btnLoginTab.className = 'py-2 text-sm font-bold rounded-lg bg-blue-600 text-white transition-all';
-            btnRegisterTab.className = 'py-2 text-sm font-bold rounded-lg text-slate-400 hover:text-white transition-all';
-            hideMsg();
-        });
+        function loginCustomer() {
+            const name = document.getElementById('custName').value.trim();
+            const phone = document.getElementById('custPhone').value.trim();
+            if(!name || !phone) return alert('لطفاً نام و شماره همراه را وارد کنید.');
 
-        btnRegisterTab.addEventListener('click', function() {
-            registerForm.classList.remove('hidden');
-            loginForm.classList.add('hidden');
-            btnRegisterTab.className = 'py-2 text-sm font-bold rounded-lg bg-emerald-600 text-white transition-all';
-            btnLoginTab.className = 'py-2 text-sm font-bold rounded-lg text-slate-400 hover:text-white transition-all';
-            hideMsg();
-        });
+            currentUser = { name, phone, code: 'KT-' + phone.slice(-4) };
+            document.getElementById('authBox').classList.add('hidden');
+            document.getElementById('mainPanel').classList.remove('hidden');
+            document.getElementById('userInfo').innerText = `${name} (${currentUser.code})`;
+            document.getElementById('userInfo').classList.remove('hidden');
+            document.getElementById('userCode').innerText = currentUser.code;
 
-        function getDB() {
-            return JSON.parse(localStorage.getItem('karizteb_db') || '[]');
+            loadCatalog();
+            loadUserOrderHistory();
         }
 
-        function saveDB(data) {
-            localStorage.setItem('karizteb_db', JSON.stringify(data));
+        function loadCatalog() {
+            const tbody = document.getElementById('catalogTableBody');
+            tbody.innerHTML = '';
+            products.forEach((p, index) => {
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-800/30">
+                        <td class="p-2">
+                            <div class="font-bold text-slate-200">${p.name}</div>
+                            <div class="text-[10px] text-amber-400/80">${p.desc || ''}</div>
+                        </td>
+                        <td class="p-2 text-slate-400">${p.unit}</td>
+                        <td class="p-2 font-mono">${p.price.toLocaleString()}</td>
+                        <td class="p-2">
+                            <input type="number" min="0" value="0" id="qty_${p.id}" onchange="calculateTotal()" class="w-14 bg-slate-950 border border-slate-700 text-center rounded px-1 py-0.5 font-bold">
+                        </td>
+                        <td class="p-2 font-mono text-emerald-400" id="rowTotal_${p.id}">۰</td>
+                    </tr>
+                `;
+            });
         }
 
-        window.onload = function() {
-            const savedSession = localStorage.getItem('karizteb_current_user');
-            if (savedSession) {
-                const user = JSON.parse(savedSession);
-                const db = getDB();
-                const freshUser = db.find(u => u.username === user.username) || user;
-                showDashboard(freshUser);
-            }
-        };
+        function calculateTotal() {
+            let grandTotal = 0;
+            products.forEach(p => {
+                const qty = parseInt(document.getElementById(`qty_${p.id}`).value) || 0;
+                const rowTotal = qty * p.price;
+                document.getElementById(`rowTotal_${p.id}`).innerText = rowTotal.toLocaleString();
+                grandTotal += rowTotal;
+            });
+            document.getElementById('grandTotal').innerText = grandTotal.toLocaleString() + ' ریال';
+        }
 
-        registerForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            hideMsg();
+        function submitOrder() {
+            let orderItems = [];
+            let total = 0;
+            products.forEach(p => {
+                const qty = parseInt(document.getElementById(`qty_${p.id}`).value) || 0;
+                if(qty > 0) {
+                    orderItems.push(`${p.name} (${qty} ${p.unit})`);
+                    total += qty * p.price;
+                }
+            });
 
-            const fullName = document.getElementById('regFullName').value.trim();
-            const phone = document.getElementById('regPhone').value.trim();
-            const city = document.getElementById('regCity').value.trim();
-            const username = document.getElementById('regUsername').value.trim().toLowerCase();
-            const password = document.getElementById('regPassword').value;
+            if(orderItems.length === 0) return alert('لطفاً حداقل یک محصول را انتخاب کنید.');
 
-            const db = getDB();
-            if (db.find(u => u.username === username)) {
-                showMsg('این نام کاربری قبلاً انتخاب شده است.', 'error');
+            const orderData = {
+                id: Date.now(),
+                userCode: currentUser.code,
+                userName: currentUser.name,
+                userPhone: currentUser.phone,
+                items: orderItems,
+                total: total,
+                status: 'در حال بررسی ⏳',
+                shipping: 'در حال آماده‌سازی انبار 📦',
+                date: new Date().toLocaleDateString('fa-IR')
+            };
+
+            // ذخیره سفارش
+            let allOrders = JSON.parse(localStorage.getItem('kt_orders')) || [];
+            allOrders.push(orderData);
+            localStorage.setItem('kt_orders', JSON.stringify(allOrders));
+
+            // ساخت متن پیامک خودکار برای مدیر
+            const smsText = encodeURIComponent(`سفارش جدید کاریز طب\nمشتری: ${currentUser.name}\nکد: ${currentUser.code}\nمبلغ: ${total.toLocaleString()} ریال\nجهت بررسی وارد پنل شوید.`);
+            window.open(`sms:09398490440?body=${smsText}`, '_blank');
+
+            alert('سفارش شما ثبت شد! پیامک اطلاع‌رسانی به مدیریت آماده ارسال است.');
+            loadUserOrderHistory();
+        }
+
+        function loadUserOrderHistory() {
+            let allOrders = JSON.parse(localStorage.getItem('kt_orders')) || [];
+            const userOrders = allOrders.filter(o => o.userPhone === currentUser.phone);
+            const container = document.getElementById('ordersList');
+
+            if(userOrders.length === 0) {
+                container.innerHTML = `<p class="text-slate-500 text-center py-2">هیچ سفارشی ثبت نشده است.</p>`;
                 return;
             }
 
-            const clubCode = 'KT-' + Math.floor(1000 + Math.random() * 9000);
-            const newUser = {
-                fullName,
-                phone,
-                city,
-                username,
-                password,
-                clubCode,
-                points: 0,
-                tier: 'عادی',
-                adminNote: '',
-                transactions: []
-            };
-
-            db.push(newUser);
-            saveDB(db);
-
-            localStorage.setItem('karizteb_current_user', JSON.stringify(newUser));
-            showDashboard(newUser);
-        });
-
-        loginForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            hideMsg();
-
-            const username = document.getElementById('loginUsername').value.trim().toLowerCase();
-            const password = document.getElementById('loginPassword').value;
-
-            const db = getDB();
-            const user = db.find(u => u.username === username && u.password === password);
-
-            if (!user) {
-                showMsg('نام کاربری یا رمز عبور اشتباه است.', 'error');
-            } else {
-                localStorage.setItem('karizteb_current_user', JSON.stringify(user));
-                showDashboard(user);
-            }
-        });
-
-        function showDashboard(user) {
-            currentActiveUser = user;
-            document.getElementById('authTabs').classList.add('hidden');
-            loginForm.classList.add('hidden');
-            registerForm.classList.add('hidden');
-            document.getElementById('userDashboard').classList.remove('hidden');
-
-            document.getElementById('dashCustomerName').innerText = user.fullName || 'مشتری کاریز طب';
-            document.getElementById('dashCustomerPhone').innerText = (user.phone || '') + ' (' + (user.city || '') + ')';
-            document.getElementById('dashClubCode').innerText = user.clubCode || '---';
-            document.getElementById('dashPoints').innerText = user.points || 0;
-            document.getElementById('dashTier').innerText = 'سطح: ' + (user.tier || 'عادی');
-
-            const noteBox = document.getElementById('adminNoteBox');
-            if (user.adminNote && user.adminNote.trim() !== '') {
-                document.getElementById('dashAdminNote').innerText = user.adminNote;
-                noteBox.classList.remove('hidden');
-            } else {
-                noteBox.classList.add('hidden');
-            }
-
-            const txContainer = document.getElementById('dashTransactions');
-            if (user.transactions && user.transactions.length > 0) {
-                txContainer.innerHTML = user.transactions.map(t => `
-                    <div class="py-3 space-y-1">
-                        <div class="flex justify-between items-center">
-                            <p class="font-bold text-white">${t.title || 'خرید محصولات'}</p>
-                            <span class="font-bold text-emerald-400">${t.amount || ''}</span>
+            container.innerHTML = '';
+            userOrders.reverse().forEach(o => {
+                container.innerHTML += `
+                    <div class="bg-slate-950 border border-slate-800 p-3 rounded-xl space-y-2">
+                        <div class="flex justify-between font-bold border-b border-slate-800 pb-1.5">
+                            <span>تاریخ: ${o.date}</span>
+                            <span class="text-amber-400">${o.status}</span>
                         </div>
-                        <p class="text-[10px] text-slate-400">${t.date || ''}</p>
-                        ${t.image ? `<img src="${t.image}" class="w-full rounded-xl mt-2 border border-slate-700 shadow-md">` : ''}
+                        <div class="text-slate-300 text-[11px]">${o.items.join(' ، ')}</div>
+                        <div class="flex justify-between items-center text-[11px] pt-1 border-t border-slate-900">
+                            <span class="text-slate-400">وضعیت ارسال: <b class="text-blue-400">${o.shipping}</b></span>
+                            <span class="text-emerald-400 font-bold">${o.total.toLocaleString()} ریال</span>
+                        </div>
+                        ${o.note ? `<div class="bg-rose-500/10 text-rose-300 p-2 rounded text-[10px]">⚠️ پیام مدیر: ${o.note}</div>` : ''}
                     </div>
-                `).join('');
-            } else {
-                txContainer.innerHTML = '<p class="text-slate-500 text-center py-4">هنوز خرید یا تسویه‌ای ثبت نشده است.</p>';
-            }
-        }
-
-        function sendClubCodeSMS() {
-            if (!currentActiveUser) return;
-            const message = encodeURIComponent(`سلام، کد اختصاصی من در باشگاه کاریز طب: ${currentActiveUser.clubCode}\nمرکز: ${currentActiveUser.fullName}`);
-            window.location.href = `sms:09398490440?body=${message}`;
-        }
-
-        function logout() {
-            localStorage.removeItem('karizteb_current_user');
-            location.reload();
-        }
-
-        function showForgotPassword() {
-            const phone = prompt("لطفاً شماره همراه خود را وارد کنید:");
-            if (phone) {
-                window.location.href = `sms:09398490440?body=${encodeURIComponent('درخواست بازیابی رمز عبور کاریزطب: ' + phone)}`;
-            }
-        }
-
-        function showMsg(msg, type) {
-            const box = document.getElementById('msgBox');
-            box.innerText = msg;
-            box.classList.remove('hidden', 'bg-rose-500/20', 'text-rose-300', 'bg-emerald-500/20', 'text-emerald-300');
-            if (type === 'error') {
-                box.classList.add('bg-rose-500/20', 'text-rose-300');
-            } else {
-                box.classList.add('bg-emerald-500/20', 'text-emerald-300');
-            }
-        }
-
-        function hideMsg() {
-            document.getElementById('msgBox').classList.add('hidden');
+                `;
+            });
         }
     </script>
 </body>
