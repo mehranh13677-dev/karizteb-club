@@ -1,5 +1,217 @@
 
-user.points || 0;
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>باشگاه مشتریان کاریز طب</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body { font-family: 'Vazirmatn', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen flex items-center justify-center p-4">
+
+    <div class="w-full max-w-md bg-slate-800 rounded-2xl shadow-2xl border border-slate-700 p-6 relative">
+        <div class="text-center mb-6">
+            <div class="w-16 h-16 bg-blue-600 rounded-2xl mx-auto flex items-center justify-center text-2xl font-bold text-white shadow-lg mb-3">K</div>
+            <h1 class="text-2xl font-black text-white">باشگاه مشتریان کاریز طب</h1>
+            <p class="text-xs text-slate-400 mt-1">سامانه دریافت کد اختصاصی و پیگیری امتیازات</p>
+        </div>
+
+        <div id="authTabs" class="grid grid-cols-2 bg-slate-900 p-1 rounded-xl mb-6">
+            <button onclick="switchTab('login')" id="btnLoginTab" class="py-2 text-sm font-bold rounded-lg bg-blue-600 text-white transition-all">ورود به حساب</button>
+            <button onclick="switchTab('register')" id="btnRegisterTab" class="py-2 text-sm font-bold rounded-lg text-slate-400 hover:text-white transition-all">ثبت‌نام جدید</button>
+        </div>
+
+        <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-4">
+            <div>
+                <label class="block text-xs font-medium text-slate-300 mb-1">نام کاربری</label>
+                <input type="text" id="loginUsername" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-blue-500 text-white" placeholder="نام کاربری خود را وارد کنید">
+            </div>
+            <div>
+                <label class="block text-xs font-medium text-slate-300 mb-1">رمز عبور</label>
+                <input type="password" id="loginPassword" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-blue-500 text-white" placeholder="******">
+            </div>
+            <button type="submit" id="loginSubmitBtn" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-xl text-sm shadow-lg transition-all">ورود به داشبورد</button>
+            <div class="text-center mt-3">
+                <button type="button" onclick="showForgotPassword()" class="text-xs text-blue-400 hover:underline">نام کاربری یا رمز عبور را فراموش کرده‌اید؟</button>
+            </div>
+        </form>
+
+        <form id="registerForm" onsubmit="handleRegister(event)" class="space-y-3 hidden">
+            <div>
+                <label class="block text-xs font-medium text-slate-300 mb-1">نام و نام خانوادگی / نام مرکز</label>
+                <input type="text" id="regFullName" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white" placeholder="مثال: دکتر حسینی">
+            </div>
+            <div>
+                <label class="block text-xs font-medium text-slate-300 mb-1">شماره همراه</label>e" required pattern="[a-zA-Z0-9_]+" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white" placeholder="مثال: dr_hoseini">
+            </div>
+            <div>
+                <label class="block text-xs font-medium text-slate-300 mb-1">تعیین رمز عبور</label>
+                <input type="password" id="regPassword" required minlength="4" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white" placeholder="حداقل ۴ کاراکتر">
+            </div>
+            <button type="submit" id="regSubmitBtn" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl text-sm shadow-lg transition-all mt-2">ثبت‌نام و دریافت کد اختصاصی</button>
+        </form>
+
+        <div id="userDashboard" class="hidden space-y-5">
+            <div class="bg-slate-900/80 border border-slate-700 p-4 rounded-xl flex items-center justify-between">
+                <div>
+                    <h2 id="dashCustomerName" class="font-bold text-white text-base">---</h2>
+                    <p id="dashCustomerPhone" class="text-xs text-slate-400 mt-0.5">---</p>
+                </div>
+                <button onclick="logout()" class="bg-rose-500/10 text-rose-400 text-xs px-3 py-1.5 rounded-lg border border-rose-500/20 hover:bg-rose-500 hover:text-white transition-all">خروج</button>
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+                <div class="bg-blue-600/10 border border-blue-500/30 p-4 rounded-xl text-center">
+                    <span class="text-xs text-blue-300 block mb-1">کد اختصاصی</span>
+                    <span id="dashClubCode" class="text-lg font-black text-blue-400 tracking-wider">----</span>
+                </div>
+                <div class="bg-amber-600/10 border border-amber-500/30 p-4 rounded-xl text-center">
+                    <span class="text-xs text-amber-300 block mb-1">امتیاز فعال</span>
+                    <span id="dashPoints" class="text-lg font-black text-amber-400">0</span>
+                </div>
+            </div>
+            <div>
+                <h3 class="text-xs font-bold text-slate-300 mb-2">📋 ریز خریدها و تسویه‌ها</h3>
+                <div id="dashTransactions" class="bg-slate-900 border border-slate-700 rounded-xl p-3 max-h-48 overflow-y-auto divide-y divide-slate-800 text-xs">
+                    <p class="text-slate-500 text-center py-4">هنوز تراکنشی ثبت نشده است.</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="msgBox" class="mt-4 p-3 rounded-xl text-xs text-center hidden"></div>
+    </div>
+
+    <script>
+        const SUPABASE_URL = 'https://wzbxytklyytwugkzzsll.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind6Ynh5dGtseXl0d3Vna3p6c2xsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDAzNjM3ODIsImV4cCI6MjA1NTkzOTc4Mn0.0NshT3I_TfIn3vC38x8tBUnH2qL-9a5o-iG_k-jO78o';
+        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        window.onload = function() {
+            const savedUser = localStorage.getItem('karizteb_user');
+            if (savedUser) {
+                showDashboard(JSON.parse(savedUser));
+            }
+        };
+
+        function switchTab(tab) {
+            hideMsg();
+            if (tab === 'login') {
+                document.getElementById('loginForm').classList.remove('hidden');
+                document.getElementById('registerForm').classList.add('hidden');
+                document.getElementById('btnLoginTab').className = 'py-2 text-sm font-bold rounded-lg bg-blue-600 text-white transition-all';
+                document.getElementById('btnRegisterTab').className = 'py-2 text-sm font-bold rounded-lg text-slate-400 hover:text-white transition-all';
+            } else {
+                document.getElementById('registerForm').classList.remove('hidden');
+                document.getElementById('loginForm').classList.add('hidden');
+                document.getElementById('btnRegisterTab').className = 'py-2 text-sm font-bold rounded-lg bg-emerald-600 text-white transition-all';
+                <input type="tel" id="regPhone" required pattern="09[0-9]{9}" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white" placeholder="09123456789">
+            </div>
+            <div>
+                <label class="block text-xs font-medium text-slate-300 mb-1">شهر / استان</label>
+                <input type="text" id="regCity" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white" placeholder="مثال: تهران">
+            </div>
+            <div>
+                <label class="block text-xs font-medium text-slate-300 mb-1">تعیین نام کاربری (انگلیسی)</label>
+                <input type="text" id="regUsernamdocument.getElementById('btnLoginTab').className = 'py-2 text-sm font-bold rounded-lg text-slate-400 hover:text-white transition-all';
+            }
+        }
+
+        async function handleRegister(e) {
+            e.preventDefault();
+            hideMsg();
+            const btn = document.getElementById('regSubmitBtn');
+            btn.innerText = 'در حال ثبت اطلاعات...';
+            btn.disabled = true;
+
+            const fullName = document.getElementById('regFullName').value.trim();
+            const phone = document.getElementById('regPhone').value.trim();
+            const city = document.getElementById('regCity').value.trim();
+            const username = document.getElementById('regUsername').value.trim().toLowerCase();
+            const password = document.getElementById('regPassword').value;
+
+            try {
+                const { data: existingUser } = await _supabase.from('Customers').select('username').eq('username', username).single();
+                if (existingUser) {
+                    showMsg('این نام کاربری قبلاً انتخاب شده است.', 'error');
+                    btn.innerText = 'ثبت‌نام و دریافت کد اختصاصی';
+                    btn.disabled = false;
+                    return;
+                }
+
+                const clubCode = 'KT-' + Math.floor(1000 + Math.random() * 9000);
+
+                const { data, error } = await _supabase.from('Customers').insert([
+                    {
+                        full_name: fullName,
+                        phone: phone,
+                        city: city,
+                        club_code: clubCode,
+                        username: username,
+                        password: password,
+                        points: 0,
+                        transactions: []
+                    }
+                ]).select().single();
+
+                if (error) throw error;
+
+                localStorage.setItem('karizteb_user', JSON.stringify(data));
+                showDashboard(data);
+
+            } catch (err) {
+                showMsg('خطا در ثبت‌نام: ' + err.message, 'error');
+            } finally {
+                btn.innerText = 'ثبت‌نام و دریافت کد اختصاصی';
+                btn.disabled = false;
+            }
+        }
+
+        async function handleLogin(e) {
+            e.preventDefault();
+            hideMsg();
+            const btn = document.getElementById('loginSubmitBtn');
+            btn.innerText = 'در حال بررسی...';
+            btn.disabled = true;
+
+            const username = document.getElementById('loginUsername').value.trim().toLowerCase();
+            const password = document.getElementById('loginPassword').value;
+
+            try {
+                const { data, error } = await _supabase.from('Customers')
+                    .select('*')
+                    .eq('username', username)
+                    .eq('password', password)
+                    .single();
+
+                if (error || !data) {
+                    showMsg('نام کاربری یا رمز عبور اشتباه است.', 'error');
+                } else {
+                    localStorage.setItem('karizteb_user', JSON.stringify(data));
+                    showDashboard(data);
+                }
+            } catch (err) {
+                showMsg('خطا در ورود به سیستم', 'error');
+            } finally {
+                btn.innerText = 'ورود به داشبورد';
+                btn.disabled = false;
+            }
+        }
+
+        function showDashboard(user) {
+            document.getElementById('authTabs').classList.add('hidden');
+            document.getElementById('loginForm').classList.add('hidden');
+            document.getElementById('registerForm').classList.add('hidden');
+            document.getElementById('userDashboard').classList.remove('hidden');
+
+            document.getElementById('dashCustomerName').innerText = user.full_name;
+            document.getElementById('dashCustomerPhone').innerText = user.phone + ' (' + (user.city || '') + ')';
+            document.getElementById('dashClubCode').innerText = user.club_code || '---';
+            document.getElementById('dashPoints').innerText =
+                        user.points || 0;
 
             const txContainer = document.getElementById('dashTransactions');
             if (user.transactions && user.transactions.length > 0) {
