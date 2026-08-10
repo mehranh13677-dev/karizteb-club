@@ -340,27 +340,27 @@
     <form id="register-form" autocomplete="on">
       <div class="form-group">
         <label for="reg-fullname">نام و نام خانوادگی</label>
-        <input type="text" id="reg-fullname" class="form-control" placeholder="مثال: مهران حیدریان" required>
+        <input type="text" id="reg-fullname" class="form-control" placeholder="نام و نام خانوادگی کامل" required>
       </div>
 
       <div class="form-group">
         <label for="reg-center">نام مرکز یا کلینیک</label>
-        <input type="text" id="reg-center" class="form-control" placeholder="مثال: پزشکی هسته‌ای ایران" required>
+        <input type="text" id="reg-center" class="form-control" placeholder="نام مرکز، کلینیک یا درمانگاه" required>
       </div>
 
       <div class="form-group">
         <label for="reg-phone">شماره همراه (یکتا)</label>
-        <input type="tel" id="reg-phone" class="form-control" autocomplete="tel" placeholder="مثال: 09123456789" required>
+        <input type="tel" id="reg-phone" class="form-control" autocomplete="tel" placeholder="09120000000" required>
       </div>
 
       <div class="form-group">
         <label for="reg-city">شهر / استان</label>
-        <input type="text" id="reg-city" class="form-control" placeholder="مثال: کرج / البرز" required>
+        <input type="text" id="reg-city" class="form-control" placeholder="نام شهر و استان" required>
       </div>
 
       <div class="form-group">
         <label for="reg-username">نام کاربری (یکتا)</label>
-        <input type="text" id="reg-username" class="form-control" autocomplete="username" placeholder="مثال: mehran5284" required>
+        <input type="text" id="reg-username" class="form-control" autocomplete="username" placeholder="نام کاربری دلخواه (لاتین)" required>
       </div>
 
       <div class="form-group">
@@ -380,8 +380,8 @@
       <div class="logo-sec">
         <div class="logo-badge">KT</div>
         <div>
-          <h3 id="cust-display-name" style="font-size: 1.1rem;">مهران حیدریان</h3>
-          <small id="cust-display-center" style="color: var(--text-muted);">پزشکی هسته‌ای ایران (کرج)</small>
+          <h3 id="cust-display-name" style="font-size: 1.1rem;">کاربر گرامی</h3>
+          <small id="cust-display-center" style="color: var(--text-muted);">مرکز درمانی</small>
         </div>
       </div>
       <button class="btn btn-danger" style="width: auto; margin: 0; padding: 8px 14px;" onclick="logout()">خروج</button>
@@ -390,9 +390,9 @@
     <div class="card club-card">
       <span class="badge-level">عادی ⚪</span>
       <p class="card-title-sub">کارت عضویت اختصاصی</p>
-      <h3 id="cust-card-name" class="card-user-fullname">مهران حیدریان</h3>
-      <p id="cust-card-sub" class="card-clinic-name">پزشکی هسته‌ای ایران (کرج)</p>
-      <p id="cust-card-code" class="card-club-code">کد باشگاه: KT-5284</p>
+      <h3 id="cust-card-name" class="card-user-fullname">نام کاربر</h3>
+      <p id="cust-card-sub" class="card-clinic-name">نام مرکز درمانی</p>
+      <p id="cust-card-code" class="card-club-code">کد باشگاه: KT-0000</p>
 
       <div class="points-section">
         <span style="font-size: 0.8rem; color: var(--text-muted);">امتیاز کل:</span>
@@ -495,7 +495,6 @@
     const username = document.getElementById('reg-username').value.trim();
     const phone = document.getElementById('reg-phone').value.trim();
 
-    // همواره دیتابیس تازه را بررسی می‌کند
     db = JSON.parse(localStorage.getItem('karizteb_db')) || { users: [] };
 
     const isDuplicate = db.users.some(u => u.username === username || u.phone === phone);
@@ -529,7 +528,6 @@
     const u = document.getElementById('login-username').value.trim();
     const p = document.getElementById('login-password').value;
 
-    // بازیابی آخرین دیتابیس جهت چک کردن وضعیت حذف کاربر
     db = JSON.parse(localStorage.getItem('karizteb_db')) || { users: [] };
 
     const user = db.users.find(x => x.username === u && x.password === p);
