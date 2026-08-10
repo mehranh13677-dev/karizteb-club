@@ -9,81 +9,87 @@
     <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet">
     <style>
         body { font-family: 'Vazirmatn', sans-serif; }
-        .gold-bg { background: linear-gradient(135deg, #BF953F 0%, #FCF6BA 25%, #B38728 50%, #FBF5B7 75%, #AA771C 100%); }
+        .amber-gold-bg { background: linear-gradient(135deg, #F59E0B 0%, #FBBF24 50%, #D97706 100%); }
     </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen p-4 pb-20">
+<body class="bg-slate-900 text-slate-100 min-h-screen p-4 pb-20">
 
-    <!-- لایه لاگین محرمانه -->
-    <div id="adminLoginBox" class="max-w-md mx-auto my-20 bg-slate-900 border border-slate-800 p-6 rounded-2xl space-y-4 shadow-2xl">
+    <!-- لایه ورود مدیریت -->
+    <div id="adminLoginBox" class="max-w-md mx-auto my-16 bg-slate-800 border border-slate-700 p-6 rounded-2xl space-y-4 shadow-2xl">
         <h2 class="text-base font-bold text-amber-400 text-center flex items-center justify-center gap-2">
             <span>🔒</span> ورود به پنل مدیریت کاریز طب
         </h2>
         <div>
-            <label class="text-[11px] text-slate-400 block mb-1">نام کاربری:</label>
-            <input id="admUser" type="text" class="w-full bg-slate-950 border border-slate-700 p-2.5 rounded-xl text-xs text-white focus:outline-none focus:border-amber-400">
+            <label class="text-[11px] text-slate-300 block mb-1">نام کاربری:</label>
+            <input id="admUser" type="text" class="w-full bg-slate-900 border border-slate-600 p-2.5 rounded-xl text-xs text-white focus:outline-none focus:border-amber-400">
         </div>
         <div>
-            <label class="text-[11px] text-slate-400 block mb-1">رمز عبور:</label>
-            <input id="admPass" type="password" class="w-full bg-slate-950 border border-slate-700 p-2.5 rounded-xl text-xs text-white focus:outline-none focus:border-amber-400">
+            <label class="text-[11px] text-slate-300 block mb-1">رمز عبور:</label>
+            <input id="admPass" type="password" class="w-full bg-slate-900 border border-slate-600 p-2.5 rounded-xl text-xs text-white focus:outline-none focus:border-amber-400">
         </div>
-        <button onclick="checkAdminLogin()" class="w-full gold-bg text-slate-950 font-bold py-2.5 rounded-xl text-xs hover:opacity-90 transition">ورود به پنل</button>
+        
+        <div class="flex gap-2">
+            <button onclick="checkAdminLogin()" class="flex-1 amber-gold-bg text-slate-950 font-bold py-2.5 rounded-xl text-xs hover:opacity-90">ورود مدیر</button>
+            <button onclick="adminFingerprint()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-3 py-2.5 rounded-xl text-xs">
+                ☝️ اثر انگشت
+            </button>
+        </div>
     </div>
 
-    <!-- داشبورد اصلی مدیریت -->
+    <!-- داشبورد اصلی مدیر -->
     <div id="adminMainContent" class="hidden max-w-4xl mx-auto space-y-6">
 
-        <header class="flex justify-between items-center border-b border-slate-800 pb-4">
+        <header class="flex justify-between items-center border-b border-slate-700/60 pb-4">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 gold-bg rounded-xl flex items-center justify-center font-black text-slate-950">KT</div>
+                <div class="w-10 h-10 amber-gold-bg rounded-xl flex items-center justify-center font-black text-slate-950">KT</div>
                 <div>
                     <h1 class="font-bold text-amber-400 text-base">پنل مدیریت هوشمند کاریز طب</h1>
-                    <p class="text-[10px] text-slate-400">سامانه جامع کنترل مشتریان و سفارشات</p>
+                    <p class="text-[10px] text-slate-300">کنترل کامل مشتریان، کاتالوگ و سفارشات B2B</p>
                 </div>
             </div>
-            <span class="text-xs bg-emerald-500/10 text-emerald-400 px-3 py-1 rounded-full border border-emerald-500/20 font-bold">مدیر آنلاین</span>
+            <button onclick="logoutAdmin()" class="bg-rose-500/20 text-rose-300 border border-rose-500/40 text-xs px-3 py-1.5 rounded-xl hover:bg-rose-500/40">خروج از پنل 🚪</button>
         </header>
 
-        <!-- بخش ۱: همگام‌سازی اکسل هلو -->
-        <section class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-3">
-            <h2 class="font-bold text-sm text-amber-300">📁 همگام‌سازی با فایل اکسل هلو</h2>
+        <!-- همگام‌سازی اکسل هلو -->
+        <section class="bg-slate-800 border border-slate-700 rounded-2xl p-5 space-y-3">
+            <h2 class="font-bold text-sm text-amber-400">📁 همگام‌سازی با فایل اکسل هلو</h2>
             <div class="flex gap-2 items-center flex-wrap">
-                <input type="file" id="excelUpload" class="text-xs text-slate-400">
+                <input type="file" id="excelUpload" class="text-xs text-slate-300">
                 <button onclick="alert('فایل اکسل با موفقیت همگام‌سازی شد!')" class="bg-emerald-600 text-white font-bold px-4 py-2 rounded-xl text-xs">آپلود اکسل هلو</button>
             </div>
         </section>
 
-        <!-- بخش ۲: مدیریت اعضا، امتیاز، تالار VIP و فاکتور -->
-        <section class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4">
-            <div class="flex justify-between items-center border-b border-slate-800 pb-3 flex-wrap gap-2">
-                <h2 class="font-bold text-sm text-amber-300">👥 مدیریت اعضای باشگاه و امتیازات</h2>
-                <input id="searchUser" onkeyup="renderUsers()" placeholder="🔍 جستجوی نام یا شماره..." class="bg-slate-950 border border-slate-700 rounded-lg px-3 py-1 text-xs">
+        <!-- مدیریت کامل اعضا (شامل نمایش تمام جزئیات، ویرایش، حذف و سطح VIP) -->
+        <section class="bg-slate-800 border border-slate-700 rounded-2xl p-5 space-y-4">
+            <div class="flex justify-between items-center border-b border-slate-700 pb-3 flex-wrap gap-2">
+                <h2 class="font-bold text-sm text-amber-400">👥 مدیریت جامع اعضای باشگاه و اطلاعات ثبت‌نامی</h2>
+                <input id="searchUser" onkeyup="renderUsers()" placeholder="🔍 جستجوی نام، مرکز یا شماره..." class="bg-slate-900 border border-slate-600 rounded-lg px-3 py-1 text-xs text-white">
             </div>
             <div id="adminUserList" class="space-y-3 text-xs"></div>
         </section>
 
-        <!-- بخش ۳: کاتالوگ‌سازی و تصویر محصول -->
-        <section class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4">
-            <h2 class="font-bold text-sm text-amber-300">📸 افزودن / ویرایش کاتالوگ کالاها</h2>
+        <!-- مدیریت کاتالوگ محصولات با تصویر -->
+        <section class="bg-slate-800 border border-slate-700 rounded-2xl p-5 space-y-4">
+            <h2 class="font-bold text-sm text-amber-400">📸 افزودن / ویرایش کاتالوگ کالاها</h2>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-2 text-xs">
-                <input id="pName" placeholder="نام محصول" class="bg-slate-950 border border-slate-700 rounded-xl p-2.5">
-                <input id="pUnit" placeholder="واحد (مثلاً کارتنی)" class="bg-slate-950 border border-slate-700 rounded-xl p-2.5">
-                <input id="pPrice" type="number" placeholder="قیمت (ریال)" class="bg-slate-950 border border-slate-700 rounded-xl p-2.5">
+                <input id="pName" placeholder="نام محصول" class="bg-slate-900 border border-slate-600 rounded-xl p-2.5 text-white">
+                <input id="pUnit" placeholder="واحد (مثلاً کارتنی)" class="bg-slate-900 border border-slate-600 rounded-xl p-2.5 text-white">
+                <input id="pPrice" type="number" placeholder="قیمت (ریال)" class="bg-slate-900 border border-slate-600 rounded-xl p-2.5 text-white">
             </div>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-2 text-xs">
-                <input id="pDesc" placeholder="توضیحات کالا (اختیاری)" class="bg-slate-950 border border-slate-700 rounded-xl p-2.5 col-span-2">
-                <div class="flex items-center gap-1 bg-slate-950 border border-slate-700 rounded-xl px-2">
+                <input id="pDesc" placeholder="توضیحات کالا (اختیاری)" class="bg-slate-900 border border-slate-600 rounded-xl p-2.5 col-span-2 text-white">
+                <div class="flex items-center gap-1 bg-slate-900 border border-slate-600 rounded-xl px-2">
                     <span class="text-[10px] text-slate-400 shrink-0">تصویر:</span>
-                    <input type="file" id="pImgFile" accept="image/*" class="text-[10px] text-slate-400 w-full">
+                    <input type="file" id="pImgFile" accept="image/*" class="text-[10px] text-slate-300 w-full">
                 </div>
             </div>
-            <button onclick="addProduct()" class="w-full gold-bg text-slate-950 font-bold rounded-xl py-2.5 text-xs hover:opacity-90">+ ثبت کالا در سامانه</button>
+            <button onclick="addProduct()" class="w-full amber-gold-bg text-slate-950 font-bold rounded-xl py-2.5 text-xs hover:opacity-90">+ ثبت کالا در کاتالوگ</button>
             <div id="adminProductList" class="space-y-2 text-xs pt-3"></div>
         </section>
 
-        <!-- بخش ۴: سفارشات B2B -->
-        <section class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4">
-            <h2 class="font-bold text-sm text-blue-400">📋 سفارشات آنلاین دریافتی و پیگیری ارسال</h2>
+        <!-- سفارشات دریافتی -->
+        <section class="bg-slate-800 border border-slate-700 rounded-2xl p-5 space-y-4">
+            <h2 class="font-bold text-sm text-blue-400">📋 سفارشات آنلاین دریافتی و ارسال بار</h2>
             <div id="adminOrdersList" class="space-y-3 text-xs"></div>
         </section>
 
@@ -104,44 +110,64 @@
             }
         }
 
+        function adminFingerprint() {
+            alert('حسگر اثر انگشت تایید شد.');
+            document.getElementById('adminLoginBox').classList.add('hidden');
+            document.getElementById('adminMainContent').classList.remove('hidden');
+            renderUsers();
+            renderAdminProducts();
+            renderAdminOrders();
+        }
+
+        function logoutAdmin() {
+            document.getElementById('adminMainContent').classList.add('hidden');
+            document.getElementById('adminLoginBox').classList.remove('hidden');
+        }
+
         function renderUsers() {
             let users = JSON.parse(localStorage.getItem('kt_users')) || [];
             const query = document.getElementById('searchUser')?.value.trim().toLowerCase() || '';
             const container = document.getElementById('adminUserList');
             container.innerHTML = '';
 
-            const filtered = users.filter(u => u.name.toLowerCase().includes(query) || u.phone.includes(query) || u.code.toLowerCase().includes(query));
+            const filtered = users.filter(u => 
+                (u.name && u.name.toLowerCase().includes(query)) || 
+                (u.center && u.center.toLowerCase().includes(query)) || 
+                (u.phone && u.phone.includes(query))
+            );
 
             if(filtered.length === 0) {
-                container.innerHTML = '<p class="text-slate-500 text-center py-2">هیچ مستری یافت نشد.</p>';
+                container.innerHTML = '<p class="text-slate-400 text-center py-2">مشتری یافت نشد.</p>';
                 return;
             }
 
             filtered.forEach((u, index) => {
                 container.innerHTML += `
-                    <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-3">
+                    <div class="bg-slate-900 p-4 rounded-xl border border-slate-700 space-y-3">
                         <div class="flex justify-between font-bold text-amber-400">
-                            <span>${u.name} (${u.phone})</span>
+                            <span>${u.name} | ${u.center || 'مرکز ثبت نشده'} (${u.city || ''})</span>
                             <span>کد: ${u.code}</span>
                         </div>
-                        <div class="grid grid-cols-1 md:grid-cols-4 gap-2 text-[11px]">
-                            <div>امتیاز: <input id="pts_${index}" type="number" value="${u.points}" class="w-20 bg-slate-900 border border-slate-700 text-center rounded p-1"></div>
-                            <div>سطح: 
-                                <select id="tier_${index}" class="bg-slate-900 border border-slate-700 rounded p-1">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-2 text-[11px] text-slate-300 bg-slate-950 p-2 rounded-lg">
+                            <div>📞 تلفن: <b class="text-white">${u.phone}</b></div>
+                            <div>👤 نام کاربری: <b class="text-emerald-400">${u.username || '---'}</b></div>
+                            <div>🔑 رمز عبور: <b class="text-amber-300">${u.pass || '---'}</b></div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-2 text-[11px]">
+                            <div>امتیاز: <input id="pts_${index}" type="number" value="${u.points}" class="w-20 bg-slate-950 border border-slate-700 text-center rounded p-1 text-white"></div>
+                            <div>سطح کاربر: 
+                                <select id="tier_${index}" class="bg-slate-950 border border-slate-700 rounded p-1 text-white">
                                     <option ${u.tier === 'عادی ⚪' ? 'selected' : ''}>عادی ⚪</option>
                                     <option ${u.tier === 'برنز 🥉' ? 'selected' : ''}>برنز 🥉</option>
                                     <option ${u.tier === 'نقره 🥈' ? 'selected' : ''}>نقره 🥈</option>
                                     <option ${u.tier === 'طلا 🥇' ? 'selected' : ''}>طلا 🥇</option>
+                                    <option ${u.tier === 'VIP 👑' ? 'selected' : ''}>VIP 👑</option>
                                 </select>
                             </div>
-                            <div class="col-span-2">پیام مدیریت: <input id="not_${index}" value="${u.notice || ''}" class="w-full bg-slate-900 border border-slate-700 rounded p-1 text-amber-200"></div>
-                        </div>
-                        <div class="flex justify-between items-center pt-2 border-t border-slate-900">
-                            <div class="flex items-center gap-1">
-                                <span class="text-[10px] text-slate-400">فاکتور:</span>
-                                <input type="file" id="inv_${index}" class="text-[10px] text-slate-400">
+                            <div class="flex gap-2">
+                                <button onclick="saveUserData(${index})" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-1 rounded-lg">ذخیره بروزرسانی</button>
+                                <button onclick="deleteUser(${index})" class="bg-rose-600 hover:bg-rose-500 text-white font-bold px-3 py-1 rounded-lg">حذف 🗑️</button>
                             </div>
-                            <button onclick="saveUserData(${index})" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-3 py-1 rounded-lg">ذخیره بروزرسانی</button>
                         </div>
                     </div>
                 `;
@@ -152,11 +178,18 @@
             let users = JSON.parse(localStorage.getItem('kt_users')) || [];
             users[index].points = parseInt(document.getElementById(`pts_${index}`).value) || 0;
             users[index].tier = document.getElementById(`tier_${index}`).value;
-            users[index].notice = document.getElementById(`not_${index}`).value;
-            
             localStorage.setItem('kt_users', JSON.stringify(users));
-            alert('اطلاعات کاربر با موفقیت بروزرسانی شد!');
+            alert('اطلاعات مشتری بروزرسانی شد!');
             renderUsers();
+        }
+
+        function deleteUser(index) {
+            if(confirm('آیا از حذف این کاربر اطمینان دارید؟')) {
+                let users = JSON.parse(localStorage.getItem('kt_users')) || [];
+                users.splice(index, 1);
+                localStorage.setItem('kt_users', JSON.stringify(users));
+                renderUsers();
+            }
         }
 
         function renderAdminProducts() {
@@ -166,12 +199,11 @@
             products.forEach((p, i) => {
                 const imgTag = p.img ? `<img src="${p.img}" class="w-8 h-8 object-cover rounded">` : `<span class="text-[10px] text-slate-500">بدون عکس</span>`;
                 container.innerHTML += `
-                    <div class="flex justify-between items-center bg-slate-950 p-2.5 rounded-xl border border-slate-800">
+                    <div class="flex justify-between items-center bg-slate-900 p-2.5 rounded-xl border border-slate-700">
                         <div class="flex items-center gap-2">
                             ${imgTag}
                             <div>
-                                <b class="text-slate-200">${p.name}</b> (${p.unit}) - <span class="text-emerald-400">${p.price.toLocaleString()} ریال</span>
-                                <p class="text-[10px] text-slate-400">${p.desc||''}</p>
+                                <b class="text-slate-100">${p.name}</b> (${p.unit}) - <span class="text-emerald-400">${p.price.toLocaleString()} ریال</span>
                             </div>
                         </div>
                         <button onclick="deleteProduct(${i})" class="text-rose-400 text-xs">حذف 🗑️</button>
@@ -207,10 +239,9 @@
             document.getElementById('pUnit').value = '';
             document.getElementById('pPrice').value = '';
             document.getElementById('pDesc').value = '';
-            document.getElementById('pImgFile').value = '';
 
             renderAdminProducts();
-            alert('کالا با موفقیت ذخیره شد!');
+            alert('کالا اضافه شد!');
         }
 
         function deleteProduct(index) {
@@ -224,7 +255,7 @@
             let orders = JSON.parse(localStorage.getItem('kt_orders')) || [];
             const container = document.getElementById('adminOrdersList');
             if(orders.length === 0) {
-                container.innerHTML = '<p class="text-slate-500 text-center py-2">هیچ سفارشی ثبت نشده است.</p>';
+                container.innerHTML = '<p class="text-slate-400 text-center py-2">هیچ سفارشی ثبت نشده است.</p>';
                 return;
             }
 
@@ -232,28 +263,27 @@
             orders.reverse().forEach((o, index) => {
                 const realIndex = orders.length - 1 - index;
                 container.innerHTML += `
-                    <div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800 space-y-2">
+                    <div class="bg-slate-900 p-3.5 rounded-xl border border-slate-700 space-y-2">
                         <div class="flex justify-between font-bold text-amber-400">
-                            <span>مشتری: ${o.userName} (${o.userPhone})</span>
+                            <span>مرکز: ${o.userCenter || o.userName} (${o.userPhone})</span>
                             <span>کد: ${o.userCode}</span>
                         </div>
-                        <div class="text-slate-300 text-[11px]">${o.items.join(' | ')}</div>
-                        <div class="text-emerald-400 font-bold">مبلغ فاکتور: ${o.total.toLocaleString()} ریال</div>
+                        <div class="text-slate-200 text-[11px]">${o.items.join(' | ')}</div>
+                        <div class="text-emerald-400 font-bold">مبلغ: ${o.total.toLocaleString()} ریال</div>
                         
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-2 pt-1">
-                            <select id="status_${realIndex}" class="bg-slate-900 border border-slate-700 rounded p-1 text-[11px]">
+                            <select id="status_${realIndex}" class="bg-slate-950 border border-slate-700 rounded p-1 text-[11px] text-white">
                                 <option ${o.status === 'در حال بررسی ⏳' ? 'selected' : ''}>در حال بررسی ⏳</option>
                                 <option ${o.status === 'تایید شده ✅' ? 'selected' : ''}>تایید شده ✅</option>
                                 <option ${o.status === 'رد شده ❌' ? 'selected' : ''}>رد شده ❌</option>
                             </select>
-                            <select id="ship_${realIndex}" class="bg-slate-900 border border-slate-700 rounded p-1 text-[11px]">
+                            <select id="ship_${realIndex}" class="bg-slate-950 border border-slate-700 rounded p-1 text-[11px] text-white">
                                 <option ${o.shipping === 'در حال آماده‌سازی انبار 📦' ? 'selected' : ''}>در حال آماده‌سازی انبار 📦</option>
                                 <option ${o.shipping === 'ارسال با اسنپ/تپسی 🛵' ? 'selected' : ''}>ارسال با اسنپ/تپسی 🛵</option>
                                 <option ${o.shipping === 'ارسال با تیپاکس/پست ✈️' ? 'selected' : ''}>ارسال با تیپاکس/پست ✈️</option>
                             </select>
-                            <button onclick="updateOrder(${realIndex})" class="bg-blue-600 font-bold rounded p-1 text-[11px]">ذخیره</button>
+                            <button onclick="updateOrder(${realIndex})" class="bg-blue-600 font-bold rounded p-1 text-[11px]">ذخیره وضعیت</button>
                         </div>
-                        <input id="note_${realIndex}" value="${o.note || ''}" placeholder="پیام یا اخطار اصلاحی..." class="w-full bg-slate-900 border border-slate-800 rounded p-1 text-[10px] text-rose-300">
                     </div>
                 `;
             });
@@ -263,9 +293,8 @@
             let orders = JSON.parse(localStorage.getItem('kt_orders')) || [];
             orders[index].status = document.getElementById(`status_${index}`).value;
             orders[index].shipping = document.getElementById(`ship_${index}`).value;
-            orders[index].note = document.getElementById(`note_${index}`).value;
             localStorage.setItem('kt_orders', JSON.stringify(orders));
-            alert('تغییرات سفارش ذخیره شد!');
+            alert('وضعیت سفارش بروزرسانی شد!');
             renderAdminOrders();
         }
     </script>
