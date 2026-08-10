@@ -225,7 +225,7 @@
   <div class="card header-card">
     <div>
       <h3 style="color: var(--primary); font-size: 1.2rem;">پنل مدیریت کاریز طب</h3>
-      <p style="font-size: 0.8rem; color: var(--text-muted);">مدیریت اعضا، محصولات بی‌نهایت و آیکون‌ها</p>
+      <p style="font-size: 0.8rem; color: var(--text-muted);">مدیریت اعضا، امتیازات، کالاها و گزارشات</p>
     </div>
     <div style="display: flex; gap: 8px;">
       <button class="btn btn-danger" onclick="adminLogout()">🚪 خروج</button>
@@ -309,7 +309,7 @@
   </div>
 
   <div class="card">
-    <h4 style="color: var(--primary); margin-bottom: 10px;">👥 لیست تمامی اعضای باشگاه</h4>
+    <h4 style="color: var(--primary); margin-bottom: 10px;">👥 لیست تمامی اعضا و ثبت امتیاز باشگاه</h4>
     <div id="users-list-container"></div>
   </div>
 
@@ -338,7 +338,6 @@
 </div>
 
 <script>
-  // خواندن لحظه‌ای دیتابیس با هماهنگی دقیق حافظه مرورگر
   function getDB() {
     return JSON.parse(localStorage.getItem('karizteb_db')) || {
       users: [],
@@ -364,7 +363,6 @@
     document.getElementById('admin-ann-text').value = ann.text || '';
   }
 
-  // ثبت مطمئن و بدون خطای محصول جدید
   function addNewProduct() {
     const name = document.getElementById('prod-name').value.trim();
     const unit = document.getElementById('prod-unit').value;
@@ -372,26 +370,13 @@
     const price = parseInt(priceStr) || 0;
     const fileInput = document.getElementById('prod-img');
 
-    if (!name) {
-      alert('لطفاً نام محصول را وارد کنید.');
-      return;
-    }
-
-    if (price <= 0) {
-      alert('لطفاً یک قیمت معتبر به ریال وارد کنید.');
-      return;
-    }
+    if (!name) { alert('لطفاً نام محصول را وارد کنید.'); return; }
+    if (price <= 0) { alert('لطفاً یک قیمت معتبر به ریال وارد کنید.'); return; }
 
     const db = getDB();
     db.products = db.products || [];
 
-    const newProd = {
-      id: Date.now(),
-      name: name,
-      unit: unit,
-      price: price,
-      img: ''
-    };
+    const newProd = { id: Date.now(), name: name, unit: unit, price: price, img: '' };
 
     if (fileInput.files && fileInput.files[0]) {
       const reader = new FileReader();
@@ -467,9 +452,7 @@
 
   function toggleEditProdBox(prodId) {
     const row = document.getElementById('edit-prod-row-' + prodId);
-    if (row) {
-      row.style.display = (row.style.display === 'none' ? 'table-row' : 'none');
-    }
+    if (row) { row.style.display = (row.style.display === 'none' ? 'table-row' : 'none'); }
   }
 
   function saveProdChanges(prodId) {
@@ -509,6 +492,7 @@
     }
   }
 
+  // رندر اعضا با قابلیت ویرایش امتیاز مشتری
   function renderUsersList() {
     const container = document.getElementById('users-list-container');
     container.innerHTML = '';
@@ -535,7 +519,8 @@
           <div>🏙️ <strong>شهر:</strong> <input type="text" id="edit-city-${user.id}" value="${user.city}" class="form-control" style="padding:4px 6px; font-size:0.8rem;"></div>
           <div>📱 <strong>همراه:</strong> <input type="text" id="edit-phone-${user.id}" value="${user.phone}" class="form-control" style="padding:4px 6px; font-size:0.8rem;"></div>
           <div>👤 <strong>کاربری:</strong> <input type="text" id="edit-user-${user.id}" value="${user.username}" class="form-control" style="padding:4px 6px; font-size:0.8rem;"></div>
-          <div style="grid-column: span 2;">🔑 <strong>رمز عبور:</strong> <input type="text" id="edit-pass-${user.id}" value="${user.password}" class="form-control" style="padding:4px 6px; font-size:0.8rem;"></div>
+          <div>🔑 <strong>رمز عبور:</strong> <input type="text" id="edit-pass-${user.id}" value="${user.password}" class="form-control" style="padding:4px 6px; font-size:0.8rem;"></div>
+          <div>⭐ <strong>امتیاز باشگاه:</strong> <input type="number" id="edit-points-${user.id}" value="${user.points || 100}" class="form-control" style="padding:4px 6px; font-size:0.8rem; font-weight:bold; color:var(--primary);"></div>
         </div>
 
         <div class="form-group" style="margin-top: 6px; margin-bottom: 8px;">
@@ -543,7 +528,7 @@
         </div>
 
         <div class="flex-gap">
-          <button class="btn btn-primary" style="font-size: 0.75rem; padding: 5px 10px; flex: 1;" onclick="updateUserInfo(${user.id})">✏️ ویرایش</button>
+          <button class="btn btn-primary" style="font-size: 0.75rem; padding: 5px 10px; flex: 1;" onclick="updateUserInfo(${user.id})">✏️ ویرایش مشخصات و امتیاز</button>
           <button class="btn btn-accent" style="font-size: 0.75rem; padding: 5px 10px; flex: 1;" onclick="savePrivateMsg(${user.id})">✉️ ثبت پیام</button>
           <button class="btn btn-outline" style="font-size: 0.75rem; padding: 5px 10px; flex: 1;" onclick="copySmsText('${user.fullname}', '${user.username}', '${user.password}')">📋 کپی</button>
           <button class="btn btn-danger" style="font-size: 0.75rem; padding: 5px 10px; flex: 1;" onclick="deleteUser(${user.id})">🗑️ حذف</button>
@@ -554,6 +539,7 @@
     });
   }
 
+  // ثبت و به‌روزرسانی مشخصات و امتیازات مشتری
   function updateUserInfo(userId) {
     const db = getDB();
     const user = (db.users || []).find(u => u.id === userId);
@@ -563,9 +549,10 @@
       user.phone = document.getElementById('edit-phone-' + userId).value.trim();
       user.username = document.getElementById('edit-user-' + userId).value.trim();
       user.password = document.getElementById('edit-pass-' + userId).value.trim();
+      user.points = parseInt(document.getElementById('edit-points-' + userId).value) || 0;
 
       saveDB(db);
-      alert('اطلاعات کاربر به‌روزرسانی شد.');
+      alert('مشخصات و امتیاز مشتری با موفقیت به‌روزرسانی شد.');
       renderUsersList();
     }
   }
