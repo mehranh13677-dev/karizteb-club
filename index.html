@@ -266,8 +266,11 @@
     }
 
     .order-table-container {
-      overflow-x: auto;
+      max-height: 280px;
+      overflow-y: auto;
       margin-top: 10px;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
     }
 
     table {
@@ -286,6 +289,9 @@
       background-color: #fafafa;
       color: var(--text-muted);
       font-weight: 600;
+      position: sticky;
+      top: 0;
+      z-index: 2;
     }
 
     .prod-thumb {
@@ -321,7 +327,6 @@
 
 <div class="container">
 
-  <!-- ==================== صفحه ورود ==================== -->
   <div id="auth-page" class="card">
     <div style="text-align: center; margin-bottom: 20px;">
       <div class="logo-badge" style="margin: 0 auto 12px auto; width: 56px; height: 56px; font-size: 1.4rem;">KT</div>
@@ -348,7 +353,6 @@
     <button class="btn btn-accent" onclick="toggleRegister(true)">ثبت نام حساب جدید</button>
   </div>
 
-  <!-- ==================== صفحه ثبت نام ==================== -->
   <div id="register-page" class="card hidden">
     <h3 style="margin-bottom: 14px; color: var(--primary); font-size: 1.2rem;">ثبت نام در باشگاه مشتریان کاریز طب</h3>
 
@@ -388,7 +392,6 @@
     </form>
   </div>
 
-  <!-- ==================== پنل مشتری ==================== -->
   <div id="customer-panel" class="hidden">
 
     <div class="card header-card">
@@ -436,7 +439,6 @@
       <p id="private-msg-text" style="margin-top: 6px; font-size: 0.9rem;"></p>
     </div>
 
-    <!-- ==================== بخش سفارش مستقیم کالا ==================== -->
     <div class="card">
       <h4 style="margin-bottom: 6px; color: var(--primary); font-size: 1rem;">🛒 سفارش مستقیم کالا</h4>
       <p style="font-size: 0.75rem; color: var(--text-muted); text-align: left; margin-bottom: 8px;">مبالغ به ریال</p>
@@ -590,11 +592,9 @@
       privBox.classList.add('hidden');
     }
 
-    // رندر جدول محصولات برای مشتری
     renderCustomerOrderTable();
   }
 
-  // رندر جدول محصولات قابل سفارش برای مشتری
   function renderCustomerOrderTable() {
     const tbody = document.getElementById('customer-order-table-body');
     db = JSON.parse(localStorage.getItem('karizteb_db')) || { products: [] };
@@ -607,7 +607,7 @@
     }
 
     let html = '';
-    db.products.forEach(function(p, idx) {
+    db.products.forEach(function(p) {
       let imgTag = p.img ? `<img src="${p.img}" class="prod-thumb">` : '—';
       html += `
         <tr>
@@ -626,7 +626,6 @@
     tbody.innerHTML = html;
   }
 
-  // محاسبه زنده ردیف و جمع کل فاکتور
   function updateRowTotal(prodId, price) {
     const qty = parseInt(document.getElementById('qty-' + prodId).value) || 0;
     const rowTotal = qty * price;
@@ -645,7 +644,6 @@
     document.getElementById('grand-total-val').innerText = grandTotal.toLocaleString();
   }
 
-  // ثبت و ارسال سفارش به مدیریت از طریق پیامک به 09398490440
   function submitDirectOrder() {
     if (!currentUser) return;
 
@@ -666,10 +664,8 @@
       return;
     }
 
-    // متن پیامک رسمی و ویرایش‌شده حرفه‌ای
     const smsText = `مدیریت محترم کاریز طب\nیک سفارش جدید توسط مشتری ثبت گردید.\n\n👤 مشتری: ${currentUser.fullname}\n🏥 مرکز: ${currentUser.center} (${currentUser.city})\n📱 همراه: ${currentUser.phone}\n\n📦 اقلام سفارشی:\n${orderItems.join('\n')}\n\n💰 جمع کل فاکتور: ${grandTotal.toLocaleString()} ریال`;
 
-    // ذخیره سفارش در پیام‌ها جهت نمایش در پنل مدیر
     db.messages = db.messages || [];
     db.messages.push({
       id: Date.now(),
@@ -682,15 +678,15 @@
     });
     saveDB();
 
-    // هدایت به نرم‌افزار پیامک گوشی
     window.location.href = 'sms:09398490440?body=' + encodeURIComponent(smsText);
   }
 
+  // ارسال پیامک کد یکتا به شماره مدیر (09398490440)
   function sendSMSConfirm() {
     if (!currentUser) return;
     const code = 'KT-' + currentUser.id.toString().slice(-4);
     const smsText = 'تایید حساب کاریز طب:\nنام: ' + currentUser.fullname + '\nکد: ' + code;
-    window.location.href = 'sms:09035215284?body=' + encodeURIComponent(smsText);
+    window.location.href = 'sms:09398490440?body=' + encodeURIComponent(smsText);
   }
 
   function sendCustomerMessage() {
