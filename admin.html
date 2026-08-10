@@ -14,7 +14,7 @@
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen p-4 pb-20">
 
-    <!-- لایه ورود امنیتی (بدون نمایش رمز و نام کاربری) -->
+    <!-- لایه لاگین محرمانه -->
     <div id="adminLoginBox" class="max-w-md mx-auto my-20 bg-slate-900 border border-slate-800 p-6 rounded-2xl space-y-4 shadow-2xl">
         <h2 class="text-base font-bold text-amber-400 text-center flex items-center justify-center gap-2">
             <span>🔒</span> ورود به پنل مدیریت کاریز طب
@@ -30,7 +30,7 @@
         <button onclick="checkAdminLogin()" class="w-full gold-bg text-slate-950 font-bold py-2.5 rounded-xl text-xs hover:opacity-90 transition">ورود به پنل</button>
     </div>
 
-    <!-- بدنه اصلی مدیریت (پس از ورود) -->
+    <!-- داشبورد اصلی مدیریت -->
     <div id="adminMainContent" class="hidden max-w-4xl mx-auto space-y-6">
 
         <header class="flex justify-between items-center border-b border-slate-800 pb-4">
@@ -46,14 +46,14 @@
 
         <!-- بخش ۱: همگام‌سازی اکسل هلو -->
         <section class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-3">
-            <h2 class="font-bold text-sm text-amber-300 flex items-center gap-2">📁 همگام‌سازی با فایل اکسل هلو</h2>
+            <h2 class="font-bold text-sm text-amber-300">📁 همگام‌سازی با فایل اکسل هلو</h2>
             <div class="flex gap-2 items-center flex-wrap">
                 <input type="file" id="excelUpload" class="text-xs text-slate-400">
-                <button onclick="alert('فایل اکسل با موفقیت پردازش شد!')" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-4 py-2 rounded-xl text-xs">آپلود اکسل هلو</button>
+                <button onclick="alert('فایل اکسل با موفقیت همگام‌سازی شد!')" class="bg-emerald-600 text-white font-bold px-4 py-2 rounded-xl text-xs">آپلود اکسل هلو</button>
             </div>
         </section>
 
-        <!-- بخش ۲: مدیریت اعضای باشگاه، امتیازات، VIP و فاکتور -->
+        <!-- بخش ۲: مدیریت اعضا، امتیاز، تالار VIP و فاکتور -->
         <section class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4">
             <div class="flex justify-between items-center border-b border-slate-800 pb-3 flex-wrap gap-2">
                 <h2 class="font-bold text-sm text-amber-300">👥 مدیریت اعضای باشگاه و امتیازات</h2>
@@ -62,7 +62,7 @@
             <div id="adminUserList" class="space-y-3 text-xs"></div>
         </section>
 
-        <!-- بخش ۳: افزودن و ویرایش کاتالوگ همراه با تصویر اختصاصی -->
+        <!-- بخش ۳: کاتالوگ‌سازی و تصویر محصول -->
         <section class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4">
             <h2 class="font-bold text-sm text-amber-300">📸 افزودن / ویرایش کاتالوگ کالاها</h2>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-2 text-xs">
@@ -81,7 +81,7 @@
             <div id="adminProductList" class="space-y-2 text-xs pt-3"></div>
         </section>
 
-        <!-- بخش ۴: سفارشات آنلاین دریافتی و ارسال بار -->
+        <!-- بخش ۴: سفارشات B2B -->
         <section class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4">
             <h2 class="font-bold text-sm text-blue-400">📋 سفارشات آنلاین دریافتی و پیگیری ارسال</h2>
             <div id="adminOrdersList" class="space-y-3 text-xs"></div>
@@ -104,11 +104,8 @@
             }
         }
 
-        // --- ۱. مدیریت اعضا و امتیازات ---
         function renderUsers() {
-            let users = JSON.parse(localStorage.getItem('kt_users')) || [
-                { name: 'دکتر حسینی', phone: '09121112233', code: 'KT-2233', points: 1200, tier: 'طلا 🥇', notice: 'خوش آمدید' }
-            ];
+            let users = JSON.parse(localStorage.getItem('kt_users')) || [];
             const query = document.getElementById('searchUser')?.value.trim().toLowerCase() || '';
             const container = document.getElementById('adminUserList');
             container.innerHTML = '';
@@ -116,7 +113,7 @@
             const filtered = users.filter(u => u.name.toLowerCase().includes(query) || u.phone.includes(query) || u.code.toLowerCase().includes(query));
 
             if(filtered.length === 0) {
-                container.innerHTML = '<p class="text-slate-500 text-center py-2">مشتری یافت نشد.</p>';
+                container.innerHTML = '<p class="text-slate-500 text-center py-2">هیچ مستری یافت نشد.</p>';
                 return;
             }
 
@@ -158,11 +155,10 @@
             users[index].notice = document.getElementById(`not_${index}`).value;
             
             localStorage.setItem('kt_users', JSON.stringify(users));
-            alert('اطلاعات مشتری با موفقیت بروزرسانی شد!');
+            alert('اطلاعات کاربر با موفقیت بروزرسانی شد!');
             renderUsers();
         }
 
-        // --- ۲. مدیریت کاتالوگ و عکس ---
         function renderAdminProducts() {
             let products = JSON.parse(localStorage.getItem('kt_products')) || [];
             const container = document.getElementById('adminProductList');
@@ -195,9 +191,7 @@
 
             if(imgInput.files && imgInput.files[0]) {
                 const reader = new FileReader();
-                reader.onload = function(e) {
-                    saveProductData(name, unit, price, desc, e.target.result);
-                };
+                reader.onload = function(e) { saveProductData(name, unit, price, desc, e.target.result); };
                 reader.readAsDataURL(imgInput.files[0]);
             } else {
                 saveProductData(name, unit, price, desc, '');
@@ -226,7 +220,6 @@
             renderAdminProducts();
         }
 
-        // --- ۳. سفارشات B2B ---
         function renderAdminOrders() {
             let orders = JSON.parse(localStorage.getItem('kt_orders')) || [];
             const container = document.getElementById('adminOrdersList');
@@ -260,7 +253,7 @@
                             </select>
                             <button onclick="updateOrder(${realIndex})" class="bg-blue-600 font-bold rounded p-1 text-[11px]">ذخیره</button>
                         </div>
-                        <input id="note_${realIndex}" value="${o.note || ''}" placeholder="پیام یا اخطار اصلاحی برای مشتری..." class="w-full bg-slate-900 border border-slate-800 rounded p-1 text-[10px] text-rose-300">
+                        <input id="note_${realIndex}" value="${o.note || ''}" placeholder="پیام یا اخطار اصلاحی..." class="w-full bg-slate-900 border border-slate-800 rounded p-1 text-[10px] text-rose-300">
                     </div>
                 `;
             });
