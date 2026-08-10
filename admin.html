@@ -1,297 +1,501 @@
-
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مدیریت کاریز طب</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet">
-    <style>
-        body { font-family: 'Vazirmatn', sans-serif; }
-        .gold-brand-bg { background: linear-gradient(135deg, #D97706 0%, #F59E0B 50%, #FBBF24 100%); }
-    </style>
-</head>
-<body class="bg-slate-50 text-slate-800 min-h-screen p-4 pb-20">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>پنل مدیریت کاریز طب | سامانه جامع باشگاه مشتریان</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    :root {
+      --primary: #00875a;
+      --primary-hover: #006644;
+      --accent: #f5a623;
+      --accent-hover: #e09216;
+      --bg: #f4f6f8;
+      --card-bg: #ffffff;
+      --text-main: #333333;
+      --text-muted: #666666;
+      --danger: #de350b;
+      --danger-hover: #bd2700;
+      --border-color: #e0e0e0;
+    }
 
-    <!-- لاگین مدیر -->
-    <div id="adminLoginBox" class="max-w-md mx-auto my-16 bg-white border border-slate-200 p-6 rounded-3xl space-y-4 shadow-sm">
-        <h2 class="text-base font-black text-slate-900 text-center flex items-center justify-center gap-2">
-            <span>🔒</span> ورود به مدیریت کاریز طب
-        </h2>
-        <div>
-            <label class="text-[11px] text-slate-500 mb-1 block">نام کاربری:</label>
-            <input id="admUser" type="text" class="w-full bg-slate-50 border border-slate-200 p-3 rounded-xl text-xs text-slate-900 focus:outline-none focus:border-amber-500">
+    * {
+      box-sizing: border-box;
+      font-family: Tahoma, 'Segoe UI', Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text-main);
+      padding: 15px;
+      direction: rtl;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 650px;
+      margin: 0 auto;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 15px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+      border: 1px solid rgba(0, 0, 0, 0.03);
+    }
+
+    .header-card {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .btn {
+      border: none;
+      padding: 10px 16px;
+      border-radius: 10px;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 0.85rem;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #ffffff;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-hover);
+    }
+
+    .btn-accent {
+      background: var(--accent);
+      color: #ffffff;
+    }
+
+    .btn-accent:hover {
+      background: var(--accent-hover);
+    }
+
+    .btn-danger {
+      background: var(--danger);
+      color: #ffffff;
+    }
+
+    .btn-danger:hover {
+      background: var(--danger-hover);
+    }
+
+    .btn-outline {
+      background: transparent;
+      border: 1px solid var(--primary);
+      color: var(--primary);
+    }
+
+    .form-group {
+      margin-bottom: 12px;
+      text-align: right;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.85rem;
+      margin-bottom: 5px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      font-size: 0.9rem;
+      outline: none;
+    }
+
+    .form-control:focus {
+      border-color: var(--primary);
+    }
+
+    .user-card-item {
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 12px;
+      background: #fafafa;
+    }
+
+    .user-card-header {
+      font-weight: bold;
+      color: var(--primary);
+      font-size: 0.95rem;
+      margin-bottom: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .user-details {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+      line-height: 1.8;
+    }
+
+    .flex-gap {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      font-size: 0.85rem;
+    }
+
+    th, td {
+      border: 1px solid var(--border-color);
+      padding: 9px;
+      text-align: center;
+    }
+
+    th {
+      background-color: #f0f0f0;
+      color: var(--text-main);
+    }
+
+    .msg-card-item {
+      background: #e6f7ff;
+      border: 1px solid #91d5ff;
+      border-radius: 10px;
+      padding: 12px;
+      margin-bottom: 10px;
+      font-size: 0.85rem;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- ==================== هدر مدیریت ==================== -->
+  <div class="card header-card">
+    <div>
+      <h3 style="color: var(--primary); font-size: 1.2rem;">پنل مدیریت کاریز طب</h3>
+      <p style="font-size: 0.8rem; color: var(--text-muted);">مدیریت اعضا، پیام‌ها و گزارشات</p>
+    </div>
+    <button class="btn btn-danger" onclick="location.reload()">🔄 بروزرسانی لیست</button>
+  </div>
+
+  <!-- ==================== بخش انتشار بنر و پیام عمومی ==================== -->
+  <div class="card">
+    <h4 style="color: var(--primary); margin-bottom: 10px;">📢 مدیریت بنر و پیام عمومی مشتریان</h4>
+    
+    <div class="form-group">
+      <label for="admin-ann-title">عنوان اطلاعیه</label>
+      <input type="text" id="admin-ann-title" class="form-control" placeholder="عنوان پیام عمومی">
+    </div>
+
+    <div class="form-group">
+      <label for="admin-ann-text">متن اطلاعیه</label>
+      <textarea id="admin-ann-text" class="form-control" rows="3" placeholder="متن پیام تبلیغاتی یا عمومی..."></textarea>
+    </div>
+
+    <div class="form-group">
+      <label for="admin-ann-img">تصویر بنر تبلیغاتی (اختیاری)</label>
+      <input type="file" id="admin-ann-img" accept="image/*" class="form-control">
+    </div>
+
+    <button class="btn btn-primary" style="width: 100%;" onclick="savePublicAnnouncement()">انتشار پیام برای تمامی کاربران</button>
+  </div>
+
+  <!-- ==================== لیست پیام‌های دریافتی از مشتریان ==================== -->
+  <div class="card">
+    <h4 style="color: var(--primary); margin-bottom: 10px;">📩 پیام‌ها و اعلام نیازهای دریافتی مشتریان</h4>
+    <div id="customer-messages-container"></div>
+  </div>
+
+  <!-- ==================== لیست کامل و جامع تمامی اعضا ==================== -->
+  <div class="card">
+    <h4 style="color: var(--primary); margin-bottom: 10px;">👥 لیست تمامی اعضای ثبت‌نام شده</h4>
+    <div id="users-list-container"></div>
+  </div>
+
+  <!-- ==================== آمار تفکیک استانی و خروجی ==================== -->
+  <div class="card">
+    <h4 style="color: var(--primary); margin-bottom: 8px;">📊 گزارش تفکیک شهری / استانی اعضا</h4>
+    
+    <div class="flex-gap" style="margin-bottom: 12px;">
+      <button class="btn btn-accent" style="flex: 1;" onclick="exportToExcel()">📥 دانلود فایل اکسل (CSV)</button>
+      <button class="btn btn-accent" style="flex: 1;" onclick="exportToPDF()">📄 دانلود فایل PDF</button>
+    </div>
+
+    <div id="province-report-table"></div>
+  </div>
+
+  <!-- ==================== پشتیبان‌گیری دیتابیس جهت آپدیت‌ها ==================== -->
+  <div class="card">
+    <h4 style="color: var(--primary); margin-bottom: 6px;">💾 پشتیبان‌گیری دائم از اطلاعات اعضا</h4>
+    <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 10px;">جهت جلوگیری از پاک شدن اعضا در آپدیت‌های بعدی کدهای سیستم:</p>
+    
+    <div class="flex-gap">
+      <button class="btn btn-primary" style="flex: 1;" onclick="exportDatabase()">⬇️ دانلود بک‌آپ اطلاعات</button>
+      <input type="file" id="import-db-file" style="display: none;" onchange="importDatabase(event)">
+      <button class="btn btn-outline" style="flex: 1;" onclick="document.getElementById('import-db-file').click()">⬆️ بازیابی فایل بک‌آپ</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- ==================== اسکریپت‌های مدیریت ==================== -->
+<script>
+  // بارگذاری دیتابیس مشترک با مشتریان
+  let db = JSON.parse(localStorage.getItem('karizteb_db')) || {
+    users: [],
+    publicAnnouncement: { title: 'خوش آمدید', text: 'به باشگاه مشتریان کاریز طب خوش آمدید.', img: '' },
+    messages: []
+  };
+
+  function saveDB() {
+    localStorage.setItem('karizteb_db', JSON.stringify(db));
+  }
+
+  // رندر اولیه تمام بخش‌های مدیریت
+  function initAdmin() {
+    renderUsersList();
+    renderCustomerMessages();
+    renderProvinceReport();
+
+    // پر کردن کادرهای پیام عمومی
+    const ann = db.publicAnnouncement || {};
+    document.getElementById('admin-ann-title').value = ann.title || '';
+    document.getElementById('admin-ann-text').value = ann.text || '';
+  }
+
+  // ۱. رندر تمام اعضای ثبت‌نام شده
+  function renderUsersList() {
+    const container = document.getElementById('users-list-container');
+    container.innerHTML = '';
+
+    if (!db.users || db.users.length === 0) {
+      container.innerHTML = '<p style="font-size: 0.85rem; color: #888; text-align: center; padding: 15px;">هیچ کاربری هنوز ثبت‌نام نکرده است.</p>';
+      return;
+    }
+
+    db.users.forEach(function(user) {
+      const card = document.createElement('div');
+      card.className = 'user-card-item';
+
+      card.innerHTML = `
+        <div class="user-card-header">
+          <span>${user.fullname}</span>
+          <small style="color: var(--accent); font-weight: bold;">کد: KT-${user.id.toString().slice(-4)}</small>
         </div>
-        <div>
-            <label class="text-[11px] text-slate-500 mb-1 block">رمز عبور:</label>
-            <input id="admPass" type="password" class="w-full bg-slate-50 border border-slate-200 p-3 rounded-xl text-xs text-slate-900 focus:outline-none focus:border-amber-500">
+        <div class="user-details">
+          📍 <strong>مرکز/شهر:</strong> ${user.center} (${user.city})<br>
+          📱 <strong>شماره همراه:</strong> ${user.phone}<br>
+          👤 <strong>نام کاربری:</strong> <span style="color:#00875a; font-weight:bold;">${user.username}</span> | 🔑 <strong>رمز عبور:</strong> ${user.password}
         </div>
         
-        <div class="flex gap-2">
-            <button onclick="checkAdminLogin()" class="flex-1 gold-brand-bg text-white font-bold py-3 rounded-xl text-xs hover:opacity-90 shadow-sm">ورود مدیر</button>
-            <button onclick="adminBioSecure()" class="bg-slate-800 hover:bg-slate-700 text-white font-bold px-4 py-3 rounded-xl text-xs">
-                ☝️ اثر انگشت
-            </button>
+        <div class="form-group" style="margin-top: 8px;">
+          <input type="text" id="priv-msg-${user.id}" value="${user.privateMsg || ''}" class="form-control" style="font-size: 0.82rem;" placeholder="پیام اختصاصی که فقط این مشتری ببیند...">
         </div>
-    </div>
 
-    <!-- داشبورد اصلی مدیر -->
-    <div id="adminMainContent" class="hidden max-w-4xl mx-auto space-y-6">
+        <div class="flex-gap">
+          <button class="btn btn-primary" style="font-size: 0.78rem; padding: 6px 12px;" onclick="savePrivateMsg(${user.id})">ثبت پیام اختصاصی</button>
+          <button class="btn btn-outline" style="font-size: 0.78rem; padding: 6px 12px;" onclick="copySmsText('${user.fullname}', '${user.username}', '${user.password}')">📋 کپی پیامک اکانت</button>
+          <button class="btn btn-danger" style="font-size: 0.78rem; padding: 6px 12px;" onclick="deleteUser(${user.id})">حذف کاربر</button>
+        </div>
+      `;
 
-        <header class="flex justify-between items-center bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 gold-brand-bg rounded-xl flex items-center justify-center font-black text-white">KT</div>
-                <div>
-                    <h1 class="font-black text-slate-900 text-base">پنل مدیریت کاریز طب</h1>
-                    <p class="text-[10px] text-slate-500">مدیریت مشتریان، کاتالوگ و سفارشات</p>
-                </div>
-            </div>
-            <button onclick="logoutAdmin()" class="bg-rose-50 text-rose-600 border border-rose-200 text-xs px-3 py-1.5 rounded-xl font-bold hover:bg-rose-100">خروج 🚪</button>
-        </header>
+      container.appendChild(card);
+    });
+  }
 
-        <section class="bg-white border border-slate-200 rounded-3xl p-5 space-y-3 shadow-sm">
-            <h2 class="font-bold text-sm text-slate-900">📁 همگام‌سازی با فایل اکسل هلو</h2>
-            <div class="flex gap-2 items-center flex-wrap">
-                <input type="file" id="excelUpload" class="text-xs text-slate-500">
-                <button onclick="alert('فایل اکسل با موفقیت همگام‌سازی شد!')" class="bg-emerald-600 text-white font-bold px-4 py-2 rounded-xl text-xs shadow-sm">آپلود اکسل هلو</button>
-            </div>
-        </section>
+  // ذخیره پیام اختصاصی مدیر به یک کاربر مشخص
+  function savePrivateMsg(userId) {
+    const inputField = document.getElementById('priv-msg-' + userId);
+    const user = db.users.find(u => u.id === userId);
 
-        <section class="bg-white border border-slate-200 rounded-3xl p-5 space-y-4 shadow-sm">
-            <div class="flex justify-between items-center border-b border-slate-100 pb-3 flex-wrap gap-2">
-                <h2 class="font-bold text-sm text-slate-900">👥 مدیریت اعضای باشگاه و اطلاعات ثبت‌نامی</h2>
-                <input id="searchUser" onkeyup="renderUsers()" placeholder="🔍 جستجو..." class="bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 text-xs text-slate-900">
-            </div>
-            <div id="adminUserList" class="space-y-3 text-xs"></div>
-        </section>
+    if (user && inputField) {
+      user.privateMsg = inputField.value.trim();
+      saveDB();
+      alert('پیام اختصاصی با موفقیت برای ' + user.fullname + ' ثبت شد.');
+    }
+  }
 
-        <section class="bg-white border border-slate-200 rounded-3xl p-5 space-y-4 shadow-sm">
-            <h2 class="font-bold text-sm text-slate-900">📸 افزودن / ویرایش کاتالوگ کالاها</h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-2 text-xs">
-                <input id="pName" placeholder="نام محصول" class="bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-slate-900">
-                <input id="pUnit" placeholder="واحد (مثلاً کارتنی)" class="bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-slate-900">
-                <input id="pPrice" type="number" placeholder="قیمت (ریال)" class="bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-slate-900">
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-2 text-xs">
-                <input id="pDesc" placeholder="توضیحات کالا (اختیاری)" class="bg-slate-50 border border-slate-200 rounded-xl p-2.5 col-span-2 text-slate-900">
-                <div class="flex items-center gap-1 bg-slate-50 border border-slate-200 rounded-xl px-2">
-                    <span class="text-[10px] text-slate-400 shrink-0">تصویر:</span>
-                    <input type="file" id="pImgFile" accept="image/*" class="text-[10px] text-slate-500 w-full">
-                </div>
-            </div>
-            <button onclick="addProduct()" class="w-full gold-brand-bg text-white font-bold rounded-xl py-2.5 text-xs hover:opacity-90 shadow-sm">+ ثبت کالا در کاتالوگ</button>
-            <div id="adminProductList" class="space-y-2 text-xs pt-3"></div>
-        </section>
+  // کپی سریع پیامک اطلاعات کاربری برای مشتری
+  function copySmsText(fullname, username, password) {
+    const sms = 'مشتری گرامی ' + fullname + '\nاطلاعات ورود شما به باشگاه کاریز طب:\nنام کاربری: ' + username + '\nرمز عبور: ' + password + '\nلینک ورود: karizteb.ir';
+    navigator.clipboard.writeText(sms);
+    alert('متن پیامک حساب کاربری کپی شد:\n\n' + sms);
+  }
 
-        <section class="bg-white border border-slate-200 rounded-3xl p-5 space-y-4 shadow-sm">
-            <h2 class="font-bold text-sm text-slate-900">📋 سفارشات آنلاین دریافتی و ارسال بار</h2>
-            <div id="adminOrdersList" class="space-y-3 text-xs"></div>
-        </section>
+  // حذف کاربر
+  function deleteUser(userId) {
+    if (confirm('آیا از حذف این کاربر اطمینان دارید؟')) {
+      db.users = db.users.filter(u => u.id !== userId);
+      saveDB();
+      renderUsersList();
+      renderProvinceReport();
+    }
+  }
 
-    </div>
+  // ۲. نمایش پیام‌های دریافتی از مشتریان
+  function renderCustomerMessages() {
+    const container = document.getElementById('customer-messages-container');
+    container.innerHTML = '';
 
-    <script>
-        function checkAdminLogin() {
-            const u = document.getElementById('admUser').value.trim();
-            const p = document.getElementById('admPass').value.trim();
-            if(u === 'mehran67' && p === 'kariz6799') {
-                document.getElementById('adminLoginBox').classList.add('hidden');
-                document.getElementById('adminMainContent').classList.remove('hidden');
-                renderUsers();
-                renderAdminProducts();
-                renderAdminOrders();
-            } else {
-                alert('نام کاربری یا رمز عبور اشتباه است!');
-            }
-        }
+    if (!db.messages || db.messages.length === 0) {
+      container.innerHTML = '<p style="font-size: 0.85rem; color: #888; text-align: center;">پیام جدیدی دریافت نشده است.</p>';
+      return;
+    }
 
-        async function adminBioSecure() {
-            document.getElementById('adminLoginBox').classList.add('hidden');
-            document.getElementById('adminMainContent').classList.remove('hidden');
-            renderUsers();
-            renderAdminProducts();
-            renderAdminOrders();
-        }
+    db.messages.forEach(function(msg) {
+      const item = document.createElement('div');
+      item.className = 'msg-card-item';
 
-        function logoutAdmin() {
-            document.getElementById('adminMainContent').classList.add('hidden');
-            document.getElementById('adminLoginBox').classList.remove('hidden');
-        }
+      let imgHtml = '';
+      if (msg.img) {
+        imgHtml = '<br><img src="' + msg.img + '" style="max-width: 100%; border-radius: 8px; margin-top: 8px;">';
+      }
 
-        function renderUsers() {
-            let users = JSON.parse(localStorage.getItem('kt_users')) || [];
-            const query = document.getElementById('searchUser')?.value.trim().toLowerCase() || '';
-            const container = document.getElementById('adminUserList');
-            container.innerHTML = '';
+      item.innerHTML = `
+        <strong>فرستنده: ${msg.userName} (${msg.userCenter || 'مشتری'})</strong> - <small style="color:#666;">تاریخ: ${msg.date}</small>
+        <p style="margin-top: 5px; color:#333;">${msg.text}</p>
+        ${imgHtml}
+      `;
 
-            const filtered = users.filter(u => 
-                (u.name && u.name.toLowerCase().includes(query)) || 
-                (u.center && u.center.toLowerCase().includes(query)) || 
-                (u.phone && u.phone.includes(query))
-            );
+      container.appendChild(item);
+    });
+  }
 
-            if(filtered.length === 0) {
-                container.innerHTML = '<p class="text-slate-400 text-center py-2">مشتری یافت نشد.</p>';
-                return;
-            }
+  // ۳. ذخیره و انتشار بنر اطلاع‌رسانی عمومی
+  function savePublicAnnouncement() {
+    const title = document.getElementById('admin-ann-title').value.trim();
+    const text = document.getElementById('admin-ann-text').value.trim();
+    const fileInput = document.getElementById('admin-ann-img');
 
-            filtered.forEach((u, index) => {
-                container.innerHTML += `
-                    <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-3">
-                        <div class="flex justify-between font-bold text-amber-600">
-                            <span>${u.name} | ${u.center || 'مرکز ثبت نشده'} (${u.city || ''})</span>
-                            <span class="text-slate-900">کد: ${u.code}</span>
-                        </div>
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-2 text-[11px] text-slate-600 bg-white p-2.5 rounded-xl border border-slate-100">
-                            <div>📞 تلفن: <b class="text-slate-900">${u.phone}</b></div>
-                            <div>👤 نام کاربری: <b class="text-emerald-600">${u.username || '---'}</b></div>
-                            <div>🔑 رمز عبور: <b class="text-amber-600">${u.pass || '---'}</b></div>
-                        </div>
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-2 text-[11px]">
-                            <div>امتیاز: <input id="pts_${index}" type="number" value="${u.points}" class="w-20 bg-white border border-slate-200 text-center rounded-lg p-1 text-slate-900"></div>
-                            <div>سطح کاربر: 
-                                <select id="tier_${index}" class="bg-white border border-slate-200 rounded-lg p-1 text-slate-900">
-                                    <option ${u.tier === 'عادی ⚪' ? 'selected' : ''}>عادی ⚪</option>
-                                    <option ${u.tier === 'برنز 🥉' ? 'selected' : ''}>برنز 🥉</option>
-                                    <option ${u.tier === 'نقره 🥈' ? 'selected' : ''}>نقره 🥈</option>
-                                    <option ${u.tier === 'طلا 🥇' ? 'selected' : ''}>طلا 🥇</option>
-                                    <option ${u.tier === 'VIP 👑' ? 'selected' : ''}>VIP 👑</option>
-                                </select>
-                            </div>
-                            <div class="flex gap-2">
-                                <button onclick="saveUserData(${index})" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-1 rounded-lg">ذخیره</button>
-                                <button onclick="deleteUser(${index})" class="bg-rose-600 hover:bg-rose-500 text-white font-bold px-3 py-1 rounded-lg">حذف 🗑️</button>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            });
-        }
+    if (fileInput.files && fileInput.files[0]) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        db.publicAnnouncement = {
+          title: title,
+          text: text,
+          img: e.target.result
+        };
+        saveDB();
+        alert('اطلاعیه عمومی با تصویر جدید منتشر شد.');
+      };
+      reader.readAsDataURL(fileInput.files[0]);
+    } else {
+      db.publicAnnouncement = {
+        title: title,
+        text: text,
+        img: (db.publicAnnouncement ? db.publicAnnouncement.img : '')
+      };
+      saveDB();
+      alert('اطلاعیه متنی با موفقیت منتشر شد.');
+    }
+  }
 
-        function saveUserData(index) {
-            let users = JSON.parse(localStorage.getItem('kt_users')) || [];
-            users[index].points = parseInt(document.getElementById(`pts_${index}`).value) || 0;
-            users[index].tier = document.getElementById(`tier_${index}`).value;
-            localStorage.setItem('kt_users', JSON.stringify(users));
-            alert('اطلاعات بروزرسانی شد!');
-            renderUsers();
-        }
+  // ۴. جدول گزارش‌گیری تفکیک استانی/شهری
+  function renderProvinceReport() {
+    const report = {};
 
-        function deleteUser(index) {
-            if(confirm('آیا از حذف این کاربر اطمینان دارید؟')) {
-                let users = JSON.parse(localStorage.getItem('kt_users')) || [];
-                users.splice(index, 1);
-                localStorage.setItem('kt_users', JSON.stringify(users));
-                renderUsers();
-            }
-        }
+    if (db.users) {
+      db.users.forEach(function(u) {
+        const cityKey = u.city || 'نامشخص';
+        report[cityKey] = (report[cityKey] || 0) + 1;
+      });
+    }
 
-        function renderAdminProducts() {
-            let products = JSON.parse(localStorage.getItem('kt_products')) || [];
-            const container = document.getElementById('adminProductList');
-            container.innerHTML = '';
-            products.forEach((p, i) => {
-                const imgTag = p.img ? `<img src="${p.img}" class="w-8 h-8 object-cover rounded">` : `<span class="text-[10px] text-slate-400">بدون عکس</span>`;
-                container.innerHTML += `
-                    <div class="flex justify-between items-center bg-slate-50 p-2.5 rounded-xl border border-slate-200">
-                        <div class="flex items-center gap-2">
-                            ${imgTag}
-                            <div>
-                                <b class="text-slate-900">${p.name}</b> (${p.unit}) - <span class="text-emerald-600 font-bold">${p.price.toLocaleString()} ریال</span>
-                            </div>
-                        </div>
-                        <button onclick="deleteProduct(${i})" class="text-rose-500 text-xs font-bold">حذف 🗑️</button>
-                    </div>
-                `;
-            });
-        }
+    let html = '<table><thead><tr><th>شهر / استان</th><th>تعداد اعضای ثبت‌نامی</th></tr></thead><tbody>';
+    for (let city in report) {
+      html += '<tr><td>' + city + '</td><td>' + report[city] + ' نفر</td></tr>';
+    }
+    html += '</tbody></table>';
 
-        function addProduct() {
-            const name = document.getElementById('pName').value.trim();
-            const unit = document.getElementById('pUnit').value.trim();
-            const price = parseInt(document.getElementById('pPrice').value);
-            const desc = document.getElementById('pDesc').value.trim();
-            const imgInput = document.getElementById('pImgFile');
+    document.getElementById('province-report-table').innerHTML = html;
+  }
 
-            if(!name || !unit || !price) return alert('اطلاعات کالا را کامل وارد کنید.');
+  // خروجی Excel (CSV)
+  function exportToExcel() {
+    let csv = '\uFEFFشهر/استان,تعداد اعضا\n';
+    const report = {};
 
-            if(imgInput.files && imgInput.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(e) { saveProductData(name, unit, price, desc, e.target.result); };
-                reader.readAsDataURL(imgInput.files[0]);
-            } else {
-                saveProductData(name, unit, price, desc, '');
-            }
-        }
+    db.users.forEach(function(u) {
+      const cityKey = u.city || 'نامشخص';
+      report[cityKey] = (report[cityKey] || 0) + 1;
+    });
 
-        function saveProductData(name, unit, price, desc, img) {
-            let products = JSON.parse(localStorage.getItem('kt_products')) || [];
-            products.push({ id: Date.now(), name, unit, price, desc, img });
-            localStorage.setItem('kt_products', JSON.stringify(products));
-            
-            document.getElementById('pName').value = '';
-            document.getElementById('pUnit').value = '';
-            document.getElementById('pPrice').value = '';
-            document.getElementById('pDesc').value = '';
+    for (let city in report) {
+      csv += city + ',' + report[city] + '\n';
+    }
 
-            renderAdminProducts();
-            alert('کالا اضافه شد!');
-        }
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'گزارش_استانی_کاریزطب.csv';
+    link.click();
+  }
 
-        function deleteProduct(index) {
-            let products = JSON.parse(localStorage.getItem('kt_products')) || [];
-            products.splice(index, 1);
-            localStorage.setItem('kt_products', JSON.stringify(products));
-            renderAdminProducts();
-        }
+  // خروجی PDF
+  function exportToPDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    doc.text('Kariz Teb Users Report', 10, 10);
 
-        function renderAdminOrders() {
-            let orders = JSON.parse(localStorage.getItem('kt_orders')) || [];
-            const container = document.getElementById('adminOrdersList');
-            if(orders.length === 0) {
-                container.innerHTML = '<p class="text-slate-400 text-center py-2">هیچ سفارشی ثبت نشده است.</p>';
-                return;
-            }
+    let y = 20;
+    db.users.forEach(function(u, i) {
+      doc.text((i + 1) + '. ' + u.fullname + ' - ' + u.center + ' (' + u.city + ') - Tel: ' + u.phone, 10, y);
+      y += 10;
+    });
 
-            container.innerHTML = '';
-            orders.reverse().forEach((o, index) => {
-                const realIndex = orders.length - 1 - index;
-                container.innerHTML += `
-                    <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-200 space-y-2">
-                        <div class="flex justify-between font-bold text-amber-600">
-                            <span>مرکز: ${o.userCenter || o.userName} (${o.userPhone})</span>
-                            <span class="text-slate-900">کد: ${o.userCode}</span>
-                        </div>
-                        <div class="text-slate-700 text-[11px]">${o.items.join(' | ')}</div>
-                        <div class="text-emerald-600 font-bold">مبلغ: ${o.total.toLocaleString()} ریال</div>
-                        
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-2 pt-1">
-                            <select id="status_${realIndex}" class="bg-white border border-slate-200 rounded-lg p-1 text-[11px] text-slate-900">
-                                <option ${o.status === 'در حال بررسی ⏳' ? 'selected' : ''}>در حال بررسی ⏳</option>
-                                <option ${o.status === 'تایید شده ✅' ? 'selected' : ''}>تایید شده ✅</option>
-                                <option ${o.status === 'رد شده ❌' ? 'selected' : ''}>رد شده ❌</option>
-                            </select>
-                            <select id="ship_${realIndex}" class="bg-white border border-slate-200 rounded-lg p-1 text-[11px] text-slate-900">
-                                <option ${o.shipping === 'در حال آماده‌سازی انبار 📦' ? 'selected' : ''}>در حال آماده‌سازی انبار 📦</option>
-                                <option ${o.shipping === 'ارسال با اسنپ/تپسی 🛵' ? 'selected' : ''}>ارسال با اسنپ/تپسی 🛵</option>
-                                <option ${o.shipping === 'ارسال با تیپاکس/پست ✈️' ? 'selected' : ''}>ارسال با تیپاکس/پست ✈️</option>
-                            </select>
-                            <button onclick="updateOrder(${realIndex})" class="bg-blue-600 font-bold text-white rounded-lg p-1 text-[11px]">ذخیره وضعیت</button>
-                        </div>
-                    </div>
-                `;
-            });
-        }
+    doc.save('گزارش_کاریزطب.pdf');
+  }
 
-        function updateOrder(index) {
-            let orders = JSON.parse(localStorage.getItem('kt_orders')) || [];
-            orders[index].status = document.getElementById(`status_${index}`).value;
-            orders[index].shipping = document.getElementById(`ship_${index}`).value;
-            localStorage.setItem('kt_orders', JSON.stringify(orders));
-            alert('وضعیت سفارش بروزرسانی شد!');
-            renderAdminOrders();
-        }
-    </script>
+  // ۵. خروجی و بازیابی فایل دیتابیس جهت پشتیبان‌گیری
+  function exportDatabase() {
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(db));
+    const dlAnchor = document.createElement('a');
+    dlAnchor.setAttribute("href", dataStr);
+    dlAnchor.setAttribute("download", "karizteb_backup.json");
+    dlAnchor.click();
+  }
+
+  function importDatabase(event) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      try {
+        db = JSON.parse(e.target.result);
+        saveDB();
+        alert('اطلاعات با موفقیت بازیابی شدند.');
+        initAdmin();
+      } catch (err) {
+        alert('فایل وارد شده نامعتبر است.');
+      }
+    };
+    reader.readAsText(event.target.files[0]);
+  }
+
+  // اجرای اولویت‌دار پنل
+  initAdmin();
+</script>
+
 </body>
 </html>
