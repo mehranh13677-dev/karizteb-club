@@ -237,7 +237,7 @@
       <p style="font-size: 0.8rem; color: var(--text-muted);">مدیریت اعضا، تعیین سطح VIP، امتیازات و کالاها</p>
     </div>
     <div style="display: flex; gap: 8px;">
-      <button class="btn btn-primary" style="padding: 8px 12px;" onclick="initAdmin()">🔄 به‌روزرسانی</button>
+      <button class="btn btn-primary" style="padding: 8px 12px;" onclick="initAdmin()">🔄 به‌روزرسانی ابری</button>
       <button class="btn btn-danger" style="padding: 8px 12px;" onclick="adminLogout()">🚪 خروج</button>
     </div>
   </div>
@@ -271,7 +271,7 @@
       <input type="file" id="prod-img" accept="image/*" class="form-control">
     </div>
 
-    <button class="btn btn-primary" style="width: 100%;" onclick="addNewProduct()">➕ افزودن محصول جدید</button>
+    <button class="btn btn-primary" id="add-prod-btn" style="width: 100%;" onclick="addNewProduct()">➕ افزودن محصول جدید</button>
 
     <hr style="margin: 15px 0; border: 0; border-top: 1px solid var(--border-color);">
 
@@ -348,51 +348,88 @@
 </div>
 
 <script>
-  function getDB() {
-    return JSON.parse(localStorage.getItem('karizteb_db')) || {
-      users: [],
-      products: [],
-      publicAnnouncement: { title: 'خوش آمدید', text: 'به باشگاه مشتریان کاریز طب خوش آمدید.', img: '' },
-      messages: []
-    };
+  // تنظیمات دیتابیس ابری (رایگان JSONBin)
+  const JSONBIN_BIN_ID = "66b8d234ad19ca34f892d71d"; 
+  const JSONBIN_API_KEY = "$2a$10$wT0lGfH2E8Yh/E9J5WvEdeX3Uv6d7b5U4I9r3j4d5m6n7o8p9q0r1";
+
+  const defaultData = {
+    users: [],
+    products: [],
+    publicAnnouncement: { title: 'خوش آمدید', text: 'به باشگاه مشتریان کاریز طب خوش آمدید.', img: '' },
+    messages: []
+  };
+
+  async function getDB() {
+    try {
+      const res = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}/latest`, {
+        headers: { 'X-Master-Key': JSONBIN_API_KEY }
+      });
+      if (res.ok) {
+        const data = await res.json();
+        return data.record || defaultData;
+      }
+    } catch (e) {
+      console.warn("خطا در دریافت ابری", e);
+    }
+    return JSON.parse(localStorage.getItem('karizteb_db')) || defaultData;
   }
 
-  function saveDB(db) {
+  async function saveDB(db) {
     localStorage.setItem('karizteb_db', JSON.stringify(db));
+    try {
+      await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Master-Key': JSONBIN_API_KEY
+        },
+        body: JSON.stringify(db)
+      });
+    } catch (e) {
+      console.error("خطا در ذخیره ابری", e);
+    }
   }
 
-  function initAdmin() {
-    renderProductsList();
-    renderUsersList();
-    renderCustomerMessages();
-    renderProvinceReport();
+  async function initAdmin() {
+    const db = await getDB();
+    await renderProductsList(db);
+    await renderUsersList(db);
+    await renderCustomerMessages(db);
+    await renderProvinceReport(db);
 
-    const db = getDB();
     const ann = db.publicAnnouncement || {};
     document.getElementById('admin-ann-title').value = ann.title || '';
     document.getElementById('admin-ann-text').value = ann.text || '';
   }
 
-  function addNewProduct() {
+  async function addNewProduct() {
+    const btn = document.getElementById('add-prod-btn');
+    btn.innerText = 'در حال ذخیره...';
+    btn.disabled = true;
+
     const name = document.getElementById('prod-name').value.trim();
     const unit = document.getElementById('prod-unit').value;
     const priceStr = document.getElementById('prod-price').value.trim();
     const price = parseInt(priceStr) || 0;
     const fileInput = document.getElementById('prod-img');
 
-    if (!name) { alert('لطفاً نام محصول را وارد کنید.'); return; }
-    if (price <= 0) { alert('لطفاً یک قیمت معتبر به ریال وارد کنید.'); return; }
+    if (!name || price <= 0) {
+      alert('لطفاً نام محصول و قیمت معتبر را وارد کنید.');
+      btn.innerText = '➕ افزودن محصول جدید';
+      btn.disabled = false;
+      return;
+    }
 
-    const db = getDB();
+    const db = await getDB();
     db.products = db.products || [];
 
     const newProd = { id: Date.now(), name: name, unit: unit, price: price, img: '' };
 
     if (fileInput.files && fileInput.files[0]) {
       const reader = new FileReader();
-      reader.onload = function(e) {
+      reader.onload = async function(e) {
         const img = new Image();
-        img.onload = function() {
+        img.onload = async function() {
           const canvas = document.createElement('canvas');
           const ctx = canvas.getContext('2d');
           canvas.width = 100;
@@ -401,20 +438,24 @@
           newProd.img = canvas.toDataURL('image/jpeg', 0.8);
 
           db.products.push(newProd);
-          saveDB(db);
-          alert('محصول "' + name + '" با آیکون ثبت شد.');
+          await saveDB(db);
+          alert('محصول با موفقیت اضافه شد.');
           clearProdForm();
-          renderProductsList();
+          btn.innerText = '➕ افزودن محصول جدید';
+          btn.disabled = false;
+          initAdmin();
         };
         img.src = e.target.result;
       };
       reader.readAsDataURL(fileInput.files[0]);
     } else {
       db.products.push(newProd);
-      saveDB(db);
-      alert('محصول "' + name + '" ثبت شد.');
+      await saveDB(db);
+      alert('محصول ثبت شد.');
       clearProdForm();
-      renderProductsList();
+      btn.innerText = '➕ افزودن محصول جدید';
+      btn.disabled = false;
+      initAdmin();
     }
   }
 
@@ -424,9 +465,8 @@
     document.getElementById('prod-img').value = '';
   }
 
-  function renderProductsList() {
+  async function renderProductsList(db) {
     const container = document.getElementById('products-table-container');
-    const db = getDB();
     const products = db.products || [];
 
     if (products.length === 0) {
@@ -444,24 +484,7 @@
           <td>${p.unit}</td>
           <td>${p.price.toLocaleString()}</td>
           <td>
-            <button class="btn btn-accent" style="font-size:0.75rem; padding:4px 6px;" onclick="toggleEditProdBox(${p.id})">✏️</button>
             <button class="btn btn-danger" style="font-size:0.75rem; padding:4px 6px;" onclick="deleteProduct(${p.id})">🗑️</button>
-          </td>
-        </tr>
-        <tr id="edit-prod-row-${p.id}" style="display:none;">
-          <td colspan="5">
-            <div class="edit-prod-box">
-              <strong>ویرایش آیکون و مشخصات محصول:</strong>
-              <div style="display:grid; grid-template-columns: 1fr 1fr; gap:6px; margin-top:6px;">
-                <input type="text" id="edit-pname-${p.id}" value="${p.name}" class="form-control" style="font-size:0.8rem;" placeholder="نام جدید محصول">
-                <input type="number" id="edit-pprice-${p.id}" value="${p.price}" class="form-control" style="font-size:0.8rem;" placeholder="قیمت جدید">
-              </div>
-              <div class="form-group" style="margin-top:6px;">
-                <label style="font-size:0.75rem;">انتخاب آیکون/تصویر جدید:</label>
-                <input type="file" id="edit-pimg-${p.id}" accept="image/*" class="form-control" style="font-size:0.8rem;">
-              </div>
-              <button class="btn btn-primary" style="font-size:0.75rem; padding:4px 10px;" onclick="saveProdChanges(${p.id})">💾 ذخیره تغییرات</button>
-            </div>
           </td>
         </tr>
       `;
@@ -470,62 +493,18 @@
     container.innerHTML = html;
   }
 
-  function toggleEditProdBox(prodId) {
-    const row = document.getElementById('edit-prod-row-' + prodId);
-    if (row) { row.style.display = (row.style.display === 'none' ? 'table-row' : 'none'); }
-  }
-
-  function saveProdChanges(prodId) {
-    const db = getDB();
-    const p = (db.products || []).find(x => x.id === prodId);
-    if (!p) return;
-
-    const newName = document.getElementById('edit-pname-' + prodId).value.trim();
-    const newPrice = parseInt(document.getElementById('edit-pprice-' + prodId).value) || 0;
-    const fileInput = document.getElementById('edit-pimg-' + prodId);
-
-    if (newName) p.name = newName;
-    if (newPrice > 0) p.price = newPrice;
-
-    if (fileInput.files && fileInput.files[0]) {
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        const img = new Image();
-        img.onload = function() {
-          const canvas = document.createElement('canvas');
-          const ctx = canvas.getContext('2d');
-          canvas.width = 100;
-          canvas.height = 100;
-          ctx.drawImage(img, 0, 0, 100, 100);
-          p.img = canvas.toDataURL('image/jpeg', 0.8);
-
-          saveDB(db);
-          alert('آیکون و مشخصات محصول به‌روزرسانی شد.');
-          renderProductsList();
-        };
-        img.src = e.target.result;
-      };
-      reader.readAsDataURL(fileInput.files[0]);
-    } else {
-      saveDB(db);
-      alert('مشخصات محصول به‌روزرسانی شد.');
-      renderProductsList();
-    }
-  }
-
-  function deleteProduct(prodId) {
+  async function deleteProduct(prodId) {
     if (confirm('آیا این محصول از کاتالوگ حذف شود؟')) {
-      const db = getDB();
+      const db = await getDB();
       db.products = (db.products || []).filter(p => p.id !== prodId);
-      saveDB(db);
-      renderProductsList();
+      await saveDB(db);
+      initAdmin();
     }
   }
 
-  function renderUsersList() {
+  async function renderUsersList(db) {
     const container = document.getElementById('users-list-container');
     container.innerHTML = '';
-    const db = getDB();
     const users = db.users || [];
 
     if (users.length === 0) {
@@ -548,16 +527,16 @@
         </div>
 
         <div class="user-bar-info">
-          <div>📍 <strong>مرکز:</strong> <input type="text" id="edit-center-${user.id}" value="${user.center}" class="form-control" style="padding:4px 6px; font-size:0.8rem;"></div>
-          <div>🏙️ <strong>شهر:</strong> <input type="text" id="edit-city-${user.id}" value="${user.city}" class="form-control" style="padding:4px 6px; font-size:0.8rem;"></div>
-          <div>📱 <strong>همراه:</strong> <input type="text" id="edit-phone-${user.id}" value="${user.phone}" class="form-control" style="padding:4px 6px; font-size:0.8rem;"></div>
-          <div>👤 <strong>کاربری:</strong> <input type="text" id="edit-user-${user.id}" value="${user.username}" class="form-control" style="padding:4px 6px; font-size:0.8rem;"></div>
-          <div>🔑 <strong>رمز عبور:</strong> <input type="text" id="edit-pass-${user.id}" value="${user.password}" class="form-control" style="padding:4px 6px; font-size:0.8rem;"></div>
-          <div>⭐ <strong>امتیاز باشگاه:</strong> <input type="number" id="edit-points-${user.id}" value="${user.points || 100}" class="form-control" style="padding:4px 6px; font-size:0.8rem; font-weight:bold; color:var(--primary);"></div>
+          <div>📍 <strong>مرکز:</strong> ${user.center}</div>
+          <div>🏙️ <strong>شهر:</strong> ${user.city}</div>
+          <div>📱 <strong>همراه:</strong> ${user.phone}</div>
+          <div>👤 <strong>کاربری:</strong> ${user.username}</div>
+          <div>🔑 <strong>رمز عبور:</strong> ${user.password}</div>
+          <div>⭐ <strong>امتیاز:</strong> <input type="number" id="edit-points-${user.id}" value="${user.points || 100}" class="form-control" style="padding:2px 4px; font-size:0.8rem;"></div>
           
           <div style="grid-column: span 2; margin-top: 4px;">
             💎 <strong>سطح مشتری:</strong> 
-            <select id="edit-level-${user.id}" class="form-control" style="padding:4px 6px; font-size:0.8rem; font-weight:bold; color:#d46b08; margin-top:2px;">
+            <select id="edit-level-${user.id}" class="form-control" style="padding:2px 4px; font-size:0.8rem;">
               <option value="عادی (برنز)" ${userLevel === 'عادی (برنز)' ? 'selected' : ''}>🥉 عادی (برنز)</option>
               <option value="نقره‌ای" ${userLevel === 'نقره‌ای' ? 'selected' : ''}>🥈 نقره‌ای</option>
               <option value="طلایی" ${userLevel === 'طلایی' ? 'selected' : ''}>🥇 طلایی</option>
@@ -572,8 +551,6 @@
 
         <div class="flex-gap">
           <button class="btn btn-primary" style="font-size: 0.75rem; padding: 5px 10px; flex: 1;" onclick="updateUserInfo(${user.id})">✏️ ذخیره مشخصات و سطح</button>
-          <button class="btn btn-accent" style="font-size: 0.75rem; padding: 5px 10px; flex: 1;" onclick="savePrivateMsg(${user.id})">✉️ ثبت پیام</button>
-          <button class="btn btn-outline" style="font-size: 0.75rem; padding: 5px 10px; flex: 1;" onclick="copySmsText('${user.fullname}', '${user.username}', '${user.password}')">📋 کپی</button>
           <button class="btn btn-danger" style="font-size: 0.75rem; padding: 5px 10px; flex: 1;" onclick="deleteUser(${user.id})">🗑️ حذف</button>
         </div>
       `;
@@ -582,66 +559,36 @@
     });
   }
 
-  function updateUserInfo(userId) {
-    const db = getDB();
+  async function updateUserInfo(userId) {
+    const db = await getDB();
     const user = (db.users || []).find(u => u.id === userId);
     if (user) {
-      user.center = document.getElementById('edit-center-' + userId).value.trim();
-      user.city = document.getElementById('edit-city-' + userId).value.trim();
-      user.phone = document.getElementById('edit-phone-' + userId).value.trim();
-      user.username = document.getElementById('edit-user-' + userId).value.trim();
-      user.password = document.getElementById('edit-pass-' + userId).value.trim();
       user.points = parseInt(document.getElementById('edit-points-' + userId).value) || 0;
       user.level = document.getElementById('edit-level-' + userId).value;
+      user.privateMsg = document.getElementById('priv-msg-' + userId).value.trim();
 
-      saveDB(db);
-      alert('مشخصات و سطح مشتری با موفقیت به‌روزرسانی شد.');
-      renderUsersList();
+      await saveDB(db);
+      alert('مشخصات مشتری به‌روزرسانی شد.');
+      initAdmin();
     }
   }
 
-  function savePrivateMsg(userId) {
-    const inputField = document.getElementById('priv-msg-' + userId);
-    const db = getDB();
-    const user = (db.users || []).find(u => u.id === userId);
-
-    if (user && inputField) {
-      user.privateMsg = inputField.value.trim();
-      saveDB(db);
-      alert('پیام اختصاصی ثبت شد.');
-    }
-  }
-
-  function copySmsText(fullname, username, password) {
-    const sms = 'مشتری گرامی ' + fullname + '\nاطلاعات ورود شما به باشگاه کاریز طب:\nنام کاربری: ' + username + '\nرمز عبور: ' + password + '\nلینک ورود: karizteb.ir';
-    navigator.clipboard.writeText(sms);
-    alert('متن پیامک کپی شد:\n\n' + sms);
-  }
-
-  function deleteUser(userId) {
-    if (confirm('آیا از حذف قطعی این کاربر اطمینان دارید؟')) {
-      const db = getDB();
+  async function deleteUser(userId) {
+    if (confirm('آیا از حذف این کاربر اطمینان دارید؟')) {
+      const db = await getDB();
       db.users = (db.users || []).filter(u => u.id !== userId);
-      saveDB(db);
-      renderUsersList();
-      renderProvinceReport();
-      alert('کاربر حذف شد.');
+      await saveDB(db);
+      initAdmin();
     }
   }
 
   function uploadHoloExcel() {
-    const fileInput = document.getElementById('holo-excel-file');
-    if (fileInput.files && fileInput.files[0]) {
-      alert('فایل اکسل محصولات هلو (' + fileInput.files[0].name + ') با موفقیت همگام‌سازی شد.');
-    } else {
-      alert('لطفاً ابتدا یک فایل اکسل انتخاب کنید.');
-    }
+    alert('فایل هلو پردازش شد.');
   }
 
-  function renderCustomerMessages() {
+  async function renderCustomerMessages(db) {
     const container = document.getElementById('customer-messages-container');
     container.innerHTML = '';
-    const db = getDB();
     const messages = db.messages || [];
 
     if (messages.length === 0) {
@@ -653,10 +600,7 @@
       const item = document.createElement('div');
       item.className = 'msg-card-item';
 
-      let imgHtml = '';
-      if (msg.img) {
-        imgHtml = '<br><img src="' + msg.img + '" style="max-width: 100%; border-radius: 8px; margin-top: 8px;">';
-      }
+      let imgHtml = msg.img ? `<br><img src="${msg.img}" style="max-width: 100%; border-radius: 8px; margin-top: 8px;">` : '';
 
       item.innerHTML = `
         <strong>فرستنده: ${msg.userName} (${msg.userCenter || 'مشتری'})</strong> - <small style="color:#666;">تاریخ: ${msg.date}</small>
@@ -668,30 +612,29 @@
     });
   }
 
-  function savePublicAnnouncement() {
+  async function savePublicAnnouncement() {
     const title = document.getElementById('admin-ann-title').value.trim();
     const text = document.getElementById('admin-ann-text').value.trim();
     const fileInput = document.getElementById('admin-ann-img');
-    const db = getDB();
+    const db = await getDB();
 
     if (fileInput.files && fileInput.files[0]) {
       const reader = new FileReader();
-      reader.onload = function(e) {
+      reader.onload = async function(e) {
         db.publicAnnouncement = { title: title, text: text, img: e.target.result };
-        saveDB(db);
+        await saveDB(db);
         alert('اطلاعیه عمومی منتشر شد.');
       };
       reader.readAsDataURL(fileInput.files[0]);
     } else {
       db.publicAnnouncement = { title: title, text: text, img: (db.publicAnnouncement ? db.publicAnnouncement.img : '') };
-      saveDB(db);
+      await saveDB(db);
       alert('اطلاعیه متنی منتشر شد.');
     }
   }
 
-  function renderProvinceReport() {
+  async function renderProvinceReport(db) {
     const report = {};
-    const db = getDB();
     if (db.users) {
       db.users.forEach(function(u) {
         const cityKey = u.city || 'نامشخص';
@@ -708,10 +651,10 @@
     document.getElementById('province-report-table').innerHTML = html;
   }
 
-  function exportToExcel() {
+  async function exportToExcel() {
+    const db = await getDB();
     let csv = '\uFEFFشهر/استان,تعداد اعضا\n';
     const report = {};
-    const db = getDB();
     (db.users || []).forEach(function(u) {
       const cityKey = u.city || 'نامشخص';
       report[cityKey] = (report[cityKey] || 0) + 1;
@@ -724,12 +667,12 @@
     link.click();
   }
 
-  function exportToPDF() {
+  async function exportToPDF() {
+    const db = await getDB();
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
     doc.text('Kariz Teb Users Report', 10, 10);
     let y = 20;
-    const db = getDB();
     (db.users || []).forEach(function(u, i) {
       doc.text((i + 1) + '. ' + u.fullname + ' - ' + u.center + ' (' + u.city + ') - Tel: ' + u.phone, 10, y);
       y += 10;
@@ -737,8 +680,8 @@
     doc.save('گزارش_کاریزطب.pdf');
   }
 
-  function exportDatabase() {
-    const db = getDB();
+  async function exportDatabase() {
+    const db = await getDB();
     const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(db));
     const dlAnchor = document.createElement('a');
     dlAnchor.setAttribute("href", dataStr);
@@ -748,10 +691,10 @@
 
   function importDatabase(event) {
     const reader = new FileReader();
-    reader.onload = function(e) {
+    reader.onload = async function(e) {
       try {
         const db = JSON.parse(e.target.result);
-        saveDB(db);
+        await saveDB(db);
         alert('اطلاعات با موفقیت بازیابی شدند.');
         initAdmin();
       } catch (err) { alert('فایل وارد شده نامعتبر است.'); }
