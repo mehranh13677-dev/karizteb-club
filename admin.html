@@ -30,13 +30,13 @@
         
         <div class="flex gap-2">
             <button onclick="checkAdminLogin()" class="flex-1 amber-gold-bg text-slate-950 font-bold py-2.5 rounded-xl text-xs hover:opacity-90">ورود مدیر</button>
-            <button onclick="adminFingerprint()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-3 py-2.5 rounded-xl text-xs">
+            <button onclick="adminBioSecure()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-3 py-2.5 rounded-xl text-xs">
                 ☝️ اثر انگشت
             </button>
         </div>
     </div>
 
-    <!-- داشبورد اصلی مدیر -->
+    <!-- داشبورد مدیریت -->
     <div id="adminMainContent" class="hidden max-w-4xl mx-auto space-y-6">
 
         <header class="flex justify-between items-center border-b border-slate-700/60 pb-4">
@@ -50,7 +50,6 @@
             <button onclick="logoutAdmin()" class="bg-rose-500/20 text-rose-300 border border-rose-500/40 text-xs px-3 py-1.5 rounded-xl hover:bg-rose-500/40">خروج از پنل 🚪</button>
         </header>
 
-        <!-- همگام‌سازی اکسل هلو -->
         <section class="bg-slate-800 border border-slate-700 rounded-2xl p-5 space-y-3">
             <h2 class="font-bold text-sm text-amber-400">📁 همگام‌سازی با فایل اکسل هلو</h2>
             <div class="flex gap-2 items-center flex-wrap">
@@ -59,7 +58,6 @@
             </div>
         </section>
 
-        <!-- مدیریت کامل اعضا (شامل نمایش تمام جزئیات، ویرایش، حذف و سطح VIP) -->
         <section class="bg-slate-800 border border-slate-700 rounded-2xl p-5 space-y-4">
             <div class="flex justify-between items-center border-b border-slate-700 pb-3 flex-wrap gap-2">
                 <h2 class="font-bold text-sm text-amber-400">👥 مدیریت جامع اعضای باشگاه و اطلاعات ثبت‌نامی</h2>
@@ -68,7 +66,6 @@
             <div id="adminUserList" class="space-y-3 text-xs"></div>
         </section>
 
-        <!-- مدیریت کاتالوگ محصولات با تصویر -->
         <section class="bg-slate-800 border border-slate-700 rounded-2xl p-5 space-y-4">
             <h2 class="font-bold text-sm text-amber-400">📸 افزودن / ویرایش کاتالوگ کالاها</h2>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-2 text-xs">
@@ -87,7 +84,6 @@
             <div id="adminProductList" class="space-y-2 text-xs pt-3"></div>
         </section>
 
-        <!-- سفارشات دریافتی -->
         <section class="bg-slate-800 border border-slate-700 rounded-2xl p-5 space-y-4">
             <h2 class="font-bold text-sm text-blue-400">📋 سفارشات آنلاین دریافتی و ارسال بار</h2>
             <div id="adminOrdersList" class="space-y-3 text-xs"></div>
@@ -110,13 +106,27 @@
             }
         }
 
-        function adminFingerprint() {
-            alert('حسگر اثر انگشت تایید شد.');
-            document.getElementById('adminLoginBox').classList.add('hidden');
-            document.getElementById('adminMainContent').classList.remove('hidden');
-            renderUsers();
-            renderAdminProducts();
-            renderAdminOrders();
+        async function adminBioSecure() {
+            if (!window.PublicKeyCredential) {
+                return alert('مرورگر از اثر انگشت امن پشتیبانی نمی‌کند.');
+            }
+
+            try {
+                const assertion = await navigator.credentials.get({
+                    publicKey: { challenge: new Uint8Array(32), userVerification: "required", timeout: 60000 }
+                });
+
+                if (assertion) {
+                    document.getElementById('adminLoginBox').classList.add('hidden');
+                    document.getElementById('adminMainContent').classList.remove('hidden');
+                    renderUsers();
+                    renderAdminProducts();
+                    renderAdminOrders();
+                    alert('ورود مدیریت با موفقیت تایید شد.');
+                }
+            } catch (err) {
+                alert('🔴 اثر انگشت مدیریت تایید نشد.');
+            }
         }
 
         function logoutAdmin() {
