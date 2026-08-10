@@ -266,7 +266,7 @@
     }
 
     .order-table-container {
-      max-height: 280px;
+      max-height: 320px;
       overflow-y: auto;
       margin-top: 10px;
       border: 1px solid var(--border-color);
@@ -406,7 +406,7 @@
     </div>
 
     <div class="card club-card">
-      <span class="badge-level">عادی ⚪</span>
+      <span id="cust-badge-level" class="badge-level">عادی (برنز)</span>
       <p class="card-title-sub">کارت عضویت اختصاصی</p>
       <h3 id="cust-card-name" class="card-user-fullname">نام کاربر</h3>
       <p id="cust-card-sub" class="card-clinic-name">نام مرکز درمانی</p>
@@ -424,8 +424,8 @@
     </div>
 
     <div class="nav-buttons">
-      <a href="#" class="nav-btn">🛒 کاتالوگ و ثبت سفارش</a>
-      <a href="#" class="nav-btn" style="background: #8c6b00;">📦 پیگیری فاکتور و ارسال</a>
+      <a href="#order-section" class="nav-btn">🛒 کاتالوگ و ثبت سفارش</a>
+      <a href="#msg-section" class="nav-btn" style="background: #8c6b00;">📦 پیگیری فاکتور و پیام</a>
     </div>
 
     <div id="public-announcement" class="banner-box card">
@@ -439,16 +439,16 @@
       <p id="private-msg-text" style="margin-top: 6px; font-size: 0.9rem;"></p>
     </div>
 
-    <div class="card">
-      <h4 style="margin-bottom: 6px; color: var(--primary); font-size: 1rem;">🛒 سفارش مستقیم کالا</h4>
+    <div class="card" id="order-section">
+      <h4 style="margin-bottom: 6px; color: var(--primary); font-size: 1rem;">🛒 کاتالوگ و سفارش مستقیم کالا</h4>
       <p style="font-size: 0.75rem; color: var(--text-muted); text-align: left; margin-bottom: 8px;">مبالغ به ریال</p>
 
       <div class="order-table-container">
         <table>
           <thead>
             <tr>
-              <th>تصویر</th>
-              <th>محصول</th>
+              <th>آیکون</th>
+              <th>نام کالا</th>
               <th>واحد</th>
               <th>قیمت واحد</th>
               <th>تعداد</th>
@@ -457,7 +457,7 @@
           </thead>
           <tbody id="customer-order-table-body">
             <tr>
-              <td colspan="6" class="empty-table-msg">کالایی موجود نیست.</td>
+              <td colspan="6" class="empty-table-msg">در حال بارگذاری لیست محصولات...</td>
             </tr>
           </tbody>
         </table>
@@ -468,7 +468,7 @@
       <button class="btn btn-primary" style="margin-top: 12px; font-size: 0.95rem;" onclick="submitDirectOrder()">📦 ثبت و ارسال سفارش به مدیریت</button>
     </div>
 
-    <div class="card">
+    <div class="card" id="msg-section">
       <h4 style="margin-bottom: 8px; color: var(--primary); font-size: 1rem;">ارسال پیام / اعلام نیاز به مدیریت</h4>
       <div class="form-group">
         <textarea id="cust-msg-text" class="form-control" rows="3" placeholder="توضیحات یا نیازمندی‌های خود را اینجا بنویسید..."></textarea>
@@ -485,15 +485,17 @@
 </div>
 
 <script>
-  let db = JSON.parse(localStorage.getItem('karizteb_db')) || {
-    users: [],
-    products: [],
-    publicAnnouncement: { title: 'خوش آمدید', text: 'به باشگاه مشتریان کاریز طب خوش آمدید.', img: '' },
-    messages: []
-  };
+  function getDB() {
+    return JSON.parse(localStorage.getItem('karizteb_db')) || {
+      users: [],
+      products: [],
+      publicAnnouncement: { title: 'خوش آمدید', text: 'به باشگاه مشتریان کاریز طب خوش آمدید.', img: '' },
+      messages: []
+    };
+  }
 
-  function saveDB() {
-    localStorage.setItem('karizteb_db', JSON.stringify(db));
+  function saveDB(data) {
+    localStorage.setItem('karizteb_db', JSON.stringify(data));
   }
 
   let currentUser = null;
@@ -516,7 +518,8 @@
     const username = document.getElementById('reg-username').value.trim();
     const phone = document.getElementById('reg-phone').value.trim();
 
-    db = JSON.parse(localStorage.getItem('karizteb_db')) || { users: [] };
+    const db = getDB();
+    db.users = db.users || [];
 
     const isDuplicate = db.users.some(u => u.username === username || u.phone === phone);
     if (isDuplicate) {
@@ -533,11 +536,12 @@
       username: username,
       password: document.getElementById('reg-password').value,
       privateMsg: '',
-      points: 100
+      points: 100,
+      level: 'عادی (برنز)'
     };
 
     db.users.push(newUser);
-    saveDB();
+    saveDB(db);
 
     alert('ثبت‌نام با موفقیت انجام شد. اکنون می‌توانید وارد حساب خود شوید.');
     toggleRegister(false);
@@ -549,21 +553,24 @@
     const u = document.getElementById('login-username').value.trim();
     const p = document.getElementById('login-password').value;
 
-    db = JSON.parse(localStorage.getItem('karizteb_db')) || { users: [] };
-
-    const user = db.users.find(x => x.username === u && x.password === p);
+    const db = getDB();
+    const user = (db.users || []).find(x => x.username === u && x.password === p);
 
     if (user) {
       currentUser = user;
       renderCustomerPanel();
       showPage('customer-panel');
     } else {
-      alert('نام کاربری یا رمز عبور اشتباه است یا حساب شما حذف شده است.');
+      alert('نام کاربری یا رمز عبور اشتباه است یا حساب شما توسط مدیر حذف شده است.');
     }
   });
 
   function renderCustomerPanel() {
     if (!currentUser) return;
+
+    const db = getDB();
+    const freshUser = (db.users || []).find(x => x.id === currentUser.id) || currentUser;
+    currentUser = freshUser;
 
     document.getElementById('cust-display-name').innerText = currentUser.fullname;
     document.getElementById('cust-display-center').innerText = currentUser.center + ' (' + currentUser.city + ')';
@@ -572,6 +579,7 @@
     document.getElementById('cust-card-sub').innerText = currentUser.center + ' (' + currentUser.city + ')';
     document.getElementById('cust-card-code').innerText = 'کد باشگاه: KT-' + currentUser.id.toString().slice(-4);
     document.getElementById('cust-points').innerText = currentUser.points || 100;
+    document.getElementById('cust-badge-level').innerText = currentUser.level || 'عادی (برنز)';
 
     const ann = db.publicAnnouncement || {};
     document.getElementById('announcement-title').innerText = ann.title || 'اطلاعیه کاریز طب';
@@ -597,17 +605,17 @@
 
   function renderCustomerOrderTable() {
     const tbody = document.getElementById('customer-order-table-body');
-    db = JSON.parse(localStorage.getItem('karizteb_db')) || { products: [] };
-    db.products = db.products || [];
+    const db = getDB();
+    const products = db.products || [];
 
-    if (db.products.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="6" class="empty-table-msg">کالایی موجود نیست.</td></tr>';
+    if (products.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="6" class="empty-table-msg">هیچ کالایی توسط مدیر ثبت نشده است.</td></tr>';
       document.getElementById('grand-total-val').innerText = '۰';
       return;
     }
 
     let html = '';
-    db.products.forEach(function(p) {
+    products.forEach(function(p) {
       let imgTag = p.img ? `<img src="${p.img}" class="prod-thumb">` : '—';
       html += `
         <tr>
@@ -636,9 +644,13 @@
 
   function calculateGrandTotal() {
     let grandTotal = 0;
-    db.products.forEach(function(p) {
-      const qty = parseInt(document.getElementById('qty-' + p.id).value) || 0;
-      grandTotal += (qty * p.price);
+    const db = getDB();
+    (db.products || []).forEach(function(p) {
+      const inputEl = document.getElementById('qty-' + p.id);
+      if (inputEl) {
+        const qty = parseInt(inputEl.value) || 0;
+        grandTotal += (qty * p.price);
+      }
     });
 
     document.getElementById('grand-total-val').innerText = grandTotal.toLocaleString();
@@ -649,13 +661,17 @@
 
     let orderItems = [];
     let grandTotal = 0;
+    const db = getDB();
 
-    db.products.forEach(function(p) {
-      const qty = parseInt(document.getElementById('qty-' + p.id).value) || 0;
-      if (qty > 0) {
-        const itemTotal = qty * p.price;
-        grandTotal += itemTotal;
-        orderItems.push(`- ${p.name}: ${qty} ${p.unit} (${itemTotal.toLocaleString()} ریال)`);
+    (db.products || []).forEach(function(p) {
+      const inputEl = document.getElementById('qty-' + p.id);
+      if (inputEl) {
+        const qty = parseInt(inputEl.value) || 0;
+        if (qty > 0) {
+          const itemTotal = qty * p.price;
+          grandTotal += itemTotal;
+          orderItems.push(`- ${p.name}: ${qty} ${p.unit} (${itemTotal.toLocaleString()} ریال)`);
+        }
       }
     });
 
@@ -676,12 +692,11 @@
       date: new Date().toLocaleDateString('fa-IR'),
       img: ''
     });
-    saveDB();
+    saveDB(db);
 
     window.location.href = 'sms:09398490440?body=' + encodeURIComponent(smsText);
   }
 
-  // ارسال پیامک کد یکتا به شماره مدیر (09398490440)
   function sendSMSConfirm() {
     if (!currentUser) return;
     const code = 'KT-' + currentUser.id.toString().slice(-4);
@@ -698,6 +713,7 @@
       return;
     }
 
+    const db = getDB();
     const newMsg = {
       id: Date.now(),
       userId: currentUser.id,
@@ -714,7 +730,7 @@
         newMsg.img = e.target.result;
         db.messages = db.messages || [];
         db.messages.push(newMsg);
-        saveDB();
+        saveDB(db);
         alert('پیام شما با موفقیت برای مدیریت ارسال شد.');
         textInput.value = '';
         fileInput.value = '';
@@ -723,7 +739,7 @@
     } else {
       db.messages = db.messages || [];
       db.messages.push(newMsg);
-      saveDB();
+      saveDB(db);
       alert('پیام شما با موفقیت برای مدیریت ارسال شد.');
       textInput.value = '';
     }
