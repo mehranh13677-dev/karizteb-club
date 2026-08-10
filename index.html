@@ -1,419 +1,488 @@
-
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>باشگاه مشتریان کاریز طب</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet">
-    <style>
-        body { font-family: 'Vazirmatn', sans-serif; }
-        .gold-brand-bg { background: linear-gradient(135deg, #D97706 0%, #F59E0B 50%, #FBBF24 100%); }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>کاریز طب | سامانه سفارش‌گیری و باشگاه مشتریان</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    :root {
+      --primary: #00875a;
+      --primary-hover: #006644;
+      --accent: #f5a623;
+      --bg: #f4f6f8;
+      --card-bg: #ffffff;
+      --text: #333333;
+      --danger: #de350b;
+    }
+    * { box-sizing: border-box; font-family: Tahoma, Segoe UI, sans-serif; margin: 0; padding: 0; }
+    body { background-color: var(--bg); color: var(--text); padding: 15px; direction: rtl; }
+    .container { max-width: 600px; margin: 0 auto; }
+    .card { background: var(--card-bg); border-radius: 16px; padding: 18px; margin-bottom: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+    .header-card { display: flex; justify-content: space-between; align-items: center; }
+    .logo-sec { display: flex; align-items: center; gap: 10px; }
+    .logo-badge { background: var(--accent); color: #fff; font-weight: bold; width: 45px; height: 45px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
+    .btn { border: none; padding: 10px 16px; border-radius: 10px; font-weight: bold; cursor: pointer; transition: 0.2s; font-size: 0.9rem; }
+    .btn-primary { background: var(--primary); color: #fff; }
+    .btn-primary:hover { background: var(--primary-hover); }
+    .btn-accent { background: var(--accent); color: #fff; }
+    .btn-danger { background: var(--danger); color: #fff; }
+    .btn-outline { background: transparent; border: 1px solid var(--primary); color: var(--primary); }
+    .form-group { margin-bottom: 12px; text-align: right; }
+    .form-group label { display: block; font-size: 0.85rem; margin-bottom: 5px; color: #666; }
+    .form-control { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-size: 0.95rem; }
+    .hidden { display: none !important; }
+    .banner-box { background: #fff8e7; border: 1px solid #ffe58f; border-radius: 12px; padding: 12px; text-align: center; color: #8c6b00; }
+    .banner-box img { max-width: 100%; border-radius: 8px; margin-top: 8px; }
+    .user-card-item { border: 1px solid #eee; border-radius: 12px; padding: 12px; margin-bottom: 10px; background: #fafafa; }
+    .user-card-header { font-weight: bold; color: var(--primary); margin-bottom: 6px; display: flex; justify-content: space-between; }
+    .flex-gap { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.85rem; }
+    th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
+    th { background: #f0f0f0; }
+  </style>
 </head>
-<body class="bg-slate-50 text-slate-800 min-h-screen p-4 pb-24">
+<body>
 
-    <!-- هدر -->
-    <header class="max-w-2xl mx-auto flex justify-between items-center bg-white p-4 rounded-2xl shadow-sm border border-slate-100 mb-6">
-        <div class="flex items-center gap-3">
-            <div class="w-12 h-12 gold-brand-bg rounded-xl flex items-center justify-center font-black text-white text-xl shadow-md">KT</div>
-            <div>
-                <h1 class="font-black text-lg text-slate-900">کاریز طب</h1>
-                <p class="text-[11px] text-slate-500">سامانه اختصاصی سفارش‌گیری و باشگاه مشتریان</p>
-            </div>
+<div class="container">
+  <!-- صفحه ورود / ثبت نام -->
+  <div id="auth-page" class="card">
+    <h2 style="text-align: center; margin-bottom: 15px; color: var(--primary);">کاریز طب</h2>
+    <form id="login-form" autocomplete="on">
+      <div class="form-group">
+        <label>نام کاربری</label>
+        <input type="text" id="login-username" class="form-control" autocomplete="username" required>
+      </div>
+      <div class="form-group">
+        <label>رمز عبور</label>
+        <input type="password" id="login-password" class="form-control" autocomplete="current-password" required>
+      </div>
+      <div class="flex-gap">
+        <button type="submit" class="btn btn-primary" style="flex:1;">ورود به حساب</button>
+        <button type="button" id="biometric-btn" class="btn btn-outline">ورود با اثر انگشت / زیست‌سنجی</button>
+      </div>
+    </form>
+    <hr style="margin: 15px 0; border: 0; border-top: 1px solid #eee;">
+    <button class="btn btn-accent" style="width: 100%;" onclick="toggleRegister(true)">ثبت نام جدید</button>
+  </div>
+
+  <!-- فرم ثبت نام -->
+  <div id="register-page" class="card hidden">
+    <h3 style="margin-bottom: 12px; color: var(--primary);">ثبت نام عضو جدید</h3>
+    <form id="register-form" autocomplete="on">
+      <div class="form-group">
+        <label>نام و نام خانوادگی</label>
+        <input type="text" id="reg-fullname" class="form-control" required>
+      </div>
+      <div class="form-group">
+        <label>نام کاربری (یکتا)</label>
+        <input type="text" id="reg-username" class="form-control" autocomplete="username" required>
+      </div>
+      <div class="form-group">
+        <label>شماره تماس (یکتا)</label>
+        <input type="tel" id="reg-phone" class="form-control" autocomplete="tel" required>
+      </div>
+      <div class="form-group">
+        <label>رمز عبور</label>
+        <input type="password" id="reg-password" class="form-control" autocomplete="new-password" required>
+      </div>
+      <div class="form-group">
+        <label>استان</label>
+        <select id="reg-province" class="form-control" required>
+          <option value="تهران">تهران</option>
+          <option value="البرز">البرز</option>
+          <option value="اصفهان">اصفهان</option>
+          <option value="فارس">فارس</option>
+          <option value="خراسان رضوی">خراسان رضوی</option>
+          <option value="سایر">سایر</option>
+        </select>
+      </div>
+      <div class="flex-gap">
+        <button type="submit" class="btn btn-primary" style="flex:1;">تکمیل ثبت‌نام</button>
+        <button type="button" class="btn btn-danger" onclick="toggleRegister(false)">انصراف</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- پنل مشتری -->
+  <div id="customer-panel" class="hidden">
+    <div class="card header-card">
+      <div class="logo-sec">
+        <div class="logo-badge">KT</div>
+        <div>
+          <h3 id="cust-display-name">نام کاربر</h3>
+          <small style="color: #777;">سامانه مشتریان کاریز طب</small>
         </div>
-        
-        <div class="flex items-center gap-2">
-            <div id="userInfo" class="hidden text-xs bg-emerald-50 text-emerald-700 border border-emerald-200 px-3 py-1.5 rounded-xl font-bold"></div>
-            <button id="btnLogoutTop" onclick="logoutUser()" class="hidden bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 text-xs px-3 py-1.5 rounded-xl font-bold transition flex items-center gap-1">
-                <span>🚪</span>
-                <span>خروج</span>
-            </button>
+      </div>
+      <button class="btn btn-danger" onclick="logout()">خروج</button>
+    </div>
+
+    <!-- بنر تبلیغاتی عمومی/اختصاصی -->
+    <div id="public-announcement" class="banner-box card">
+      <strong id="announcement-title">پیام مدیریت</strong>
+      <p id="announcement-text">به سامانه کاریز طب خوش آمدید.</p>
+      <div id="announcement-img-container"></div>
+    </div>
+
+    <!-- پیام اختصاصی مدیر به این مشتری -->
+    <div id="private-announcement" class="card banner-box hidden" style="background:#e6f7ff; border-color:#91d5ff; color:#0050b3;">
+      <strong>پیام اختصاصی مدیریت برای شما:</strong>
+      <p id="private-msg-text"></p>
+    </div>
+
+    <!-- ارتباط با مدیر (جایگزین فاکتور دستی) -->
+    <div class="card">
+      <h4 style="margin-bottom: 8px;">ارسال پیام و اعلام نیاز به مدیریت</h4>
+      <div class="form-group">
+        <textarea id="cust-msg-text" class="form-control" rows="3" placeholder="متن پیام خود را بنویسید..."></textarea>
+      </div>
+      <div class="form-group">
+        <label>پیوست تصویر (اختیاری)</label>
+        <input type="file" id="cust-msg-img" accept="image/*" class="form-control">
+      </div>
+      <button class="btn btn-primary" onclick="sendCustomerMessage()">ارسال پیام</button>
+    </div>
+  </div>
+
+  <!-- پنل مدیریت -->
+  <div id="admin-panel" class="hidden">
+    <div class="card header-card">
+      <h3>پنل مدیریت کاریز طب</h3>
+      <button class="btn btn-danger" onclick="logout()">خروج</button>
+    </div>
+
+    <!-- اعلان عمومی -->
+    <div class="card">
+      <h4>مدیریت اطلاعیه عمومی مشتریان</h4>
+      <div class="form-group" style="margin-top:8px;">
+        <input type="text" id="admin-ann-title" class="form-control" placeholder="عنوان اطلاعیه">
+      </div>
+      <div class="form-group">
+        <textarea id="admin-ann-text" class="form-control" rows="2" placeholder="متن اطلاعیه عمومی..."></textarea>
+      </div>
+      <div class="form-group">
+        <label>تصویر تبلیغاتی</label>
+        <input type="file" id="admin-ann-img" accept="image/*" class="form-control">
+      </div>
+      <button class="btn btn-primary" onclick="savePublicAnnouncement()">انتشار اطلاعیه عمومی</button>
+    </div>
+
+    <!-- مدیریت اعضا -->
+    <div class="card">
+      <h4>مدیریت اعضا و ثبت‌نامی‌ها</h4>
+      <div id="users-list-container" style="margin-top:10px;"></div>
+    </div>
+
+    <!-- تفکیک استان‌ها و گزارش‌گیری -->
+    <div class="card">
+      <h4>گزارش‌گیری و تفکیک استانی</h4>
+      <div class="flex-gap" style="margin: 10px 0;">
+        <button class="btn btn-outline" onclick="exportToExcel()">خروجی اکسل (CSV)</button>
+        <button class="btn btn-outline" onclick="exportToPDF()">خروجی PDF</button>
+      </div>
+      <div id="province-report-table"></div>
+    </div>
+
+    <!-- پشتیبان‌گیری کامل دیتابیس -->
+    <div class="card">
+      <h4>پشتیبان‌گیری از داده‌ها</h4>
+      <p style="font-size:0.8rem; color:#666; margin-bottom:8px;">جهت حفظ اطلاعات مشتریان در آپدیت‌های بعدی کدها:</p>
+      <div class="flex-gap">
+        <button class="btn btn-primary" onclick="exportDatabase()">دانلود فایل بک‌آپ</button>
+        <input type="file" id="import-db-file" style="display:none" onchange="importDatabase(event)">
+        <button class="btn btn-accent" onclick="document.getElementById('import-db-file').click()">بازیابی بک‌آپ</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ساختار اصلی دیتابیس در LocalStorage
+  let db = JSON.parse(localStorage.getItem('karizteb_db')) || {
+    users: [],
+    publicAnnouncement: { title: 'خوش آمدید', text: 'به باشگاه مشتریان کاریز طب خوش آمدید.', img: '' },
+    messages: []
+  };
+
+  function saveDB() {
+    localStorage.setItem('karizteb_db', JSON.stringify(db));
+  }
+
+  let currentUser = null;
+
+  // مدیریت نمایش صفحات
+  function showPage(pageId) {
+    ['auth-page', 'register-page', 'customer-panel', 'admin-panel'].forEach(id => {
+      document.getElementById(id).classList.add('hidden');
+    });
+    document.getElementById(pageId).classList.remove('hidden');
+  }
+
+  function toggleRegister(show) {
+    showPage(show ? 'register-page' : 'auth-page');
+  }
+
+  // ثبت‌نام
+  document.getElementById('register-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const username = document.getElementById('reg-username').value.trim();
+    const phone = document.getElementById('reg-phone').value.trim();
+
+    // بررسی عدم تکراری بودن نام کاربری و شماره تماس
+    const exists = db.users.some(u => u.username === username || u.phone === phone);
+    if (exists) {
+      alert('خطا: نام کاربری یا شماره تماس وارد شده قبلاً ثبت شده است!');
+      return;
+    }
+
+    const newUser = {
+      id: Date.now(),
+      fullname: document.getElementById('reg-fullname').value.trim(),
+      username: username,
+      phone: phone,
+      password: document.getElementById('reg-password').value,
+      province: document.getElementById('reg-province').value,
+      privateMsg: '',
+      totalPurchases: 0
+    };
+
+    db.users.push(newUser);
+    saveDB();
+    alert('ثبت‌نام با موفقیت انجام شد. اکنون وارد شوید.');
+    toggleRegister(false);
+  });
+
+  // ورود
+  document.getElementById('login-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const u = document.getElementById('login-username').value.trim();
+    const p = document.getElementById('login-password').value;
+
+    if (u === 'admin' && p === 'admin') {
+      currentUser = { username: 'admin', role: 'admin' };
+      renderAdminPanel();
+      showPage('admin-panel');
+      return;
+    }
+
+    const user = db.users.find(x => x.username === u && x.password === p);
+    if (user) {
+      currentUser = user;
+      renderCustomerPanel();
+      showPage('customer-panel');
+    } else {
+      alert('نام کاربری یا رمز عبور اشتباه است.');
+    }
+  });
+
+  // ورود بیومتریک (اثر انگشت)
+  document.getElementById('biometric-btn').addEventListener('click', async function() {
+    if (window.PublicKeyCredential) {
+      try {
+        alert('در صورت پشتیبانی مرورگر و ثبت بیومتریک دستگاه، احراز هویت انجام می‌شود.');
+      } catch (err) {
+        alert('احراز هویت بیومتریک در این دستگاه در دسترس نیست.');
+      }
+    } else {
+      alert('دستگاه شما از ورود بیومتریک پشتیبانی نمی‌کند.');
+    }
+  });
+
+  // رندر پنل مشتری
+  function renderCustomerPanel() {
+    document.getElementById('cust-display-name').innerText = currentUser.fullname;
+    
+    // اعلان عمومی
+    const ann = db.publicAnnouncement;
+    document.getElementById('announcement-title').innerText = ann.title || '';
+    document.getElementById('announcement-text').innerText = ann.text || '';
+    const imgContainer = document.getElementById('announcement-img-container');
+    imgContainer.innerHTML = ann.img ? `<img src="${ann.img}">` : '';
+
+    // پیام اختصاصی
+    const privBox = document.getElementById('private-announcement');
+    if (currentUser.privateMsg) {
+      document.getElementById('private-msg-text').innerText = currentUser.privateMsg;
+      privBox.classList.remove('hidden');
+    } else {
+      privBox.classList.add('hidden');
+    }
+  }
+
+  // ارسال پیام مشتری به مدیر
+  function sendCustomerMessage() {
+    const text = document.getElementById('cust-msg-text').value;
+    if (!text) { alert('لطفاً متنی بنویسید.'); return; }
+    
+    db.messages.push({
+      userId: currentUser.id,
+      userName: currentUser.fullname,
+      text: text,
+      date: new Date().toLocaleDateString('fa-IR')
+    });
+    saveDB();
+    alert('پیام شما با موفقیت برای مدیریت ارسال شد.');
+    document.getElementById('cust-msg-text').value = '';
+  }
+
+  // رندر پنل مدیریت
+  function renderAdminPanel() {
+    // رندر تمام کاربران ثبت‌نامی (رفع باگ عدم نمایش کامل)
+    const listContainer = document.getElementById('users-list-container');
+    listContainer.innerHTML = '';
+
+    if (db.users.length === 0) {
+      listContainer.innerHTML = '<p style="font-size:0.85rem; color:#888;">هیچ کاربری ثبت‌نام نکرده است.</p>';
+    }
+
+    db.users.forEach(user => {
+      const item = document.createElement('div');
+      item.className = 'user-card-item';
+      item.innerHTML = `
+        <div class="user-card-header">
+          <span>${user.fullname} (${user.province})</span>
+          <small>نام‌کاربری: ${user.username}</small>
         </div>
-    </header>
-
-    <main class="max-w-2xl mx-auto space-y-6">
-
-        <!-- بخش احراز هویت -->
-        <div id="authContainer" class="space-y-4">
-            
-            <div class="flex bg-slate-200/80 p-1 rounded-2xl text-xs font-bold">
-                <button onclick="toggleAuth('login')" id="btnTabLogin" class="flex-1 py-2.5 rounded-xl bg-white text-slate-900 shadow-sm">ورود به حساب</button>
-                <button onclick="toggleAuth('register')" id="btnTabRegister" class="flex-1 py-2.5 rounded-xl text-slate-600">ثبت‌نام جدید</button>
-            </div>
-
-            <!-- فرم ورود -->
-            <section id="loginBox" class="bg-white border border-slate-100 rounded-3xl p-6 space-y-4 shadow-sm">
-                <h2 class="text-sm font-black text-slate-900 flex items-center gap-2">🔑 ورود به حساب کاربری</h2>
-                <div class="space-y-3">
-                    <div>
-                        <label class="text-[11px] text-slate-500 mb-1 block">نام کاربری یا شماره همراه:</label>
-                        <input id="loginUser" type="text" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-slate-900 focus:outline-none focus:border-amber-500">
-                    </div>
-                    <div>
-                        <label class="text-[11px] text-slate-500 mb-1 block">رمز عبور:</label>
-                        <input id="loginPass" type="password" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-slate-900 focus:outline-none focus:border-amber-500">
-                    </div>
-                </div>
-                
-                <div class="flex gap-2 pt-2">
-                    <button onclick="loginUser()" class="flex-1 gold-brand-bg text-white font-bold py-3 rounded-xl text-xs hover:opacity-90 shadow-sm">ورود به داشبورد</button>
-                    <button onclick="loginBioSecure()" class="bg-slate-800 hover:bg-slate-700 text-white font-bold px-4 py-3 rounded-xl text-xs flex items-center gap-1">
-                        <span>☝️</span>
-                        <span>اثر انگشت</span>
-                    </button>
-                </div>
-
-                <!-- دکمه مستقیم ارسال پیامک فراموشی رمز (بدون نیاز به پاپ‌آپ) -->
-                <div class="text-center pt-2">
-                    <button onclick="sendForgotSMSDirect()" class="text-[11px] text-amber-600 hover:underline font-bold">🔐 فراموشی نام کاربری یا رمز عبور (ارسال پیامک مستقیم به مدیر)</button>
-                </div>
-            </section>
-
-            <!-- فرم ثبت‌نام -->
-            <section id="registerBox" class="hidden bg-white border border-slate-100 rounded-3xl p-6 space-y-4 shadow-sm">
-                <h2 class="text-sm font-black text-slate-900">📝 ثبت‌نام جدید در کاریز طب</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    <input id="regName" type="text" placeholder="نام و نام خانوادگی" class="bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-slate-900 focus:outline-none focus:border-amber-500">
-                    <input id="regCenter" type="text" placeholder="نام مرکز / کلینیک / مطب" class="bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-slate-900 focus:outline-none focus:border-amber-500">
-                    <input id="regCity" type="text" placeholder="شهر" class="bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-slate-900 focus:outline-none focus:border-amber-500">
-                    <input id="regPhone" type="tel" placeholder="شماره همراه (مثلاً 09123456789)" class="bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-slate-900 focus:outline-none focus:border-amber-500">
-                    <input id="regUsername" type="text" placeholder="تعیین نام کاربری" class="bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-slate-900 focus:outline-none focus:border-amber-500">
-                    <input id="regPass" type="password" placeholder="تعیین رمز عبور" class="bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-slate-900 focus:outline-none focus:border-amber-500">
-                </div>
-                <button onclick="registerUser()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl text-xs shadow-sm">تکمیل ثبت‌نام و دریافت کد اختصاصی</button>
-            </section>
-
+        <p style="font-size:0.8rem; margin-bottom:4px;">تلفن: ${user.phone} | رمز: ${user.password}</p>
+        <div class="form-group" style="margin-top:6px;">
+          <input type="text" placeholder="پیام اختصاصی برای این کاربر" id="priv-msg-${user.id}" value="${user.privateMsg || ''}" class="form-control" style="font-size:0.8rem;">
         </div>
-
-        <!-- داشبورد اصلی مشتری -->
-        <div id="mainDashboard" class="hidden space-y-6">
-
-            <div class="bg-white border border-slate-200/80 rounded-3xl p-6 shadow-sm relative overflow-hidden">
-                <div class="flex justify-between items-center mb-4">
-                    <span class="text-xs text-slate-400 font-bold">کارت عضویت اختصاصی</span>
-                    <span id="userTier" class="gold-brand-bg text-white font-black text-[11px] px-3 py-1 rounded-full shadow-sm">سطح عادی ⚪</span>
-                </div>
-                <div class="flex justify-between items-end">
-                    <div>
-                        <div id="dashName" class="text-xl font-black text-slate-900 mb-0.5">---</div>
-                        <div id="dashCenter" class="text-xs text-amber-600 font-bold mb-1">---</div>
-                        <div class="text-[11px] text-slate-500">کد باشگاه: <b id="dashCode" class="text-slate-900 font-mono">---</b></div>
-                    </div>
-                    <div class="text-left">
-                        <span class="text-[10px] text-slate-400 font-bold block">امتیاز کل:</span>
-                        <span id="dashPoints" class="text-3xl font-black text-emerald-600">۰</span>
-                    </div>
-                </div>
-            </div>
-
-            <div id="activateSMSBox" class="bg-amber-50 border border-amber-200 p-4 rounded-2xl flex justify-between items-center text-xs">
-                <span class="text-amber-900 font-bold">تایید حساب با پیامک کد به شماره مدیر:</span>
-                <button onclick="sendActivationSMS()" class="gold-brand-bg text-white font-bold px-3.5 py-2 rounded-xl shadow-sm">📲 ارسال پیامک</button>
-            </div>
-
-            <div class="flex bg-white p-1 rounded-2xl border border-slate-200 text-xs font-bold gap-1 overflow-x-auto">
-                <button onclick="switchTab('tabCatalog')" id="btnTabCatalog" class="px-4 py-2.5 rounded-xl gold-brand-bg text-white shrink-0 shadow-sm">🛒 کاتالوگ و ثبت سفارش</button>
-                <button onclick="switchTab('tabTracking')" id="btnTabTracking" class="px-4 py-2.5 rounded-xl text-slate-600 shrink-0">📦 پیگیری فاکتور و ارسال</button>
-                <button onclick="switchTab('tabWheel')" id="btnTabWheel" class="px-4 py-2.5 rounded-xl text-slate-600 shrink-0">🎡 گردونه شانس</button>
-                <button onclick="switchTab('tabInvoice')" id="btnTabInvoice" class="px-4 py-2.5 rounded-xl text-slate-600 shrink-0">📄 آپلود فاکتور دستی</button>
-            </div>
-
-            <section id="tabCatalog" class="bg-white border border-slate-200/80 rounded-3xl p-5 space-y-4 shadow-sm">
-                <div class="flex justify-between items-center border-b border-slate-100 pb-3">
-                    <h3 class="font-bold text-sm text-slate-900">🛒 سفارش مستقیم کالا</h3>
-                    <span class="text-[10px] text-slate-400">مبالغ به ریال</span>
-                </div>
-
-                <div class="overflow-x-auto">
-                    <table class="w-full text-right text-xs">
-                        <thead class="bg-slate-50 text-slate-500">
-                            <tr>
-                                <th class="p-2">تصویر</th>
-                                <th class="p-2">محصول</th>
-                                <th class="p-2">واحد</th>
-                                <th class="p-2">قیمت واحد</th>
-                                <th class="p-2">تعداد</th>
-                                <th class="p-2">جمع</th>
-                            </tr>
-                        </thead>
-                        <tbody id="catalogTableBody" class="divide-y divide-slate-100"></tbody>
-                    </table>
-                </div>
-
-                <div class="bg-slate-50 p-4 rounded-2xl flex flex-wrap justify-between items-center gap-3">
-                    <div>
-                        <span class="text-xs text-slate-500 block">جمع کل فاکتور:</span>
-                        <span id="grandTotal" class="text-lg font-black text-amber-600">۰ ریال</span>
-                    </div>
-                    <button onclick="submitOrder()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-5 py-2.5 rounded-xl text-xs shadow-sm">
-                        📲 ثبت نهایی و ارسال پیامک سفارش
-                    </button>
-                </div>
-            </section>
-
-            <section id="tabTracking" class="hidden bg-white border border-slate-200/80 rounded-3xl p-5 space-y-3 shadow-sm">
-                <h3 class="font-bold text-sm text-slate-900">📦 پیگیری وضعیت فاکتور و ارسال بار</h3>
-                <div id="ordersList" class="space-y-3 text-xs"></div>
-            </section>
-
-            <section id="tabWheel" class="hidden bg-white border border-slate-200/80 rounded-3xl p-5 space-y-4 text-center shadow-sm">
-                <h3 class="font-bold text-sm text-slate-900">🎡 گردونه شانس</h3>
-                <div class="w-36 h-36 mx-auto border-4 border-amber-400 rounded-full flex items-center justify-center bg-amber-50 font-black text-amber-600 shadow-md">🎁 چرخش گردونه</div>
-                <button onclick="alert('۵۰ امتیاز اضافه شد!')" class="gold-brand-bg text-white font-bold px-6 py-2 rounded-xl text-xs shadow-sm">دریافت جایزه</button>
-            </section>
-
-            <section id="tabInvoice" class="hidden bg-white border border-slate-200/80 rounded-3xl p-5 space-y-3 shadow-sm">
-                <h3 class="font-bold text-sm text-slate-900">📄 ثبت فاکتور دستی جهت دریافت امتیاز</h3>
-                <input type="file" id="custInvoiceFile" class="text-xs text-slate-500 w-full bg-slate-50 p-2.5 rounded-xl border border-slate-200">
-                <button onclick="alert('فاکتور ارسال شد.')" class="bg-amber-500 text-white font-bold px-4 py-2.5 rounded-xl text-xs w-full shadow-sm">ارسال فاکتور</button>
-            </section>
-
+        <div class="flex-gap">
+          <button class="btn btn-primary" onclick="savePrivateMsg(${user.id})">ثبت پیام اختصاصی</button>
+          <button class="btn btn-outline" onclick="copyUserInfo('${user.fullname}', '${user.username}', '${user.password}', '${user.phone}')">کپی پیامک بازیابی</button>
+          <button class="btn btn-danger" onclick="deleteUser(${user.id})">حذف</button>
         </div>
+      `;
+      listContainer.appendChild(item);
+    });
 
-    </main>
+    renderProvinceReport();
+  }
 
-    <script>
-        let currentUser = null;
+  // ذخیره پیام اختصاصی مدیر
+  function savePrivateMsg(userId) {
+    const msg = document.getElementById(`priv-msg-${userId}`).value;
+    const user = db.users.find(u => u.id === userId);
+    if (user) {
+      user.privateMsg = msg;
+      saveDB();
+      alert('پیام اختصاصی برای کاربر ثبت شد.');
+    }
+  }
 
-        function toggleAuth(type) {
-            if(type === 'login') {
-                document.getElementById('loginBox').classList.remove('hidden');
-                document.getElementById('registerBox').classList.add('hidden');
-                document.getElementById('btnTabLogin').className = 'flex-1 py-2.5 rounded-xl bg-white text-slate-900 shadow-sm';
-                document.getElementById('btnTabRegister').className = 'flex-1 py-2.5 rounded-xl text-slate-600';
-            } else {
-                document.getElementById('registerBox').classList.remove('hidden');
-                document.getElementById('loginBox').classList.add('hidden');
-                document.getElementById('btnTabRegister').className = 'flex-1 py-2.5 rounded-xl bg-white text-slate-900 shadow-sm';
-                document.getElementById('btnTabLogin').className = 'flex-1 py-2.5 rounded-xl text-slate-600';
-            }
-        }
+  // کپی پیامک اطلاعات کاربر
+  function copyUserInfo(name, user, pass, phone) {
+    const text = `مشتری گرامی ${name}\nاطلاعات ورود شما به کاریز طب:\nنام کاربری: ${user}\nرمز عبور: ${pass}`;
+    navigator.clipboard.writeText(text);
+    alert('متن پیامک بازیابی حساب کپی شد:\n\n' + text);
+  }
 
-        function registerUser() {
-            const name = document.getElementById('regName').value.trim();
-            const center = document.getElementById('regCenter').value.trim();
-            const city = document.getElementById('regCity').value.trim();
-            const phone = document.getElementById('regPhone').value.trim();
-            const username = document.getElementById('regUsername').value.trim();
-            const pass = document.getElementById('regPass').value.trim();
+  // حذف کاربر
+  function deleteUser(userId) {
+    if (confirm('آیا از حذف این کاربر اطمینان دارید؟')) {
+      db.users = db.users.filter(u => u.id !== userId);
+      saveDB();
+      renderAdminPanel();
+    }
+  }
 
-            if(!name || !center || !city || !phone || !username || !pass) {
-                return alert('لطفاً تمام اطلاعات فرم ثبت‌نام را به دقت پر کنید.');
-            }
+  // ذخیره اطلاعیه عمومی
+  function savePublicAnnouncement() {
+    const title = document.getElementById('admin-ann-title').value;
+    const text = document.getElementById('admin-ann-text').value;
+    const fileInput = document.getElementById('admin-ann-img');
 
-            let users = JSON.parse(localStorage.getItem('kt_users')) || [];
+    if (fileInput.files && fileInput.files[0]) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        db.publicAnnouncement = { title, text, img: e.target.result };
+        saveDB();
+        alert('اطلاعیه عمومی منتشر شد.');
+      };
+      reader.readAsDataURL(fileInput.files[0]);
+    } else {
+      db.publicAnnouncement = { title, text, img: db.publicAnnouncement.img || '' };
+      saveDB();
+      alert('اطلاعیه عمومی منتشر شد.');
+    }
+  }
 
-            const isDuplicate = users.some(u => 
-                u.phone === phone || u.username === username || 
-                (u.name === name && u.center === center && u.city === city)
-            );
+  // گزارش‌گیری استانی
+  function renderProvinceReport() {
+    const report = {};
+    db.users.forEach(u => {
+      if (!report[u.province]) {
+        report[u.province] = { count: 0, total: 0 };
+      }
+      report[u.province].count++;
+      report[u.province].total += (u.totalPurchases || 0);
+    });
 
-            if(isDuplicate) {
-                return alert('⚠️ این اطلاعات قبلاً در سامانه ثبت شده است.');
-            }
+    let html = '<table><thead><tr><th>استان</th><th>تعداد اعضا</th><th>مجموع خرید (ریال)</th></tr></thead><tbody>';
+    for (const p in report) {
+      html += `<tr><td>${p}</td><td>${report[p].count}</td><td>${report[p].total.toLocaleString()}</td></tr>`;
+    }
+    html += '</tbody></table>';
+    document.getElementById('province-report-table').innerHTML = html;
+  }
 
-            const newUser = {
-                name, center, city, phone, username, pass,
-                code: 'KT-' + phone.slice(-4),
-                points: 100,
-                tier: 'عادی ⚪'
-            };
+  // خروجی Excel (CSV)
+  function exportToExcel() {
+    let csv = '\uFEFFاستان,تعداد اعضا,مجموع خرید\n';
+    const report = {};
+    db.users.forEach(u => {
+      if (!report[u.province]) report[u.province] = { count: 0, total: 0 };
+      report[u.province].count++;
+      report[u.province].total += (u.totalPurchases || 0);
+    });
+    for (const p in report) {
+      csv += `${p},${report[p].count},${report[p].total}\n`;
+    }
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'گزارش_استانی_کاریزطب.csv';
+    link.click();
+  }
 
-            users.push(newUser);
-            localStorage.setItem('kt_users', JSON.stringify(users));
-            alert(`ثبت‌نام انجام شد! کد اختصاصی شما: ${newUser.code}`);
-            
-            currentUser = newUser;
-            openDashboard();
-        }
+  // خروجی PDF
+  function exportToPDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    doc.text('Kariz Teb - Province Report', 10, 10);
+    let y = 20;
+    db.users.forEach((u, i) => {
+      doc.text(`${i+1}. ${u.fullname} - ${u.province} - ${u.phone}`, 10, y);
+      y += 10;
+    });
+    doc.save('گزارش_کاریزطب.pdf');
+  }
 
-        function loginUser() {
-            const userKey = document.getElementById('loginUser').value.trim();
-            const pass = document.getElementById('loginPass').value.trim();
+  // دانلود دیتابیس
+  function exportDatabase() {
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(db));
+    const dlAnchor = document.createElement('a');
+    dlAnchor.setAttribute("href", dataStr);
+    dlAnchor.setAttribute("download", "karizteb_backup.json");
+    dlAnchor.click();
+  }
 
-            let users = JSON.parse(localStorage.getItem('kt_users')) || [];
-            const user = users.find(u => (u.username === userKey || u.phone === userKey) && u.pass === pass);
+  // بازیابی دیتابیس
+  function importDatabase(event) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      db = JSON.parse(e.target.result);
+      saveDB();
+      alert('اطلاعات با موفقیت بازیابی شد.');
+      renderAdminPanel();
+    };
+    reader.readAsText(event.target.files[0]);
+  }
 
-            if(!user) return alert('نام کاربری/شماره همراه یا رمز عبور اشتباه است.');
-
-            currentUser = user;
-            openDashboard();
-        }
-
-        // اثر انگشت بدون خطا و بدون وابسته بودن به هاست
-        async function loginBioSecure() {
-            let users = JSON.parse(localStorage.getItem('kt_users')) || [];
-            if(users.length === 0) return alert('حسابی یافت نشد. ابتدا ثبت‌نام کنید.');
-
-            if (window.PublicKeyCredential) {
-                try {
-                    const challenge = new Uint8Array(32);
-                    window.crypto.getRandomValues(challenge);
-
-                    await navigator.credentials.get({
-                        publicKey: {
-                            challenge: challenge,
-                            userVerification: "preferred",
-                            timeout: 20000
-                        }
-                    });
-                    
-                    currentUser = users[0];
-                    openDashboard();
-                } catch (e) {
-                    currentUser = users[0];
-                    openDashboard();
-                }
-            } else {
-                currentUser = users[0];
-                openDashboard();
-            }
-        }
-
-        // ارسال مستقیم پیامک فراموشی رمز (بدون Pop-up)
-        function sendForgotSMSDirect() {
-            const smsText = encodeURIComponent("مدیریت محترم کاریز طب\nنام کاربری و رمز عبور من در باشگاه مشتریان فراموش شده است. لطفاً راهنمایی بفرمایید.");
-            window.open(`sms:09398490440?body=${smsText}`, '_blank');
-        }
-
-        function sendActivationSMS() {
-            const smsText = encodeURIComponent(`فعال‌سازی باشگاه کاریز طب\nکد شناسه: ${currentUser.code}\nنام مرکز: ${currentUser.center}\nنام: ${currentUser.name}`);
-            window.open(`sms:09398490440?body=${smsText}`, '_blank');
-        }
-
-        function openDashboard() {
-            document.getElementById('authContainer').classList.add('hidden');
-            document.getElementById('mainDashboard').classList.remove('hidden');
-
-            document.getElementById('userInfo').innerText = `${currentUser.name} (${currentUser.code})`;
-            document.getElementById('userInfo').classList.remove('hidden');
-            document.getElementById('btnLogoutTop').classList.remove('hidden');
-
-            document.getElementById('dashName').innerText = currentUser.name;
-            document.getElementById('dashCenter').innerText = `${currentUser.center} (${currentUser.city})`;
-            document.getElementById('dashCode').innerText = currentUser.code;
-            document.getElementById('dashPoints').innerText = currentUser.points;
-            document.getElementById('userTier').innerText = currentUser.tier || 'عادی ⚪';
-
-            loadCatalog();
-            loadUserOrderHistory();
-        }
-
-        function logoutUser() {
-            currentUser = null;
-            document.getElementById('mainDashboard').classList.add('hidden');
-            document.getElementById('authContainer').classList.remove('hidden');
-            document.getElementById('userInfo').classList.add('hidden');
-            document.getElementById('btnLogoutTop').classList.add('hidden');
-        }
-
-        function switchTab(tabId) {
-            ['tabCatalog', 'tabTracking', 'tabWheel', 'tabInvoice'].forEach(t => document.getElementById(t).classList.add('hidden'));
-            document.getElementById(tabId).classList.remove('hidden');
-
-            const btns = { tabCatalog: 'btnTabCatalog', tabTracking: 'btnTabTracking', tabWheel: 'btnTabWheel', tabInvoice: 'btnTabInvoice' };
-            Object.values(btns).forEach(bId => document.getElementById(bId).className = 'px-4 py-2.5 rounded-xl text-slate-600 shrink-0');
-            document.getElementById(btns[tabId]).className = 'px-4 py-2.5 rounded-xl gold-brand-bg text-white font-bold shrink-0 shadow-sm';
-        }
-
-        function loadCatalog() {
-            let products = JSON.parse(localStorage.getItem('kt_products')) || [];
-            const tbody = document.getElementById('catalogTableBody');
-            tbody.innerHTML = '';
-
-            if(products.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" class="text-center py-4 text-slate-400">کالایی موجود نیست.</td></tr>';
-                return;
-            }
-
-            products.forEach((p) => {
-                const imgTag = p.img ? `<img src="${p.img}" class="w-10 h-10 object-cover rounded-lg border border-slate-200">` : `<div class="w-10 h-10 bg-slate-100 rounded-lg flex items-center justify-center text-[10px] text-slate-400">بدون عکس</div>`;
-                tbody.innerHTML += `
-                    <tr>
-                        <td class="p-2">${imgTag}</td>
-                        <td class="p-2"><b class="text-slate-900">${p.name}</b><br><span class="text-[10px] text-amber-600">${p.desc||''}</span></td>
-                        <td class="p-2 text-slate-500">${p.unit}</td>
-                        <td class="p-2 font-mono">${p.price.toLocaleString()}</td>
-                        <td class="p-2"><input type="number" min="0" value="0" id="qty_${p.id}" onchange="calculateTotal()" class="w-12 bg-slate-50 border border-slate-200 text-center rounded py-1 text-xs text-slate-900"></td>
-                        <td class="p-2 font-mono text-emerald-600 font-bold" id="rowTotal_${p.id}">۰</td>
-                    </tr>
-                `;
-            });
-        }
-
-        function calculateTotal() {
-            let products = JSON.parse(localStorage.getItem('kt_products')) || [];
-            let grandTotal = 0;
-            products.forEach(p => {
-                const qty = parseInt(document.getElementById(`qty_${p.id}`)?.value) || 0;
-                const rowTotal = qty * p.price;
-                if(document.getElementById(`rowTotal_${p.id}`)) document.getElementById(`rowTotal_${p.id}`).innerText = rowTotal.toLocaleString();
-                grandTotal += rowTotal;
-            });
-            document.getElementById('grandTotal').innerText = grandTotal.toLocaleString() + ' ریال';
-        }
-
-        function submitOrder() {
-            let products = JSON.parse(localStorage.getItem('kt_products')) || [];
-            let orderItems = [];
-            let total = 0;
-
-            products.forEach(p => {
-                const qty = parseInt(document.getElementById(`qty_${p.id}`)?.value) || 0;
-                if(qty > 0) {
-                    orderItems.push(`${p.name} (${qty} ${p.unit})`);
-                    total += qty * p.price;
-                }
-            });
-
-            if(orderItems.length === 0) return alert('لطفاً حداقل یک کالا انتخاب کنید.');
-
-            const orderData = {
-                id: Date.now(),
-                userCode: currentUser.code,
-                userName: currentUser.name,
-                userCenter: currentUser.center,
-                userPhone: currentUser.phone,
-                items: orderItems,
-                total: total,
-                status: 'در حال بررسی ⏳',
-                shipping: 'در حال آماده‌سازی انبار 📦',
-                date: new Date().toLocaleDateString('fa-IR')
-            };
-
-            let allOrders = JSON.parse(localStorage.getItem('kt_orders')) || [];
-            allOrders.push(orderData);
-            localStorage.setItem('kt_orders', JSON.stringify(allOrders));
-
-            const smsText = encodeURIComponent(`سفارش کاریز طب\nمرکز: ${currentUser.center}\nنام: ${currentUser.name}\nکد: ${currentUser.code}\nمبلغ: ${total.toLocaleString()} ریال`);
-            window.open(`sms:09398490440?body=${smsText}`, '_blank');
-            loadUserOrderHistory();
-            alert('سفارش ثبت شد!');
-        }
-
-        function loadUserOrderHistory() {
-            let allOrders = JSON.parse(localStorage.getItem('kt_orders')) || [];
-            const userOrders = allOrders.filter(o => o.userPhone === currentUser.phone);
-            const container = document.getElementById('ordersList');
-
-            if(userOrders.length === 0) {
-                container.innerHTML = `<p class="text-slate-400 text-center py-2">هیچ سفارشی ثبت نشده است.</p>`;
-                return;
-            }
-
-            container.innerHTML = '';
-            userOrders.reverse().forEach(o => {
-                container.innerHTML += `
-                    <div class="bg-slate-50 border border-slate-200 p-3.5 rounded-2xl space-y-1.5">
-                        <div class="flex justify-between font-bold"><span>تاریخ: ${o.date}</span><span class="text-amber-600">${o.status}</span></div>
-                        <div class="text-slate-700 text-[11px]">${o.items.join(' ، ')}</div>
-                        <div class="flex justify-between text-[11px] pt-1 border-t border-slate-200"><span>ارسال: <b class="text-blue-600">${o.shipping}</b></span><span class="text-emerald-600 font-bold">${o.total.toLocaleString()} ریال</span></div>
-                    </div>
-                `;
-            });
-        }
-    </script>
+  function logout() {
+    currentUser = null;
+    showPage('auth-page');
+  }
+</script>
 </body>
 </html>
