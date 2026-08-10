@@ -3,7 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>کاریز طب | سامانه سفارش‌گیری و باشگاه مشتریان</title>
+  <title>کاریزطب | سامانه سفارش‌گیری و باشگاه مشتریان کاریز طب</title>
+  <meta name="description" content="سامانه رسمی ثبت سفارش و باشگاه مشتریان کاریز طب (karizteb). ارائه خدمات و تجهیزات پزشکی و آزمایشگاهی.">
+  <meta name="keywords" content="کاریزطب, کاریز طب, karizteb, تجهیزات پزشکی">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
     :root {
@@ -17,15 +19,15 @@
     }
     * { box-sizing: border-box; font-family: Tahoma, Segoe UI, sans-serif; margin: 0; padding: 0; }
     body { background-color: var(--bg); color: var(--text); padding: 15px; direction: rtl; }
-    .container { max-width: 600px; margin: 0 auto; }
+    .container { max-width: 500px; margin: 0 auto; }
     .card { background: var(--card-bg); border-radius: 16px; padding: 18px; margin-bottom: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
     .header-card { display: flex; justify-content: space-between; align-items: center; }
     .logo-sec { display: flex; align-items: center; gap: 10px; }
     .logo-badge { background: var(--accent); color: #fff; font-weight: bold; width: 45px; height: 45px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
     .btn { border: none; padding: 10px 16px; border-radius: 10px; font-weight: bold; cursor: pointer; transition: 0.2s; font-size: 0.9rem; }
-    .btn-primary { background: var(--primary); color: #fff; }
+    .btn-primary { background: var(--primary); color: #fff; width: 100%; margin-top: 8px; }
     .btn-primary:hover { background: var(--primary-hover); }
-    .btn-accent { background: var(--accent); color: #fff; }
+    .btn-accent { background: var(--accent); color: #fff; width: 100%; }
     .btn-danger { background: var(--danger); color: #fff; }
     .btn-outline { background: transparent; border: 1px solid var(--primary); color: var(--primary); }
     .form-group { margin-bottom: 12px; text-align: right; }
@@ -45,30 +47,30 @@
 <body>
 
 <div class="container">
-  <!-- صفحه ورود / ثبت نام -->
   <div id="auth-page" class="card">
-    <h2 style="text-align: center; margin-bottom: 15px; color: var(--primary);">کاریز طب</h2>
+    <div style="text-align:center; margin-bottom:15px;">
+      <div class="logo-badge" style="margin: 0 auto 10px auto; width: 60px; height: 60px; font-size: 1.5rem;">KT</div>
+      <h2 style="color: var(--primary);">کاریز طب</h2>
+      <p style="font-size:0.85rem; color:#777;">سامانه سفارش‌گیری و باشگاه مشتریان</p>
+    </div>
     <form id="login-form" autocomplete="on">
       <div class="form-group">
         <label>نام کاربری</label>
-        <input type="text" id="login-username" class="form-control" autocomplete="username" required>
+        <input type="text" id="login-username" class="form-control" autocomplete="username" required placeholder="نام کاربری خود را وارد کنید">
       </div>
       <div class="form-group">
         <label>رمز عبور</label>
-        <input type="password" id="login-password" class="form-control" autocomplete="current-password" required>
+        <input type="password" id="login-password" class="form-control" autocomplete="current-password" required placeholder="رمز عبور">
       </div>
-      <div class="flex-gap">
-        <button type="submit" class="btn btn-primary" style="flex:1;">ورود به حساب</button>
-        <button type="button" id="biometric-btn" class="btn btn-outline">ورود با اثر انگشت / زیست‌سنجی</button>
-      </div>
+      <button type="submit" class="btn btn-primary">ورود به حساب کاربری</button>
+      <button type="button" id="biometric-btn" class="btn btn-outline" style="width:100%; margin-top:8px;">ورود با اثر انگشت / شناسایی چهره</button>
     </form>
     <hr style="margin: 15px 0; border: 0; border-top: 1px solid #eee;">
-    <button class="btn btn-accent" style="width: 100%;" onclick="toggleRegister(true)">ثبت نام جدید</button>
+    <button class="btn btn-accent" onclick="toggleRegister(true)">ثبت نام حساب جدید</button>
   </div>
 
-  <!-- فرم ثبت نام -->
   <div id="register-page" class="card hidden">
-    <h3 style="margin-bottom: 12px; color: var(--primary);">ثبت نام عضو جدید</h3>
+    <h3 style="margin-bottom: 12px; color: var(--primary);">ثبت نام در کاریز طب</h3>
     <form id="register-form" autocomplete="on">
       <div class="form-group">
         <label>نام و نام خانوادگی</label>
@@ -79,7 +81,7 @@
         <input type="text" id="reg-username" class="form-control" autocomplete="username" required>
       </div>
       <div class="form-group">
-        <label>شماره تماس (یکتا)</label>
+        <label>شماره همراه (یکتا)</label>
         <input type="tel" id="reg-phone" class="form-control" autocomplete="tel" required>
       </div>
       <div class="form-group">
@@ -94,113 +96,101 @@
           <option value="اصفهان">اصفهان</option>
           <option value="فارس">فارس</option>
           <option value="خراسان رضوی">خراسان رضوی</option>
-          <option value="سایر">سایر</option>
+          <option value="سایر">سایر استان‌ها</option>
         </select>
       </div>
-      <div class="flex-gap">
-        <button type="submit" class="btn btn-primary" style="flex:1;">تکمیل ثبت‌نام</button>
-        <button type="button" class="btn btn-danger" onclick="toggleRegister(false)">انصراف</button>
-      </div>
+      <button type="submit" class="btn btn-primary">ثبت اطلاعات و ورود</button>
+      <button type="button" class="btn btn-danger" style="width:100%; margin-top:8px;" onclick="toggleRegister(false)">بازگشت به ورود</button>
     </form>
   </div>
 
-  <!-- پنل مشتری -->
   <div id="customer-panel" class="hidden">
     <div class="card header-card">
       <div class="logo-sec">
         <div class="logo-badge">KT</div>
         <div>
           <h3 id="cust-display-name">نام کاربر</h3>
-          <small style="color: #777;">سامانه مشتریان کاریز طب</small>
+          <small style="color: #777;">مشتری محترم کاریز طب</small>
         </div>
       </div>
       <button class="btn btn-danger" onclick="logout()">خروج</button>
     </div>
 
-    <!-- بنر تبلیغاتی عمومی/اختصاصی -->
     <div id="public-announcement" class="banner-box card">
-      <strong id="announcement-title">پیام مدیریت</strong>
-      <p id="announcement-text">به سامانه کاریز طب خوش آمدید.</p>
+      <strong id="announcement-title">پیام شرکت کاریز طب</strong>
+      <p id="announcement-text" style="margin-top:5px;">به سامانه سفارش‌گیری خوش آمدید.</p>
       <div id="announcement-img-container"></div>
     </div>
 
-    <!-- پیام اختصاصی مدیر به این مشتری -->
     <div id="private-announcement" class="card banner-box hidden" style="background:#e6f7ff; border-color:#91d5ff; color:#0050b3;">
       <strong>پیام اختصاصی مدیریت برای شما:</strong>
-      <p id="private-msg-text"></p>
+      <p id="private-msg-text" style="margin-top:5px;"></p>
     </div>
 
-    <!-- ارتباط با مدیر (جایگزین فاکتور دستی) -->
     <div class="card">
-      <h4 style="margin-bottom: 8px;">ارسال پیام و اعلام نیاز به مدیریت</h4>
+      <h4 style="margin-bottom: 8px; color:var(--primary);">ارسال درخواست / پیام به مدیریت</h4>
       <div class="form-group">
-        <textarea id="cust-msg-text" class="form-control" rows="3" placeholder="متن پیام خود را بنویسید..."></textarea>
+        <textarea id="cust-msg-text" class="form-control" rows="3" placeholder="توضیحات یا نیازمندی‌های خود را اینجا تایپ کنید..."></textarea>
       </div>
       <div class="form-group">
-        <label>پیوست تصویر (اختیاری)</label>
+        <label>ارسال تصویر پیوست (اختیاری)</label>
         <input type="file" id="cust-msg-img" accept="image/*" class="form-control">
       </div>
-      <button class="btn btn-primary" onclick="sendCustomerMessage()">ارسال پیام</button>
+      <button class="btn btn-primary" onclick="sendCustomerMessage()">ارسال پیام به مدیر</button>
     </div>
   </div>
 
-  <!-- پنل مدیریت -->
   <div id="admin-panel" class="hidden">
     <div class="card header-card">
       <h3>پنل مدیریت کاریز طب</h3>
       <button class="btn btn-danger" onclick="logout()">خروج</button>
     </div>
 
-    <!-- اعلان عمومی -->
     <div class="card">
-      <h4>مدیریت اطلاعیه عمومی مشتریان</h4>
+      <h4 style="color:var(--primary);">مدیریت بنر و پیام عمومی مشتریان</h4>
       <div class="form-group" style="margin-top:8px;">
-        <input type="text" id="admin-ann-title" class="form-control" placeholder="عنوان اطلاعیه">
+        <input type="text" id="admin-ann-title" class="form-control" placeholder="عنوان پیام تبلیغاتی">
       </div>
       <div class="form-group">
-        <textarea id="admin-ann-text" class="form-control" rows="2" placeholder="متن اطلاعیه عمومی..."></textarea>
+        <textarea id="admin-ann-text" class="form-control" rows="2" placeholder="متن پیام..."></textarea>
       </div>
       <div class="form-group">
-        <label>تصویر تبلیغاتی</label>
+        <label>تصویر بنر تبلیغاتی</label>
         <input type="file" id="admin-ann-img" accept="image/*" class="form-control">
       </div>
-      <button class="btn btn-primary" onclick="savePublicAnnouncement()">انتشار اطلاعیه عمومی</button>
+      <button class="btn btn-primary" onclick="savePublicAnnouncement()">انتشار بنر برای همه</button>
     </div>
 
-    <!-- مدیریت اعضا -->
     <div class="card">
-      <h4>مدیریت اعضا و ثبت‌نامی‌ها</h4>
+      <h4 style="color:var(--primary);">لیست تمامی اعضای ثبت‌نام شده</h4>
       <div id="users-list-container" style="margin-top:10px;"></div>
     </div>
 
-    <!-- تفکیک استان‌ها و گزارش‌گیری -->
     <div class="card">
-      <h4>گزارش‌گیری و تفکیک استانی</h4>
+      <h4 style="color:var(--primary);">گزارش‌گیری و تفکیک استان‌ها</h4>
       <div class="flex-gap" style="margin: 10px 0;">
-        <button class="btn btn-outline" onclick="exportToExcel()">خروجی اکسل (CSV)</button>
-        <button class="btn btn-outline" onclick="exportToPDF()">خروجی PDF</button>
+        <button class="btn btn-outline" style="flex:1;" onclick="exportToExcel()">دانلود اکسل (CSV)</button>
+        <button class="btn btn-outline" style="flex:1;" onclick="exportToPDF()">دانلود PDF</button>
       </div>
       <div id="province-report-table"></div>
     </div>
 
-    <!-- پشتیبان‌گیری کامل دیتابیس -->
     <div class="card">
-      <h4>پشتیبان‌گیری از داده‌ها</h4>
-      <p style="font-size:0.8rem; color:#666; margin-bottom:8px;">جهت حفظ اطلاعات مشتریان در آپدیت‌های بعدی کدها:</p>
+      <h4 style="color:var(--primary);">پشتیبان‌گیری از اطلاعات</h4>
+      <p style="font-size:0.8rem; color:#666; margin-bottom:8px;">جهت ذخیره دائمی دیتابیس مشتریان:</p>
       <div class="flex-gap">
-        <button class="btn btn-primary" onclick="exportDatabase()">دانلود فایل بک‌آپ</button>
+        <button class="btn btn-primary" style="flex:1;" onclick="exportDatabase()">دانلود بک‌آب</button>
         <input type="file" id="import-db-file" style="display:none" onchange="importDatabase(event)">
-        <button class="btn btn-accent" onclick="document.getElementById('import-db-file').click()">بازیابی بک‌آپ</button>
+        <button class="btn btn-accent" style="flex:1;" onclick="document.getElementById('import-db-file').click()">بازیابی فایل بک‌آب</button>
       </div>
     </div>
   </div>
 </div>
 
 <script>
-  // ساختار اصلی دیتابیس در LocalStorage
   let db = JSON.parse(localStorage.getItem('karizteb_db')) || {
     users: [],
-    publicAnnouncement: { title: 'خوش آمدید', text: 'به باشگاه مشتریان کاریز طب خوش آمدید.', img: '' },
+    publicAnnouncement: { title: 'خوش آمدید', text: 'به سامانه کاریز طب خوش آمدید.', img: '' },
     messages: []
   };
 
@@ -210,7 +200,6 @@
 
   let currentUser = null;
 
-  // مدیریت نمایش صفحات
   function showPage(pageId) {
     ['auth-page', 'register-page', 'customer-panel', 'admin-panel'].forEach(id => {
       document.getElementById(id).classList.add('hidden');
@@ -222,16 +211,14 @@
     showPage(show ? 'register-page' : 'auth-page');
   }
 
-  // ثبت‌نام
   document.getElementById('register-form').addEventListener('submit', function(e) {
     e.preventDefault();
     const username = document.getElementById('reg-username').value.trim();
     const phone = document.getElementById('reg-phone').value.trim();
 
-    // بررسی عدم تکراری بودن نام کاربری و شماره تماس
     const exists = db.users.some(u => u.username === username || u.phone === phone);
     if (exists) {
-      alert('خطا: نام کاربری یا شماره تماس وارد شده قبلاً ثبت شده است!');
+      alert('خطا: نام کاربری یا شماره همراه تکراری است!');
       return;
     }
 
@@ -248,11 +235,10 @@
 
     db.users.push(newUser);
     saveDB();
-    alert('ثبت‌نام با موفقیت انجام شد. اکنون وارد شوید.');
+    alert('ثبت‌نام انجام شد.');
     toggleRegister(false);
   });
 
-  // ورود
   document.getElementById('login-form').addEventListener('submit', function(e) {
     e.preventDefault();
     const u = document.getElementById('login-username').value.trim();
@@ -275,31 +261,18 @@
     }
   });
 
-  // ورود بیومتریک (اثر انگشت)
-  document.getElementById('biometric-btn').addEventListener('click', async function() {
-    if (window.PublicKeyCredential) {
-      try {
-        alert('در صورت پشتیبانی مرورگر و ثبت بیومتریک دستگاه، احراز هویت انجام می‌شود.');
-      } catch (err) {
-        alert('احراز هویت بیومتریک در این دستگاه در دسترس نیست.');
-      }
-    } else {
-      alert('دستگاه شما از ورود بیومتریک پشتیبانی نمی‌کند.');
-    }
+  document.getElementById('biometric-btn').addEventListener('click', function() {
+    alert('ویژگی ذخیره گذرواژه مرورگر فعال است. جهت استفاده از اثر انگشت، پس از بار اول وارد شدن، گزینه ذخیره رمز عبور (Save Password) را در گوشی تایید کنید.');
   });
 
-  // رندر پنل مشتری
   function renderCustomerPanel() {
     document.getElementById('cust-display-name').innerText = currentUser.fullname;
-    
-    // اعلان عمومی
     const ann = db.publicAnnouncement;
     document.getElementById('announcement-title').innerText = ann.title || '';
     document.getElementById('announcement-text').innerText = ann.text || '';
     const imgContainer = document.getElementById('announcement-img-container');
     imgContainer.innerHTML = ann.img ? `<img src="${ann.img}">` : '';
 
-    // پیام اختصاصی
     const privBox = document.getElementById('private-announcement');
     if (currentUser.privateMsg) {
       document.getElementById('private-msg-text').innerText = currentUser.privateMsg;
@@ -309,11 +282,9 @@
     }
   }
 
-  // ارسال پیام مشتری به مدیر
   function sendCustomerMessage() {
     const text = document.getElementById('cust-msg-text').value;
     if (!text) { alert('لطفاً متنی بنویسید.'); return; }
-    
     db.messages.push({
       userId: currentUser.id,
       userName: currentUser.fullname,
@@ -321,18 +292,16 @@
       date: new Date().toLocaleDateString('fa-IR')
     });
     saveDB();
-    alert('پیام شما با موفقیت برای مدیریت ارسال شد.');
+    alert('پیام شما برای مدیریت ارسال شد.');
     document.getElementById('cust-msg-text').value = '';
   }
 
-  // رندر پنل مدیریت
   function renderAdminPanel() {
-    // رندر تمام کاربران ثبت‌نامی (رفع باگ عدم نمایش کامل)
     const listContainer = document.getElementById('users-list-container');
     listContainer.innerHTML = '';
 
     if (db.users.length === 0) {
-      listContainer.innerHTML = '<p style="font-size:0.85rem; color:#888;">هیچ کاربری ثبت‌نام نکرده است.</p>';
+      listContainer.innerHTML = '<p style="font-size:0.85rem; color:#888;">هیچ کاربری ثبت نشده است.</p>';
     }
 
     db.users.forEach(user => {
@@ -341,16 +310,16 @@
       item.innerHTML = `
         <div class="user-card-header">
           <span>${user.fullname} (${user.province})</span>
-          <small>نام‌کاربری: ${user.username}</small>
+          <small>کاربری: ${user.username}</small>
         </div>
         <p style="font-size:0.8rem; margin-bottom:4px;">تلفن: ${user.phone} | رمز: ${user.password}</p>
         <div class="form-group" style="margin-top:6px;">
-          <input type="text" placeholder="پیام اختصاصی برای این کاربر" id="priv-msg-${user.id}" value="${user.privateMsg || ''}" class="form-control" style="font-size:0.8rem;">
+          <input type="text" placeholder="پیام اختصاصی به این کاربر" id="priv-msg-${user.id}" value="${user.privateMsg || ''}" class="form-control" style="font-size:0.8rem;">
         </div>
         <div class="flex-gap">
-          <button class="btn btn-primary" onclick="savePrivateMsg(${user.id})">ثبت پیام اختصاصی</button>
-          <button class="btn btn-outline" onclick="copyUserInfo('${user.fullname}', '${user.username}', '${user.password}', '${user.phone}')">کپی پیامک بازیابی</button>
-          <button class="btn btn-danger" onclick="deleteUser(${user.id})">حذف</button>
+          <button class="btn btn-primary" style="font-size:0.75rem; padding:6px;" onclick="savePrivateMsg(${user.id})">ثبت پیام</button>
+          <button class="btn btn-outline" style="font-size:0.75rem; padding:6px;" onclick="copyUserInfo('${user.fullname}', '${user.username}', '${user.password}')">کپی پیامک</button>
+          <button class="btn btn-danger" style="font-size:0.75rem; padding:6px;" onclick="deleteUser(${user.id})">حذف</button>
         </div>
       `;
       listContainer.appendChild(item);
@@ -359,34 +328,30 @@
     renderProvinceReport();
   }
 
-  // ذخیره پیام اختصاصی مدیر
   function savePrivateMsg(userId) {
     const msg = document.getElementById(`priv-msg-${userId}`).value;
     const user = db.users.find(u => u.id === userId);
     if (user) {
       user.privateMsg = msg;
       saveDB();
-      alert('پیام اختصاصی برای کاربر ثبت شد.');
+      alert('پیام اختصاصی ثبت شد.');
     }
   }
 
-  // کپی پیامک اطلاعات کاربر
-  function copyUserInfo(name, user, pass, phone) {
+  function copyUserInfo(name, user, pass) {
     const text = `مشتری گرامی ${name}\nاطلاعات ورود شما به کاریز طب:\nنام کاربری: ${user}\nرمز عبور: ${pass}`;
     navigator.clipboard.writeText(text);
-    alert('متن پیامک بازیابی حساب کپی شد:\n\n' + text);
+    alert('متن پیامک کپی شد:\n\n' + text);
   }
 
-  // حذف کاربر
   function deleteUser(userId) {
-    if (confirm('آیا از حذف این کاربر اطمینان دارید؟')) {
+    if (confirm('آیا این کاربر حذف شود؟')) {
       db.users = db.users.filter(u => u.id !== userId);
       saveDB();
       renderAdminPanel();
     }
   }
 
-  // ذخیره اطلاعیه عمومی
   function savePublicAnnouncement() {
     const title = document.getElementById('admin-ann-title').value;
     const text = document.getElementById('admin-ann-text').value;
@@ -397,23 +362,20 @@
       reader.onload = function(e) {
         db.publicAnnouncement = { title, text, img: e.target.result };
         saveDB();
-        alert('اطلاعیه عمومی منتشر شد.');
+        alert('بنر منتشر شد.');
       };
       reader.readAsDataURL(fileInput.files[0]);
     } else {
       db.publicAnnouncement = { title, text, img: db.publicAnnouncement.img || '' };
       saveDB();
-      alert('اطلاعیه عمومی منتشر شد.');
+      alert('پیام منتشر شد.');
     }
   }
 
-  // گزارش‌گیری استانی
   function renderProvinceReport() {
     const report = {};
     db.users.forEach(u => {
-      if (!report[u.province]) {
-        report[u.province] = { count: 0, total: 0 };
-      }
+      if (!report[u.province]) report[u.province] = { count: 0, total: 0 };
       report[u.province].count++;
       report[u.province].total += (u.totalPurchases || 0);
     });
@@ -426,7 +388,6 @@
     document.getElementById('province-report-table').innerHTML = html;
   }
 
-  // خروجی Excel (CSV)
   function exportToExcel() {
     let csv = '\uFEFFاستان,تعداد اعضا,مجموع خرید\n';
     const report = {};
@@ -441,15 +402,14 @@
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
-    link.download = 'گزارش_استانی_کاریزطب.csv';
+    link.download = 'گزارش_استانی.csv';
     link.click();
   }
 
-  // خروجی PDF
   function exportToPDF() {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
-    doc.text('Kariz Teb - Province Report', 10, 10);
+    doc.text('Kariz Teb - User Report', 10, 10);
     let y = 20;
     db.users.forEach((u, i) => {
       doc.text(`${i+1}. ${u.fullname} - ${u.province} - ${u.phone}`, 10, y);
@@ -458,7 +418,6 @@
     doc.save('گزارش_کاریزطب.pdf');
   }
 
-  // دانلود دیتابیس
   function exportDatabase() {
     const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(db));
     const dlAnchor = document.createElement('a');
@@ -467,13 +426,12 @@
     dlAnchor.click();
   }
 
-  // بازیابی دیتابیس
   function importDatabase(event) {
     const reader = new FileReader();
     reader.onload = function(e) {
       db = JSON.parse(e.target.result);
       saveDB();
-      alert('اطلاعات با موفقیت بازیابی شد.');
+      alert('بازیابی انجام شد.');
       renderAdminPanel();
     };
     reader.readAsText(event.target.files[0]);
