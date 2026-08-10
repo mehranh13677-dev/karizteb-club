@@ -163,7 +163,7 @@
     }
 
     .scrollable-box {
-      max-height: 320px;
+      max-height: 380px;
       overflow-y: auto;
       border: 1px solid var(--border-color);
       border-radius: 10px;
@@ -208,13 +208,12 @@
       border: 1px solid var(--border-color);
     }
 
-    .edit-prod-box {
-      background: #fffbe6;
+    .edit-modal-box {
+      background: #fff8e7;
       border: 1px solid #ffe58f;
       border-radius: 10px;
-      padding: 10px;
-      margin-top: 6px;
-      font-size: 0.82rem;
+      padding: 12px;
+      margin-top: 10px;
     }
 
     .vip-badge {
@@ -224,6 +223,10 @@
       padding: 2px 6px;
       border-radius: 6px;
       font-weight: bold;
+    }
+
+    .hidden {
+      display: none !important;
     }
   </style>
 </head>
@@ -243,7 +246,7 @@
   </div>
 
   <div class="card">
-    <h4 style="color: var(--primary); margin-bottom: 10px;">📦 تعریف و مدیریت بی‌نهایت محصول</h4>
+    <h4 style="color: var(--primary); margin-bottom: 10px;">📦 تعریف و مدیریت کامل محصولات (ویرایش / حذف)</h4>
     
     <div class="form-group">
       <label for="prod-name">نام کالا</label>
@@ -273,9 +276,45 @@
 
     <button class="btn btn-primary" id="add-prod-btn" style="width: 100%;" onclick="addNewProduct()">➕ افزودن محصول جدید</button>
 
+    <div id="edit-prod-modal" class="edit-modal-box hidden">
+      <h5 style="color: #8c6b00; margin-bottom: 8px;">✏️ ویرایش محصول انتخاب‌شده</h5>
+      <input type="hidden" id="edit-p-id">
+      
+      <div class="form-group">
+        <label>نام کالا</label>
+        <input type="text" id="edit-p-name" class="form-control">
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+        <div class="form-group">
+          <label>واحد</label>
+          <select id="edit-p-unit" class="form-control">
+            <option value="عدد">عدد</option>
+            <option value="بسته">بسته</option>
+            <option value="کارتن">کارتن</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>قیمت (ریال)</label>
+          <input type="number" id="edit-p-price" class="form-control">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>تعویض تصویر (اختیاری)</label>
+        <input type="file" id="edit-p-img" accept="image/*" class="form-control">
+      </div>
+
+      <div class="flex-gap">
+        <button class="btn btn-primary" style="flex:1;" onclick="saveProductEdit()">💾 ثبت تغییرات محصول</button>
+        <button class="btn btn-danger" style="flex:1;" onclick="cancelProductEdit()">انصراف</button>
+      </div>
+    </div>
+
     <hr style="margin: 15px 0; border: 0; border-top: 1px solid var(--border-color);">
 
-    <h5 style="color: var(--text-main); margin-bottom: 8px;">لیست محصولات فعال:</h5>
+    <h5 style="color: var(--text-main); margin-bottom: 8px;">لیست محصولات موجود در کاتالوگ:</h5>
     
     <div class="scrollable-box">
       <div id="products-table-container"></div>
@@ -348,9 +387,8 @@
 </div>
 
 <script>
-  // تنظیمات دیتابیس ابری (رایگان JSONBin)
-  const JSONBIN_BIN_ID = "66b8d234ad19ca34f892d71d"; 
-  const JSONBIN_API_KEY = "$2a$10$wT0lGfH2E8Yh/E9J5WvEdeX3Uv6d7b5U4I9r3j4d5m6n7o8p9q0r1";
+  // پایگاه داده ابری آنلاین مشترک برای سینک بین همه گوشی‌ها
+  const CLOUD_API_URL = "https://api.keyvalue.xyz/karizteb_database_v2_store";
 
   const defaultData = {
     users: [],
@@ -361,15 +399,17 @@
 
   async function getDB() {
     try {
-      const res = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}/latest`, {
-        headers: { 'X-Master-Key': JSONBIN_API_KEY }
-      });
+      const res = await fetch(CLOUD_API_URL, { cache: 'no-store' });
       if (res.ok) {
-        const data = await res.json();
-        return data.record || defaultData;
+        const text = await res.text();
+        if (text && text.trim() !== "") {
+          const data = JSON.parse(text);
+          localStorage.setItem('karizteb_db', JSON.stringify(data));
+          return data;
+        }
       }
     } catch (e) {
-      console.warn("خطا در دریافت ابری", e);
+      console.warn("خطا در دریافت اطلاعات ابری", e);
     }
     return JSON.parse(localStorage.getItem('karizteb_db')) || defaultData;
   }
@@ -377,16 +417,12 @@
   async function saveDB(db) {
     localStorage.setItem('karizteb_db', JSON.stringify(db));
     try {
-      await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Master-Key': JSONBIN_API_KEY
-        },
+      await fetch(CLOUD_API_URL, {
+        method: 'POST',
         body: JSON.stringify(db)
       });
     } catch (e) {
-      console.error("خطا در ذخیره ابری", e);
+      console.error("خطا در ذخیره‌سازی ابری:", e);
     }
   }
 
@@ -404,7 +440,7 @@
 
   async function addNewProduct() {
     const btn = document.getElementById('add-prod-btn');
-    btn.innerText = 'در حال ذخیره...';
+    btn.innerText = 'در حال ذخیره در سرور...';
     btn.disabled = true;
 
     const name = document.getElementById('prod-name').value.trim();
@@ -439,7 +475,7 @@
 
           db.products.push(newProd);
           await saveDB(db);
-          alert('محصول با موفقیت اضافه شد.');
+          alert('محصول جدید ثبت و آنلاین همگام‌سازی گردید.');
           clearProdForm();
           btn.innerText = '➕ افزودن محصول جدید';
           btn.disabled = false;
@@ -451,7 +487,7 @@
     } else {
       db.products.push(newProd);
       await saveDB(db);
-      alert('محصول ثبت شد.');
+      alert('محصول ثبت گردید.');
       clearProdForm();
       btn.innerText = '➕ افزودن محصول جدید';
       btn.disabled = false;
@@ -484,7 +520,8 @@
           <td>${p.unit}</td>
           <td>${p.price.toLocaleString()}</td>
           <td>
-            <button class="btn btn-danger" style="font-size:0.75rem; padding:4px 6px;" onclick="deleteProduct(${p.id})">🗑️</button>
+            <button class="btn btn-accent" style="font-size:0.75rem; padding:4px 8px; margin-left:2px;" onclick="openProductEdit(${p.id})">✏️ ویرایش</button>
+            <button class="btn btn-danger" style="font-size:0.75rem; padding:4px 8px;" onclick="deleteProduct(${p.id})">🗑️ حذف</button>
           </td>
         </tr>
       `;
@@ -493,8 +530,74 @@
     container.innerHTML = html;
   }
 
+  async function openProductEdit(prodId) {
+    const db = await getDB();
+    const p = (db.products || []).find(item => item.id === prodId);
+    if (!p) return;
+
+    document.getElementById('edit-p-id').value = p.id;
+    document.getElementById('edit-p-name').value = p.name;
+    document.getElementById('edit-p-unit').value = p.unit;
+    document.getElementById('edit-p-price').value = p.price;
+
+    document.getElementById('edit-prod-modal').classList.remove('hidden');
+    window.scrollTo({ top: 200, behavior: 'smooth' });
+  }
+
+  function cancelProductEdit() {
+    document.getElementById('edit-prod-modal').classList.add('hidden');
+  }
+
+  async function saveProductEdit() {
+    const prodId = parseInt(document.getElementById('edit-p-id').value);
+    const name = document.getElementById('edit-p-name').value.trim();
+    const unit = document.getElementById('edit-p-unit').value;
+    const price = parseInt(document.getElementById('edit-p-price').value) || 0;
+    const fileInput = document.getElementById('edit-p-img');
+
+    if (!name || price <= 0) {
+      alert('لطفاً اطلاعات محصول را به شکل صحیح وارد نمایید.');
+      return;
+    }
+
+    const db = await getDB();
+    const prod = (db.products || []).find(item => item.id === prodId);
+    if (!prod) return;
+
+    prod.name = name;
+    prod.unit = unit;
+    prod.price = price;
+
+    if (fileInput.files && fileInput.files[0]) {
+      const reader = new FileReader();
+      reader.onload = async function(e) {
+        const img = new Image();
+        img.onload = async function() {
+          const canvas = document.createElement('canvas');
+          const ctx = canvas.getContext('2d');
+          canvas.width = 100;
+          canvas.height = 100;
+          ctx.drawImage(img, 0, 0, 100, 100);
+          prod.img = canvas.toDataURL('image/jpeg', 0.8);
+
+          await saveDB(db);
+          alert('تغییرات محصول با موفقیت ذخیره و سینک گردید.');
+          cancelProductEdit();
+          initAdmin();
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(fileInput.files[0]);
+    } else {
+      await saveDB(db);
+      alert('تغییرات محصول ذخیره شد.');
+      cancelProductEdit();
+      initAdmin();
+    }
+  }
+
   async function deleteProduct(prodId) {
-    if (confirm('آیا این محصول از کاتالوگ حذف شود؟')) {
+    if (confirm('آیا از حذف این محصول اطمینان دارید؟')) {
       const db = await getDB();
       db.products = (db.products || []).filter(p => p.id !== prodId);
       await saveDB(db);
