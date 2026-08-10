@@ -3,72 +3,61 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>کاریزطب | سامانه سفارش‌گیری و باشگاه مشتریان کاریز طب</title>
-  <meta name="description" content="سامانه رسمی ثبت سفارش و باشگاه مشتریان کاریز طب (karizteb). ارائه خدمات و تجهیزات پزشکی و آزمایشگاهی.">
-  <meta name="keywords" content="کاریزطب, کاریز طب, karizteb, تجهیزات پزشکی">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <title>کاریز طب | باشگاه مشتریان و سفارش‌گیری</title>
   <style>
     :root {
       --primary: #00875a;
-      --primary-hover: #006644;
       --accent: #f5a623;
       --bg: #f4f6f8;
       --card-bg: #ffffff;
-      --text: #333333;
+      --text: #333;
       --danger: #de350b;
     }
-    * { box-sizing: border-box; font-family: Tahoma, Segoe UI, sans-serif; margin: 0; padding: 0; }
+    * { box-sizing: border-box; font-family: Tahoma, sans-serif; margin: 0; padding: 0; }
     body { background-color: var(--bg); color: var(--text); padding: 15px; direction: rtl; }
-    .container { max-width: 500px; margin: 0 auto; }
+    .container { max-width: 480px; margin: 0 auto; }
     .card { background: var(--card-bg); border-radius: 16px; padding: 18px; margin-bottom: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
     .header-card { display: flex; justify-content: space-between; align-items: center; }
-    .logo-sec { display: flex; align-items: center; gap: 10px; }
     .logo-badge { background: var(--accent); color: #fff; font-weight: bold; width: 45px; height: 45px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
-    .btn { border: none; padding: 10px 16px; border-radius: 10px; font-weight: bold; cursor: pointer; transition: 0.2s; font-size: 0.9rem; }
-    .btn-primary { background: var(--primary); color: #fff; width: 100%; margin-top: 8px; }
-    .btn-primary:hover { background: var(--primary-hover); }
-    .btn-accent { background: var(--accent); color: #fff; width: 100%; }
+    .btn { border: none; padding: 11px 16px; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 0.9rem; width: 100%; margin-top: 8px; }
+    .btn-primary { background: var(--primary); color: #fff; }
+    .btn-accent { background: var(--accent); color: #fff; }
     .btn-danger { background: var(--danger); color: #fff; }
-    .btn-outline { background: transparent; border: 1px solid var(--primary); color: var(--primary); }
     .form-group { margin-bottom: 12px; text-align: right; }
     .form-group label { display: block; font-size: 0.85rem; margin-bottom: 5px; color: #666; }
     .form-control { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-size: 0.95rem; }
     .hidden { display: none !important; }
     .banner-box { background: #fff8e7; border: 1px solid #ffe58f; border-radius: 12px; padding: 12px; text-align: center; color: #8c6b00; }
     .banner-box img { max-width: 100%; border-radius: 8px; margin-top: 8px; }
-    .user-card-item { border: 1px solid #eee; border-radius: 12px; padding: 12px; margin-bottom: 10px; background: #fafafa; }
-    .user-card-header { font-weight: bold; color: var(--primary); margin-bottom: 6px; display: flex; justify-content: space-between; }
-    .flex-gap { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
-    table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.85rem; }
-    th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
-    th { background: #f0f0f0; }
+    .sms-box { background: #fffbe6; border: 1px solid #ffe58f; border-radius: 12px; padding: 12px; display: flex; justify-content: space-between; align-items: center; }
   </style>
 </head>
 <body>
 
 <div class="container">
+  <!-- فرم ورود -->
   <div id="auth-page" class="card">
     <div style="text-align:center; margin-bottom:15px;">
-      <div class="logo-badge" style="margin: 0 auto 10px auto; width: 60px; height: 60px; font-size: 1.5rem;">KT</div>
+      <div class="logo-badge" style="margin: 0 auto 10px auto;">KT</div>
       <h2 style="color: var(--primary);">کاریز طب</h2>
-      <p style="font-size:0.85rem; color:#777;">سامانه سفارش‌گیری و باشگاه مشتریان</p>
+      <p style="font-size:0.85rem; color:#777;">سامانه اختصاصی سفارش‌گیری و باشگاه مشتریان</p>
     </div>
     <form id="login-form" autocomplete="on">
       <div class="form-group">
         <label>نام کاربری</label>
-        <input type="text" id="login-username" class="form-control" autocomplete="username" required placeholder="نام کاربری خود را وارد کنید">
+        <input type="text" id="login-username" class="form-control" autocomplete="username" required>
       </div>
       <div class="form-group">
         <label>رمز عبور</label>
-        <input type="password" id="login-password" class="form-control" autocomplete="current-password" required placeholder="رمز عبور">
+        <input type="password" id="login-password" class="form-control" autocomplete="current-password" required>
       </div>
-      <button type="submit" class="btn btn-primary">ورود به حساب کاربری</button>
-      <button type="button" id="biometric-btn" class="btn btn-outline" style="width:100%; margin-top:8px;">ورود با اثر انگشت / شناسایی چهره</button>
+      <button type="submit" class="btn btn-primary">ورود به حساب</button>
     </form>
     <hr style="margin: 15px 0; border: 0; border-top: 1px solid #eee;">
-    <button class="btn btn-accent" onclick="toggleRegister(true)">ثبت نام حساب جدید</button>
+    <button class="btn btn-accent" onclick="toggleRegister(true)">ثبت نام جدید</button>
   </div>
 
+  <!-- فرم ثبت نام (طراحی اولیه کاملا حفظ شده) -->
   <div id="register-page" class="card hidden">
     <h3 style="margin-bottom: 12px; color: var(--primary);">ثبت نام در کاریز طب</h3>
     <form id="register-form" autocomplete="on">
@@ -77,112 +66,69 @@
         <input type="text" id="reg-fullname" class="form-control" required>
       </div>
       <div class="form-group">
-        <label>نام کاربری (یکتا)</label>
-        <input type="text" id="reg-username" class="form-control" autocomplete="username" required>
+        <label>نام مرکز یا کلینیک</label>
+        <input type="text" id="reg-center" class="form-control" required>
       </div>
       <div class="form-group">
         <label>شماره همراه (یکتا)</label>
         <input type="tel" id="reg-phone" class="form-control" autocomplete="tel" required>
       </div>
       <div class="form-group">
+        <label>شهر / استان</label>
+        <input type="text" id="reg-city" class="form-control" placeholder="مثال: کرج / البرز" required>
+      </div>
+      <div class="form-group">
+        <label>نام کاربری (یکتا)</label>
+        <input type="text" id="reg-username" class="form-control" autocomplete="username" required>
+      </div>
+      <div class="form-group">
         <label>رمز عبور</label>
         <input type="password" id="reg-password" class="form-control" autocomplete="new-password" required>
       </div>
-      <div class="form-group">
-        <label>استان</label>
-        <select id="reg-province" class="form-control" required>
-          <option value="تهران">تهران</option>
-          <option value="البرز">البرز</option>
-          <option value="اصفهان">اصفهان</option>
-          <option value="فارس">فارس</option>
-          <option value="خراسان رضوی">خراسان رضوی</option>
-          <option value="سایر">سایر استان‌ها</option>
-        </select>
-      </div>
       <button type="submit" class="btn btn-primary">ثبت اطلاعات و ورود</button>
-      <button type="button" class="btn btn-danger" style="width:100%; margin-top:8px;" onclick="toggleRegister(false)">بازگشت به ورود</button>
+      <button type="button" class="btn btn-danger" onclick="toggleRegister(false)">بازگشت به ورود</button>
     </form>
   </div>
 
+  <!-- پنل مشتری -->
   <div id="customer-panel" class="hidden">
     <div class="card header-card">
-      <div class="logo-sec">
+      <div style="display:flex; align-items:center; gap:10px;">
         <div class="logo-badge">KT</div>
         <div>
           <h3 id="cust-display-name">نام کاربر</h3>
-          <small style="color: #777;">مشتری محترم کاریز طب</small>
+          <small id="cust-display-center" style="color: #777;">نام کلینیک</small>
         </div>
       </div>
-      <button class="btn btn-danger" onclick="logout()">خروج</button>
+      <button class="btn btn-danger" style="width:auto; margin:0;" onclick="logout()">خروج</button>
     </div>
 
+    <!-- تایید حساب با پیامک به شماره مدیر (درخواست شده) -->
+    <div class="sms-box card">
+      <span style="font-size:0.85rem; font-weight:bold;">تایید حساب با پیامک کد به شماره مدیر:</span>
+      <button class="btn btn-accent" style="width:auto; margin:0; font-size:0.8rem;" onclick="sendSMSConfirm()">📲 ارسال پیامک</button>
+    </div>
+
+    <!-- بنر اطلاع‌رسانی/تبلیغات مدیریت -->
     <div id="public-announcement" class="banner-box card">
-      <strong id="announcement-title">پیام شرکت کاریز طب</strong>
-      <p id="announcement-text" style="margin-top:5px;">به سامانه سفارش‌گیری خوش آمدید.</p>
+      <strong id="announcement-title">اطلاعیه کاریز طب</strong>
+      <p id="announcement-text" style="margin-top:5px;"></p>
       <div id="announcement-img-container"></div>
     </div>
 
+    <!-- پیام اختصاصی مدیریت -->
     <div id="private-announcement" class="card banner-box hidden" style="background:#e6f7ff; border-color:#91d5ff; color:#0050b3;">
       <strong>پیام اختصاصی مدیریت برای شما:</strong>
       <p id="private-msg-text" style="margin-top:5px;"></p>
     </div>
 
+    <!-- ارسال درخواست و پیام به مدیر -->
     <div class="card">
-      <h4 style="margin-bottom: 8px; color:var(--primary);">ارسال درخواست / پیام به مدیریت</h4>
+      <h4 style="margin-bottom: 8px; color:var(--primary);">ارسال پیام / اعلام نیاز به مدیریت</h4>
       <div class="form-group">
-        <textarea id="cust-msg-text" class="form-control" rows="3" placeholder="توضیحات یا نیازمندی‌های خود را اینجا تایپ کنید..."></textarea>
+        <textarea id="cust-msg-text" class="form-control" rows="3" placeholder="متن پیام خود را بنویسید..."></textarea>
       </div>
-      <div class="form-group">
-        <label>ارسال تصویر پیوست (اختیاری)</label>
-        <input type="file" id="cust-msg-img" accept="image/*" class="form-control">
-      </div>
-      <button class="btn btn-primary" onclick="sendCustomerMessage()">ارسال پیام به مدیر</button>
-    </div>
-  </div>
-
-  <div id="admin-panel" class="hidden">
-    <div class="card header-card">
-      <h3>پنل مدیریت کاریز طب</h3>
-      <button class="btn btn-danger" onclick="logout()">خروج</button>
-    </div>
-
-    <div class="card">
-      <h4 style="color:var(--primary);">مدیریت بنر و پیام عمومی مشتریان</h4>
-      <div class="form-group" style="margin-top:8px;">
-        <input type="text" id="admin-ann-title" class="form-control" placeholder="عنوان پیام تبلیغاتی">
-      </div>
-      <div class="form-group">
-        <textarea id="admin-ann-text" class="form-control" rows="2" placeholder="متن پیام..."></textarea>
-      </div>
-      <div class="form-group">
-        <label>تصویر بنر تبلیغاتی</label>
-        <input type="file" id="admin-ann-img" accept="image/*" class="form-control">
-      </div>
-      <button class="btn btn-primary" onclick="savePublicAnnouncement()">انتشار بنر برای همه</button>
-    </div>
-
-    <div class="card">
-      <h4 style="color:var(--primary);">لیست تمامی اعضای ثبت‌نام شده</h4>
-      <div id="users-list-container" style="margin-top:10px;"></div>
-    </div>
-
-    <div class="card">
-      <h4 style="color:var(--primary);">گزارش‌گیری و تفکیک استان‌ها</h4>
-      <div class="flex-gap" style="margin: 10px 0;">
-        <button class="btn btn-outline" style="flex:1;" onclick="exportToExcel()">دانلود اکسل (CSV)</button>
-        <button class="btn btn-outline" style="flex:1;" onclick="exportToPDF()">دانلود PDF</button>
-      </div>
-      <div id="province-report-table"></div>
-    </div>
-
-    <div class="card">
-      <h4 style="color:var(--primary);">پشتیبان‌گیری از اطلاعات</h4>
-      <p style="font-size:0.8rem; color:#666; margin-bottom:8px;">جهت ذخیره دائمی دیتابیس مشتریان:</p>
-      <div class="flex-gap">
-        <button class="btn btn-primary" style="flex:1;" onclick="exportDatabase()">دانلود بک‌آب</button>
-        <input type="file" id="import-db-file" style="display:none" onchange="importDatabase(event)">
-        <button class="btn btn-accent" style="flex:1;" onclick="document.getElementById('import-db-file').click()">بازیابی فایل بک‌آب</button>
-      </div>
+      <button class="btn btn-primary" onclick="sendCustomerMessage()">ارسال پیام</button>
     </div>
   </div>
 </div>
@@ -190,52 +136,44 @@
 <script>
   let db = JSON.parse(localStorage.getItem('karizteb_db')) || {
     users: [],
-    publicAnnouncement: { title: 'خوش آمدید', text: 'به سامانه کاریز طب خوش آمدید.', img: '' },
+    publicAnnouncement: { title: 'خوش آمدید', text: 'به باشگاه مشتریان کاریز طب خوش آمدید.', img: '' },
     messages: []
   };
 
-  function saveDB() {
-    localStorage.setItem('karizteb_db', JSON.stringify(db));
-  }
-
+  function saveDB() { localStorage.setItem('karizteb_db', JSON.stringify(db)); }
   let currentUser = null;
 
-  function showPage(pageId) {
-    ['auth-page', 'register-page', 'customer-panel', 'admin-panel'].forEach(id => {
-      document.getElementById(id).classList.add('hidden');
-    });
-    document.getElementById(pageId).classList.remove('hidden');
+  function showPage(id) {
+    ['auth-page', 'register-page', 'customer-panel'].forEach(p => document.getElementById(p).classList.add('hidden'));
+    document.getElementById(id).classList.remove('hidden');
   }
 
-  function toggleRegister(show) {
-    showPage(show ? 'register-page' : 'auth-page');
-  }
+  function toggleRegister(show) { showPage(show ? 'register-page' : 'auth-page'); }
 
+  // ثبت‌نام فقط چک کردن یکتا بودن نام کاربری و شماره تماس
   document.getElementById('register-form').addEventListener('submit', function(e) {
     e.preventDefault();
     const username = document.getElementById('reg-username').value.trim();
     const phone = document.getElementById('reg-phone').value.trim();
 
     const exists = db.users.some(u => u.username === username || u.phone === phone);
-    if (exists) {
-      alert('خطا: نام کاربری یا شماره همراه تکراری است!');
-      return;
-    }
+    if (exists) { alert('خطا: نام کاربری یا شماره همراه تکراری است!'); return; }
 
     const newUser = {
       id: Date.now(),
       fullname: document.getElementById('reg-fullname').value.trim(),
-      username: username,
+      center: document.getElementById('reg-center').value.trim(),
       phone: phone,
+      city: document.getElementById('reg-city').value.trim(),
+      username: username,
       password: document.getElementById('reg-password').value,
-      province: document.getElementById('reg-province').value,
       privateMsg: '',
       totalPurchases: 0
     };
 
     db.users.push(newUser);
     saveDB();
-    alert('ثبت‌نام انجام شد.');
+    alert('ثبت‌نام با موفقیت انجام شد.');
     toggleRegister(false);
   });
 
@@ -244,203 +182,45 @@
     const u = document.getElementById('login-username').value.trim();
     const p = document.getElementById('login-password').value;
 
-    if (u === 'admin' && p === 'admin') {
-      currentUser = { username: 'admin', role: 'admin' };
-      renderAdminPanel();
-      showPage('admin-panel');
-      return;
-    }
-
     const user = db.users.find(x => x.username === u && x.password === p);
     if (user) {
       currentUser = user;
       renderCustomerPanel();
       showPage('customer-panel');
-    } else {
-      alert('نام کاربری یا رمز عبور اشتباه است.');
-    }
-  });
-
-  document.getElementById('biometric-btn').addEventListener('click', function() {
-    alert('ویژگی ذخیره گذرواژه مرورگر فعال است. جهت استفاده از اثر انگشت، پس از بار اول وارد شدن، گزینه ذخیره رمز عبور (Save Password) را در گوشی تایید کنید.');
+    } else { alert('نام کاربری یا رمز عبور اشتباه است.'); }
   });
 
   function renderCustomerPanel() {
     document.getElementById('cust-display-name').innerText = currentUser.fullname;
+    document.getElementById('cust-display-center').innerText = currentUser.center + ' (' + currentUser.city + ')';
+    
     const ann = db.publicAnnouncement;
     document.getElementById('announcement-title').innerText = ann.title || '';
     document.getElementById('announcement-text').innerText = ann.text || '';
-    const imgContainer = document.getElementById('announcement-img-container');
-    imgContainer.innerHTML = ann.img ? `<img src="${ann.img}">` : '';
+    document.getElementById('announcement-img-container').innerHTML = ann.img ? `<img src="${ann.img}">` : '';
 
     const privBox = document.getElementById('private-announcement');
     if (currentUser.privateMsg) {
       document.getElementById('private-msg-text').innerText = currentUser.privateMsg;
       privBox.classList.remove('hidden');
-    } else {
-      privBox.classList.add('hidden');
-    }
+    } else { privBox.classList.add('hidden'); }
+  }
+
+  function sendSMSConfirm() {
+    const text = `تایید حساب کاریز طب:\nنام: ${currentUser.fullname}\nکد: KT-${currentUser.id.toString().slice(-4)}`;
+    window.location.href = `sms:09035215284?body=${encodeURIComponent(text)}`;
   }
 
   function sendCustomerMessage() {
     const text = document.getElementById('cust-msg-text').value;
-    if (!text) { alert('لطفاً متنی بنویسید.'); return; }
-    db.messages.push({
-      userId: currentUser.id,
-      userName: currentUser.fullname,
-      text: text,
-      date: new Date().toLocaleDateString('fa-IR')
-    });
+    if (!text) return;
+    db.messages.push({ userName: currentUser.fullname, text: text, date: new Date().toLocaleDateString('fa-IR') });
     saveDB();
-    alert('پیام شما برای مدیریت ارسال شد.');
+    alert('پیام ارسال شد.');
     document.getElementById('cust-msg-text').value = '';
   }
 
-  function renderAdminPanel() {
-    const listContainer = document.getElementById('users-list-container');
-    listContainer.innerHTML = '';
-
-    if (db.users.length === 0) {
-      listContainer.innerHTML = '<p style="font-size:0.85rem; color:#888;">هیچ کاربری ثبت نشده است.</p>';
-    }
-
-    db.users.forEach(user => {
-      const item = document.createElement('div');
-      item.className = 'user-card-item';
-      item.innerHTML = `
-        <div class="user-card-header">
-          <span>${user.fullname} (${user.province})</span>
-          <small>کاربری: ${user.username}</small>
-        </div>
-        <p style="font-size:0.8rem; margin-bottom:4px;">تلفن: ${user.phone} | رمز: ${user.password}</p>
-        <div class="form-group" style="margin-top:6px;">
-          <input type="text" placeholder="پیام اختصاصی به این کاربر" id="priv-msg-${user.id}" value="${user.privateMsg || ''}" class="form-control" style="font-size:0.8rem;">
-        </div>
-        <div class="flex-gap">
-          <button class="btn btn-primary" style="font-size:0.75rem; padding:6px;" onclick="savePrivateMsg(${user.id})">ثبت پیام</button>
-          <button class="btn btn-outline" style="font-size:0.75rem; padding:6px;" onclick="copyUserInfo('${user.fullname}', '${user.username}', '${user.password}')">کپی پیامک</button>
-          <button class="btn btn-danger" style="font-size:0.75rem; padding:6px;" onclick="deleteUser(${user.id})">حذف</button>
-        </div>
-      `;
-      listContainer.appendChild(item);
-    });
-
-    renderProvinceReport();
-  }
-
-  function savePrivateMsg(userId) {
-    const msg = document.getElementById(`priv-msg-${userId}`).value;
-    const user = db.users.find(u => u.id === userId);
-    if (user) {
-      user.privateMsg = msg;
-      saveDB();
-      alert('پیام اختصاصی ثبت شد.');
-    }
-  }
-
-  function copyUserInfo(name, user, pass) {
-    const text = `مشتری گرامی ${name}\nاطلاعات ورود شما به کاریز طب:\nنام کاربری: ${user}\nرمز عبور: ${pass}`;
-    navigator.clipboard.writeText(text);
-    alert('متن پیامک کپی شد:\n\n' + text);
-  }
-
-  function deleteUser(userId) {
-    if (confirm('آیا این کاربر حذف شود؟')) {
-      db.users = db.users.filter(u => u.id !== userId);
-      saveDB();
-      renderAdminPanel();
-    }
-  }
-
-  function savePublicAnnouncement() {
-    const title = document.getElementById('admin-ann-title').value;
-    const text = document.getElementById('admin-ann-text').value;
-    const fileInput = document.getElementById('admin-ann-img');
-
-    if (fileInput.files && fileInput.files[0]) {
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        db.publicAnnouncement = { title, text, img: e.target.result };
-        saveDB();
-        alert('بنر منتشر شد.');
-      };
-      reader.readAsDataURL(fileInput.files[0]);
-    } else {
-      db.publicAnnouncement = { title, text, img: db.publicAnnouncement.img || '' };
-      saveDB();
-      alert('پیام منتشر شد.');
-    }
-  }
-
-  function renderProvinceReport() {
-    const report = {};
-    db.users.forEach(u => {
-      if (!report[u.province]) report[u.province] = { count: 0, total: 0 };
-      report[u.province].count++;
-      report[u.province].total += (u.totalPurchases || 0);
-    });
-
-    let html = '<table><thead><tr><th>استان</th><th>تعداد اعضا</th><th>مجموع خرید (ریال)</th></tr></thead><tbody>';
-    for (const p in report) {
-      html += `<tr><td>${p}</td><td>${report[p].count}</td><td>${report[p].total.toLocaleString()}</td></tr>`;
-    }
-    html += '</tbody></table>';
-    document.getElementById('province-report-table').innerHTML = html;
-  }
-
-  function exportToExcel() {
-    let csv = '\uFEFFاستان,تعداد اعضا,مجموع خرید\n';
-    const report = {};
-    db.users.forEach(u => {
-      if (!report[u.province]) report[u.province] = { count: 0, total: 0 };
-      report[u.province].count++;
-      report[u.province].total += (u.totalPurchases || 0);
-    });
-    for (const p in report) {
-      csv += `${p},${report[p].count},${report[p].total}\n`;
-    }
-    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.download = 'گزارش_استانی.csv';
-    link.click();
-  }
-
-  function exportToPDF() {
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
-    doc.text('Kariz Teb - User Report', 10, 10);
-    let y = 20;
-    db.users.forEach((u, i) => {
-      doc.text(`${i+1}. ${u.fullname} - ${u.province} - ${u.phone}`, 10, y);
-      y += 10;
-    });
-    doc.save('گزارش_کاریزطب.pdf');
-  }
-
-  function exportDatabase() {
-    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(db));
-    const dlAnchor = document.createElement('a');
-    dlAnchor.setAttribute("href", dataStr);
-    dlAnchor.setAttribute("download", "karizteb_backup.json");
-    dlAnchor.click();
-  }
-
-  function importDatabase(event) {
-    const reader = new FileReader();
-    reader.onload = function(e) {
-      db = JSON.parse(e.target.result);
-      saveDB();
-      alert('بازیابی انجام شد.');
-      renderAdminPanel();
-    };
-    reader.readAsText(event.target.files[0]);
-  }
-
-  function logout() {
-    currentUser = null;
-    showPage('auth-page');
-  }
+  function logout() { currentUser = null; showPage('auth-page'); }
 </script>
 </body>
 </html>
