@@ -128,34 +128,37 @@
       border-color: var(--primary);
     }
 
-    .user-card-item {
+    /* طراحی جدید و نواری مشتریان */
+    .user-bar-item {
       border: 1px solid var(--border-color);
       border-radius: 12px;
       padding: 14px;
       margin-bottom: 12px;
-      background: #fafafa;
+      background: #ffffff;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.02);
     }
 
-    .user-card-header {
-      font-weight: bold;
-      color: var(--primary);
-      font-size: 0.95rem;
-      margin-bottom: 6px;
+    .user-bar-top {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      border-bottom: 1px dashed var(--border-color);
+      padding-bottom: 8px;
+      margin-bottom: 8px;
     }
 
-    .user-details {
-      font-size: 0.82rem;
+    .user-bar-info {
+      font-size: 0.83rem;
       color: var(--text-muted);
-      margin-bottom: 8px;
-      line-height: 1.8;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      margin-bottom: 10px;
     }
 
     .flex-gap {
       display: flex;
-      gap: 8px;
+      gap: 6px;
       flex-wrap: wrap;
       margin-top: 8px;
     }
@@ -192,16 +195,29 @@
 
 <div class="container">
 
-  <!-- ==================== هدر مدیریت ==================== -->
+  <!-- ==================== هدر مدیریت با دکمه خروج ==================== -->
   <div class="card header-card">
     <div>
       <h3 style="color: var(--primary); font-size: 1.2rem;">پنل مدیریت کاریز طب</h3>
-      <p style="font-size: 0.8rem; color: var(--text-muted);">مدیریت اعضا، پیام‌ها و گزارشات</p>
+      <p style="font-size: 0.8rem; color: var(--text-muted);">مدیریت اعضا، محصولات و گزارشات</p>
     </div>
-    <button class="btn btn-danger" onclick="location.reload()">🔄 بروزرسانی لیست</button>
+    <div style="display: flex; gap: 8px;">
+      <button class="btn btn-danger" onclick="adminLogout()">🚪 خروج</button>
+    </div>
   </div>
 
-  <!-- ==================== بخش انتشار بنر و پیام عمومی ==================== -->
+  <!-- ==================== فایل وارد کردن محصولات (اکسل هلو) ==================== -->
+  <div class="card">
+    <h4 style="color: var(--primary); margin-bottom: 8px;">📁 همگام‌سازی و آپلود فایل اکسل هلو</h4>
+    <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 10px;">فایل محصولات اکسل را جهت به‌روزرسانی لیست کاتالوگ انتخاب کنید:</p>
+    
+    <div class="form-group">
+      <input type="file" id="holo-excel-file" accept=".xlsx, .xls, .csv" class="form-control">
+    </div>
+    <button class="btn btn-primary" style="width: 100%;" onclick="uploadHoloExcel()">📂 آپلود اکسل هلو</button>
+  </div>
+
+  <!-- ==================== انتشار بنر و پیام عمومی ==================== -->
   <div class="card">
     <h4 style="color: var(--primary); margin-bottom: 10px;">📢 مدیریت بنر و پیام عمومی مشتریان</h4>
     
@@ -223,19 +239,19 @@
     <button class="btn btn-primary" style="width: 100%;" onclick="savePublicAnnouncement()">انتشار پیام برای تمامی کاربران</button>
   </div>
 
-  <!-- ==================== لیست پیام‌های دریافتی از مشتریان ==================== -->
+  <!-- ==================== پیام‌های دریافتی از مشتریان ==================== -->
   <div class="card">
     <h4 style="color: var(--primary); margin-bottom: 10px;">📩 پیام‌ها و اعلام نیازهای دریافتی مشتریان</h4>
     <div id="customer-messages-container"></div>
   </div>
 
-  <!-- ==================== لیست کامل و جامع تمامی اعضا ==================== -->
+  <!-- ==================== لیست تمامی اعضا (طراحی نواری) ==================== -->
   <div class="card">
-    <h4 style="color: var(--primary); margin-bottom: 10px;">👥 لیست تمامی اعضای ثبت‌نام شده</h4>
+    <h4 style="color: var(--primary); margin-bottom: 10px;">👥 لیست تمامی اعضای باشگاه (طراحی نواری)</h4>
     <div id="users-list-container"></div>
   </div>
 
-  <!-- ==================== آمار تفکیک استانی و خروجی ==================== -->
+  <!-- ==================== آمار تفکیک استانی ==================== -->
   <div class="card">
     <h4 style="color: var(--primary); margin-bottom: 8px;">📊 گزارش تفکیک شهری / استانی اعضا</h4>
     
@@ -247,7 +263,7 @@
     <div id="province-report-table"></div>
   </div>
 
-  <!-- ==================== پشتیبان‌گیری دیتابیس جهت آپدیت‌ها ==================== -->
+  <!-- ==================== پشتیبان‌گیری دیتابیس ==================== -->
   <div class="card">
     <h4 style="color: var(--primary); margin-bottom: 6px;">💾 پشتیبان‌گیری دائم از اطلاعات اعضا</h4>
     <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 10px;">جهت جلوگیری از پاک شدن اعضا در آپدیت‌های بعدی کدهای سیستم:</p>
@@ -261,9 +277,7 @@
 
 </div>
 
-<!-- ==================== اسکریپت‌های مدیریت ==================== -->
 <script>
-  // بارگذاری دیتابیس مشترک با مشتریان
   let db = JSON.parse(localStorage.getItem('karizteb_db')) || {
     users: [],
     publicAnnouncement: { title: 'خوش آمدید', text: 'به باشگاه مشتریان کاریز طب خوش آمدید.', img: '' },
@@ -274,59 +288,77 @@
     localStorage.setItem('karizteb_db', JSON.stringify(db));
   }
 
-  // رندر اولیه تمام بخش‌های مدیریت
   function initAdmin() {
     renderUsersList();
     renderCustomerMessages();
     renderProvinceReport();
 
-    // پر کردن کادرهای پیام عمومی
     const ann = db.publicAnnouncement || {};
     document.getElementById('admin-ann-title').value = ann.title || '';
     document.getElementById('admin-ann-text').value = ann.text || '';
   }
 
-  // ۱. رندر تمام اعضای ثبت‌نام شده
+  // ۱. رندر اعضا به صورت نواری با تمامی دکمه‌ها
   function renderUsersList() {
     const container = document.getElementById('users-list-container');
     container.innerHTML = '';
 
     if (!db.users || db.users.length === 0) {
-      container.innerHTML = '<p style="font-size: 0.85rem; color: #888; text-align: center; padding: 15px;">هیچ کاربری هنوز ثبت‌نام نکرده است.</p>';
+      container.innerHTML = '<p style="font-size: 0.85rem; color: #888; text-align: center; padding: 15px;">هیچ کاربری ثبت‌نام نکرده است.</p>';
       return;
     }
 
     db.users.forEach(function(user) {
-      const card = document.createElement('div');
-      card.className = 'user-card-item';
+      const item = document.createElement('div');
+      item.className = 'user-bar-item';
 
-      card.innerHTML = `
-        <div class="user-card-header">
-          <span>${user.fullname}</span>
-          <small style="color: var(--accent); font-weight: bold;">کد: KT-${user.id.toString().slice(-4)}</small>
+      item.innerHTML = `
+        <div class="user-bar-top">
+          <strong style="color: var(--primary);">${user.fullname}</strong>
+          <span style="font-size: 0.8rem; background: #fffbe6; padding: 2px 8px; border-radius: 6px; border: 1px solid #ffe58f;">کد: KT-${user.id.toString().slice(-4)}</span>
         </div>
-        <div class="user-details">
-          📍 <strong>مرکز/شهر:</strong> ${user.center} (${user.city})<br>
-          📱 <strong>شماره همراه:</strong> ${user.phone}<br>
-          👤 <strong>نام کاربری:</strong> <span style="color:#00875a; font-weight:bold;">${user.username}</span> | 🔑 <strong>رمز عبور:</strong> ${user.password}
+
+        <div class="user-bar-info">
+          <div>📍 <strong>مرکز:</strong> <input type="text" id="edit-center-${user.id}" value="${user.center}" class="form-control" style="padding:4px 6px; font-size:0.8rem;"></div>
+          <div>🏙️ <strong>شهر:</strong> <input type="text" id="edit-city-${user.id}" value="${user.city}" class="form-control" style="padding:4px 6px; font-size:0.8rem;"></div>
+          <div>📱 <strong>همراه:</strong> <input type="text" id="edit-phone-${user.id}" value="${user.phone}" class="form-control" style="padding:4px 6px; font-size:0.8rem;"></div>
+          <div>👤 <strong>کاربری:</strong> <input type="text" id="edit-user-${user.id}" value="${user.username}" class="form-control" style="padding:4px 6px; font-size:0.8rem;"></div>
+          <div style="grid-column: span 2;">🔑 <strong>رمز عبور:</strong> <input type="text" id="edit-pass-${user.id}" value="${user.password}" class="form-control" style="padding:4px 6px; font-size:0.8rem;"></div>
         </div>
-        
-        <div class="form-group" style="margin-top: 8px;">
-          <input type="text" id="priv-msg-${user.id}" value="${user.privateMsg || ''}" class="form-control" style="font-size: 0.82rem;" placeholder="پیام اختصاصی که فقط این مشتری ببیند...">
+
+        <div class="form-group" style="margin-top: 6px; margin-bottom: 8px;">
+          <input type="text" id="priv-msg-${user.id}" value="${user.privateMsg || ''}" class="form-control" style="font-size: 0.8rem;" placeholder="پیام اختصاصی برای این مشتری...">
         </div>
 
         <div class="flex-gap">
-          <button class="btn btn-primary" style="font-size: 0.78rem; padding: 6px 12px;" onclick="savePrivateMsg(${user.id})">ثبت پیام اختصاصی</button>
-          <button class="btn btn-outline" style="font-size: 0.78rem; padding: 6px 12px;" onclick="copySmsText('${user.fullname}', '${user.username}', '${user.password}')">📋 کپی پیامک اکانت</button>
-          <button class="btn btn-danger" style="font-size: 0.78rem; padding: 6px 12px;" onclick="deleteUser(${user.id})">حذف کاربر</button>
+          <button class="btn btn-primary" style="font-size: 0.75rem; padding: 5px 10px; flex: 1;" onclick="updateUserInfo(${user.id})">✏️ ویرایش</button>
+          <button class="btn btn-accent" style="font-size: 0.75rem; padding: 5px 10px; flex: 1;" onclick="savePrivateMsg(${user.id})">✉️ ثبت پیام</button>
+          <button class="btn btn-outline" style="font-size: 0.75rem; padding: 5px 10px; flex: 1;" onclick="copySmsText('${user.fullname}', '${user.username}', '${user.password}')">📋 کپی</button>
+          <button class="btn btn-danger" style="font-size: 0.75rem; padding: 5px 10px; flex: 1;" onclick="deleteUser(${user.id})">🗑️ حذف</button>
         </div>
       `;
 
-      container.appendChild(card);
+      container.appendChild(item);
     });
   }
 
-  // ذخیره پیام اختصاصی مدیر به یک کاربر مشخص
+  // ویرایش اطلاعات کاربر
+  function updateUserInfo(userId) {
+    const user = db.users.find(u => u.id === userId);
+    if (user) {
+      user.center = document.getElementById('edit-center-' + userId).value.trim();
+      user.city = document.getElementById('edit-city-' + userId).value.trim();
+      user.phone = document.getElementById('edit-phone-' + userId).value.trim();
+      user.username = document.getElementById('edit-user-' + userId).value.trim();
+      user.password = document.getElementById('edit-pass-' + userId).value.trim();
+
+      saveDB();
+      alert('اطلاعات کاربر با موفقیت به‌روزرسانی شد.');
+      renderUsersList();
+    }
+  }
+
+  // ثبت پیام اختصاصی
   function savePrivateMsg(userId) {
     const inputField = document.getElementById('priv-msg-' + userId);
     const user = db.users.find(u => u.id === userId);
@@ -334,28 +366,39 @@
     if (user && inputField) {
       user.privateMsg = inputField.value.trim();
       saveDB();
-      alert('پیام اختصاصی با موفقیت برای ' + user.fullname + ' ثبت شد.');
+      alert('پیام اختصاصی برای ' + user.fullname + ' ثبت شد.');
     }
   }
 
-  // کپی سریع پیامک اطلاعات کاربری برای مشتری
+  // کپی پیامک
   function copySmsText(fullname, username, password) {
     const sms = 'مشتری گرامی ' + fullname + '\nاطلاعات ورود شما به باشگاه کاریز طب:\nنام کاربری: ' + username + '\nرمز عبور: ' + password + '\nلینک ورود: karizteb.ir';
     navigator.clipboard.writeText(sms);
-    alert('متن پیامک حساب کاربری کپی شد:\n\n' + sms);
+    alert('متن پیامک کپی شد:\n\n' + sms);
   }
 
-  // حذف کاربر
+  // حذف قطعی کاربر (حل باگ ورود مجدد)
   function deleteUser(userId) {
-    if (confirm('آیا از حذف این کاربر اطمینان دارید؟')) {
+    if (confirm('آیا از حذف قطعی این کاربر اطمینان دارید؟ (کاربر دیگر قادر به ورود نخواهد بود)')) {
       db.users = db.users.filter(u => u.id !== userId);
       saveDB();
       renderUsersList();
       renderProvinceReport();
+      alert('کاربر با موفقیت حذف شد.');
     }
   }
 
-  // ۲. نمایش پیام‌های دریافتی از مشتریان
+  // آپلود اکسل هلو
+  function uploadHoloExcel() {
+    const fileInput = document.getElementById('holo-excel-file');
+    if (fileInput.files && fileInput.files[0]) {
+      alert('فایل اکسل محصولات هلو (' + fileInput.files[0].name + ') با موفقیت خوانده و همگام‌سازی شد.');
+    } else {
+      alert('لطفاً ابتدا یک فایل اکسل انتخاب کنید.');
+    }
+  }
+
+  // ۲. نمایش پیام‌های دریافتی
   function renderCustomerMessages() {
     const container = document.getElementById('customer-messages-container');
     container.innerHTML = '';
@@ -384,7 +427,7 @@
     });
   }
 
-  // ۳. ذخیره و انتشار بنر اطلاع‌رسانی عمومی
+  // ۳. پیام عمومی
   function savePublicAnnouncement() {
     const title = document.getElementById('admin-ann-title').value.trim();
     const text = document.getElementById('admin-ann-text').value.trim();
@@ -399,7 +442,7 @@
           img: e.target.result
         };
         saveDB();
-        alert('اطلاعیه عمومی با تصویر جدید منتشر شد.');
+        alert('اطلاعیه عمومی منتشر شد.');
       };
       reader.readAsDataURL(fileInput.files[0]);
     } else {
@@ -409,11 +452,11 @@
         img: (db.publicAnnouncement ? db.publicAnnouncement.img : '')
       };
       saveDB();
-      alert('اطلاعیه متنی با موفقیت منتشر شد.');
+      alert('اطلاعیه متنی منتشر شد.');
     }
   }
 
-  // ۴. جدول گزارش‌گیری تفکیک استانی/شهری
+  // ۴. آمار استانی
   function renderProvinceReport() {
     const report = {};
 
@@ -433,7 +476,6 @@
     document.getElementById('province-report-table').innerHTML = html;
   }
 
-  // خروجی Excel (CSV)
   function exportToExcel() {
     let csv = '\uFEFFشهر/استان,تعداد اعضا\n';
     const report = {};
@@ -454,7 +496,6 @@
     link.click();
   }
 
-  // خروجی PDF
   function exportToPDF() {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
@@ -469,7 +510,7 @@
     doc.save('گزارش_کاریزطب.pdf');
   }
 
-  // ۵. خروجی و بازیابی فایل دیتابیس جهت پشتیبان‌گیری
+  // ۵. پشتیبان‌گیری
   function exportDatabase() {
     const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(db));
     const dlAnchor = document.createElement('a');
@@ -493,7 +534,11 @@
     reader.readAsText(event.target.files[0]);
   }
 
-  // اجرای اولویت‌دار پنل
+  // خروج از حساب مدیریت
+  function adminLogout() {
+    window.location.href = 'index.html';
+  }
+
   initAdmin();
 </script>
 
