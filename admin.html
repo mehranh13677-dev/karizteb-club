@@ -128,7 +128,6 @@
       border-color: var(--primary);
     }
 
-    /* طراحی جدید و نواری مشتریان */
     .user-bar-item {
       border: 1px solid var(--border-color);
       border-radius: 12px;
@@ -189,24 +188,76 @@
       margin-bottom: 10px;
       font-size: 0.85rem;
     }
+
+    .prod-img-preview {
+      width: 45px;
+      height: 45px;
+      object-fit: cover;
+      border-radius: 6px;
+      border: 1px solid var(--border-color);
+    }
+
+    .edit-prod-box {
+      background: #fffbe6;
+      border: 1px solid #ffe58f;
+      border-radius: 10px;
+      padding: 10px;
+      margin-top: 6px;
+      font-size: 0.82rem;
+    }
   </style>
 </head>
 <body>
 
 <div class="container">
 
-  <!-- ==================== هدر مدیریت با دکمه خروج ==================== -->
   <div class="card header-card">
     <div>
       <h3 style="color: var(--primary); font-size: 1.2rem;">پنل مدیریت کاریز طب</h3>
-      <p style="font-size: 0.8rem; color: var(--text-muted);">مدیریت اعضا، محصولات و گزارشات</p>
+      <p style="font-size: 0.8rem; color: var(--text-muted);">مدیریت اعضا، محصولات و آیکون‌ها</p>
     </div>
     <div style="display: flex; gap: 8px;">
       <button class="btn btn-danger" onclick="adminLogout()">🚪 خروج</button>
     </div>
   </div>
 
-  <!-- ==================== فایل وارد کردن محصولات (اکسل هلو) ==================== -->
+  <div class="card">
+    <h4 style="color: var(--primary); margin-bottom: 10px;">📦 تعریف و مدیریت آیکون و کاتالوگ محصولات</h4>
+    
+    <div class="form-group">
+      <label for="prod-name">نام کالا</label>
+      <input type="text" id="prod-name" class="form-control" placeholder="عنوان محصول">
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+      <div class="form-group">
+        <label for="prod-unit">واحد کالا</label>
+        <select id="prod-unit" class="form-control">
+          <option value="عدد">عدد</option>
+          <option value="بسته">بسته</option>
+          <option value="کارتن">کارتن</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="prod-price">قیمت واحد (ریال)</label>
+        <input type="number" id="prod-price" class="form-control" placeholder="قیمت محصول">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="prod-img">تصویر / آیکون محصول</label>
+      <input type="file" id="prod-img" accept="image/*" class="form-control">
+    </div>
+
+    <button class="btn btn-primary" style="width: 100%;" onclick="addNewProduct()">➕ افزودن محصول جدید</button>
+
+    <hr style="margin: 15px 0; border: 0; border-top: 1px solid var(--border-color);">
+
+    <h5 style="color: var(--text-main); margin-bottom: 8px;">لیست محصولات و ویرایش آیکون‌ها:</h5>
+    <div id="products-table-container"></div>
+  </div>
+
   <div class="card">
     <h4 style="color: var(--primary); margin-bottom: 8px;">📁 همگام‌سازی و آپلود فایل اکسل هلو</h4>
     <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 10px;">فایل محصولات اکسل را جهت به‌روزرسانی لیست کاتالوگ انتخاب کنید:</p>
@@ -214,10 +265,9 @@
     <div class="form-group">
       <input type="file" id="holo-excel-file" accept=".xlsx, .xls, .csv" class="form-control">
     </div>
-    <button class="btn btn-primary" style="width: 100%;" onclick="uploadHoloExcel()">📂 آپلود اکسل هلو</button>
+    <button class="btn btn-accent" style="width: 100%;" onclick="uploadHoloExcel()">📂 آپلود اکسل هلو</button>
   </div>
 
-  <!-- ==================== انتشار بنر و پیام عمومی ==================== -->
   <div class="card">
     <h4 style="color: var(--primary); margin-bottom: 10px;">📢 مدیریت بنر و پیام عمومی مشتریان</h4>
     
@@ -239,19 +289,16 @@
     <button class="btn btn-primary" style="width: 100%;" onclick="savePublicAnnouncement()">انتشار پیام برای تمامی کاربران</button>
   </div>
 
-  <!-- ==================== پیام‌های دریافتی از مشتریان ==================== -->
   <div class="card">
     <h4 style="color: var(--primary); margin-bottom: 10px;">📩 پیام‌ها و اعلام نیازهای دریافتی مشتریان</h4>
     <div id="customer-messages-container"></div>
   </div>
 
-  <!-- ==================== لیست تمامی اعضا (طراحی نواری) ==================== -->
   <div class="card">
-    <h4 style="color: var(--primary); margin-bottom: 10px;">👥 لیست تمامی اعضای باشگاه (طراحی نواری)</h4>
+    <h4 style="color: var(--primary); margin-bottom: 10px;">👥 لیست تمامی اعضای باشگاه</h4>
     <div id="users-list-container"></div>
   </div>
 
-  <!-- ==================== آمار تفکیک استانی ==================== -->
   <div class="card">
     <h4 style="color: var(--primary); margin-bottom: 8px;">📊 گزارش تفکیک شهری / استانی اعضا</h4>
     
@@ -263,15 +310,14 @@
     <div id="province-report-table"></div>
   </div>
 
-  <!-- ==================== پشتیبان‌گیری دیتابیس ==================== -->
   <div class="card">
     <h4 style="color: var(--primary); margin-bottom: 6px;">💾 پشتیبان‌گیری دائم از اطلاعات اعضا</h4>
     <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 10px;">جهت جلوگیری از پاک شدن اعضا در آپدیت‌های بعدی کدهای سیستم:</p>
     
     <div class="flex-gap">
-      <button class="btn btn-primary" style="flex: 1;" onclick="exportDatabase()">⬇️ دانلود بک‌آپ اطلاعات</button>
+      <button class="btn btn-primary" style="flex: 1;" onclick="exportDatabase()">⬇️ دانلود بک‌آب اطلاعات</button>
       <input type="file" id="import-db-file" style="display: none;" onchange="importDatabase(event)">
-      <button class="btn btn-outline" style="flex: 1;" onclick="document.getElementById('import-db-file').click()">⬆️ بازیابی فایل بک‌آپ</button>
+      <button class="btn btn-outline" style="flex: 1;" onclick="document.getElementById('import-db-file').click()">⬆️ بازیابی فایل بک‌آب</button>
     </div>
   </div>
 
@@ -280,6 +326,7 @@
 <script>
   let db = JSON.parse(localStorage.getItem('karizteb_db')) || {
     users: [],
+    products: [],
     publicAnnouncement: { title: 'خوش آمدید', text: 'به باشگاه مشتریان کاریز طب خوش آمدید.', img: '' },
     messages: []
   };
@@ -289,6 +336,7 @@
   }
 
   function initAdmin() {
+    renderProductsList();
     renderUsersList();
     renderCustomerMessages();
     renderProvinceReport();
@@ -298,7 +346,144 @@
     document.getElementById('admin-ann-text').value = ann.text || '';
   }
 
-  // ۱. رندر اعضا به صورت نواری با تمامی دکمه‌ها
+  // افزودن محصول دستی جدید
+  function addNewProduct() {
+    const name = document.getElementById('prod-name').value.trim();
+    const unit = document.getElementById('prod-unit').value;
+    const price = parseInt(document.getElementById('prod-price').value) || 0;
+    const fileInput = document.getElementById('prod-img');
+
+    if (!name || price <= 0) {
+      alert('لطفاً نام محصول و قیمت معتبر را وارد کنید.');
+      return;
+    }
+
+    const newProd = {
+      id: Date.now(),
+      name: name,
+      unit: unit,
+      price: price,
+      img: ''
+    };
+
+    if (fileInput.files && fileInput.files[0]) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        newProd.img = e.target.result;
+        db.products = db.products || [];
+        db.products.push(newProd);
+        saveDB();
+        alert('محصول با موفقیت اضافه شد.');
+        clearProdForm();
+        renderProductsList();
+      };
+      reader.readAsDataURL(fileInput.files[0]);
+    } else {
+      db.products = db.products || [];
+      db.products.push(newProd);
+      saveDB();
+      alert('محصول با موفقیت اضافه شد.');
+      clearProdForm();
+      renderProductsList();
+    }
+  }
+
+  function clearProdForm() {
+    document.getElementById('prod-name').value = '';
+    document.getElementById('prod-price').value = '';
+    document.getElementById('prod-img').value = '';
+  }
+
+  // رندر لیست محصولات با قابلیت ویرایش تصویر و مشخصات
+  function renderProductsList() {
+    const container = document.getElementById('products-table-container');
+    db.products = db.products || [];
+
+    if (db.products.length === 0) {
+      container.innerHTML = '<p style="font-size:0.85rem; color:#888; text-align:center;">هیچ محصولی ثبت نشده است.</p>';
+      return;
+    }
+
+    let html = '<table><thead><tr><th>آیکون</th><th>نام کالا</th><th>واحد</th><th>قیمت (ریال)</th><th>عملیات</th></tr></thead><tbody>';
+    db.products.forEach(function(p) {
+      let imgTag = p.img ? `<img src="${p.img}" class="prod-img-preview">` : '—';
+      html += `
+        <tr>
+          <td>${imgTag}</td>
+          <td><strong>${p.name}</strong></td>
+          <td>${p.unit}</td>
+          <td>${p.price.toLocaleString()}</td>
+          <td>
+            <button class="btn btn-accent" style="font-size:0.75rem; padding:4px 8px;" onclick="toggleEditProdBox(${p.id})">✏️ ویرایش</button>
+            <button class="btn btn-danger" style="font-size:0.75rem; padding:4px 8px;" onclick="deleteProduct(${p.id})">🗑️ حذف</button>
+          </td>
+        </tr>
+        <tr id="edit-prod-row-${p.id}" style="display:none;">
+          <td colspan="5">
+            <div class="edit-prod-box">
+              <strong>ویرایش آیکون و مشخصات محصول:</strong>
+              <div style="display:grid; grid-template-columns: 1fr 1fr; gap:6px; margin-top:6px;">
+                <input type="text" id="edit-pname-${p.id}" value="${p.name}" class="form-control" style="font-size:0.8rem;" placeholder="نام جدید محصول">
+                <input type="number" id="edit-pprice-${p.id}" value="${p.price}" class="form-control" style="font-size:0.8rem;" placeholder="قیمت جدید">
+              </div>
+              <div class="form-group" style="margin-top:6px;">
+                <label style="font-size:0.75rem;">انتخاب آیکون/تصویر جدید:</label>
+                <input type="file" id="edit-pimg-${p.id}" accept="image/*" class="form-control" style="font-size:0.8rem;">
+              </div>
+              <button class="btn btn-primary" style="font-size:0.75rem; padding:4px 10px;" onclick="saveProdChanges(${p.id})">💾 ذخیره تغییرات آیکون و محصول</button>
+            </div>
+          </td>
+        </tr>
+      `;
+    });
+    html += '</tbody></table>';
+    container.innerHTML = html;
+  }
+
+  // نمایش/مخفی‌سازی باکس ویرایش آیکون و کالا
+  function toggleEditProdBox(prodId) {
+    const row = document.getElementById('edit-prod-row-' + prodId);
+    if (row) {
+      row.style.display = (row.style.display === 'none' ? 'table-row' : 'none');
+    }
+  }
+
+  // ذخیره ویرایش آیکون و مشخصات محصول
+  function saveProdChanges(prodId) {
+    const p = db.products.find(x => x.id === prodId);
+    if (!p) return;
+
+    const newName = document.getElementById('edit-pname-' + prodId).value.trim();
+    const newPrice = parseInt(document.getElementById('edit-pprice-' + prodId).value) || 0;
+    const fileInput = document.getElementById('edit-pimg-' + prodId);
+
+    if (newName) p.name = newName;
+    if (newPrice > 0) p.price = newPrice;
+
+    if (fileInput.files && fileInput.files[0]) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        p.img = e.target.result;
+        saveDB();
+        alert('آیکون و مشخصات محصول با موفقیت به‌روزرسانی شد.');
+        renderProductsList();
+      };
+      reader.readAsDataURL(fileInput.files[0]);
+    } else {
+      saveDB();
+      alert('مشخصات محصول با موفقیت به‌روزرسانی شد.');
+      renderProductsList();
+    }
+  }
+
+  function deleteProduct(prodId) {
+    if (confirm('آیا این محصول از کاتالوگ حذف شود؟')) {
+      db.products = db.products.filter(p => p.id !== prodId);
+      saveDB();
+      renderProductsList();
+    }
+  }
+
   function renderUsersList() {
     const container = document.getElementById('users-list-container');
     container.innerHTML = '';
@@ -342,7 +527,6 @@
     });
   }
 
-  // ویرایش اطلاعات کاربر
   function updateUserInfo(userId) {
     const user = db.users.find(u => u.id === userId);
     if (user) {
@@ -358,7 +542,6 @@
     }
   }
 
-  // ثبت پیام اختصاصی
   function savePrivateMsg(userId) {
     const inputField = document.getElementById('priv-msg-' + userId);
     const user = db.users.find(u => u.id === userId);
@@ -366,29 +549,26 @@
     if (user && inputField) {
       user.privateMsg = inputField.value.trim();
       saveDB();
-      alert('پیام اختصاصی برای ' + user.fullname + ' ثبت شد.');
+      alert('پیام اختصاصی ثبت شد.');
     }
   }
 
-  // کپی پیامک
   function copySmsText(fullname, username, password) {
     const sms = 'مشتری گرامی ' + fullname + '\nاطلاعات ورود شما به باشگاه کاریز طب:\nنام کاربری: ' + username + '\nرمز عبور: ' + password + '\nلینک ورود: karizteb.ir';
     navigator.clipboard.writeText(sms);
     alert('متن پیامک کپی شد:\n\n' + sms);
   }
 
-  // حذف قطعی کاربر (حل باگ ورود مجدد)
   function deleteUser(userId) {
-    if (confirm('آیا از حذف قطعی این کاربر اطمینان دارید؟ (کاربر دیگر قادر به ورود نخواهد بود)')) {
+    if (confirm('آیا از حذف قطعی این کاربر اطمینان دارید؟')) {
       db.users = db.users.filter(u => u.id !== userId);
       saveDB();
       renderUsersList();
       renderProvinceReport();
-      alert('کاربر با موفقیت حذف شد.');
+      alert('کاربر حذف شد.');
     }
   }
 
-  // آپلود اکسل هلو
   function uploadHoloExcel() {
     const fileInput = document.getElementById('holo-excel-file');
     if (fileInput.files && fileInput.files[0]) {
@@ -398,7 +578,6 @@
     }
   }
 
-  // ۲. نمایش پیام‌های دریافتی
   function renderCustomerMessages() {
     const container = document.getElementById('customer-messages-container');
     container.innerHTML = '';
@@ -427,7 +606,6 @@
     });
   }
 
-  // ۳. پیام عمومی
   function savePublicAnnouncement() {
     const title = document.getElementById('admin-ann-title').value.trim();
     const text = document.getElementById('admin-ann-text').value.trim();
@@ -436,30 +614,20 @@
     if (fileInput.files && fileInput.files[0]) {
       const reader = new FileReader();
       reader.onload = function(e) {
-        db.publicAnnouncement = {
-          title: title,
-          text: text,
-          img: e.target.result
-        };
+        db.publicAnnouncement = { title: title, text: text, img: e.target.result };
         saveDB();
         alert('اطلاعیه عمومی منتشر شد.');
       };
       reader.readAsDataURL(fileInput.files[0]);
     } else {
-      db.publicAnnouncement = {
-        title: title,
-        text: text,
-        img: (db.publicAnnouncement ? db.publicAnnouncement.img : '')
-      };
+      db.publicAnnouncement = { title: title, text: text, img: (db.publicAnnouncement ? db.publicAnnouncement.img : '') };
       saveDB();
       alert('اطلاعیه متنی منتشر شد.');
     }
   }
 
-  // ۴. آمار استانی
   function renderProvinceReport() {
     const report = {};
-
     if (db.users) {
       db.users.forEach(function(u) {
         const cityKey = u.city || 'نامشخص';
@@ -479,16 +647,11 @@
   function exportToExcel() {
     let csv = '\uFEFFشهر/استان,تعداد اعضا\n';
     const report = {};
-
     db.users.forEach(function(u) {
       const cityKey = u.city || 'نامشخص';
       report[cityKey] = (report[cityKey] || 0) + 1;
     });
-
-    for (let city in report) {
-      csv += city + ',' + report[city] + '\n';
-    }
-
+    for (let city in report) { csv += city + ',' + report[city] + '\n'; }
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
@@ -500,17 +663,14 @@
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
     doc.text('Kariz Teb Users Report', 10, 10);
-
     let y = 20;
     db.users.forEach(function(u, i) {
       doc.text((i + 1) + '. ' + u.fullname + ' - ' + u.center + ' (' + u.city + ') - Tel: ' + u.phone, 10, y);
       y += 10;
     });
-
     doc.save('گزارش_کاریزطب.pdf');
   }
 
-  // ۵. پشتیبان‌گیری
   function exportDatabase() {
     const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(db));
     const dlAnchor = document.createElement('a');
@@ -527,14 +687,11 @@
         saveDB();
         alert('اطلاعات با موفقیت بازیابی شدند.');
         initAdmin();
-      } catch (err) {
-        alert('فایل وارد شده نامعتبر است.');
-      }
+      } catch (err) { alert('فایل وارد شده نامعتبر است.'); }
     };
     reader.readAsText(event.target.files[0]);
   }
 
-  // خروج از حساب مدیریت
   function adminLogout() {
     window.location.href = 'index.html';
   }
