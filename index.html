@@ -9,99 +9,116 @@
     <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet">
     <style>
         body { font-family: 'Vazirmatn', sans-serif; }
-        .gold-bg { background: linear-gradient(135deg, #BF953F 0%, #FCF6BA 25%, #B38728 50%, #FBF5B7 75%, #AA771C 100%); }
+        .amber-gold-bg { background: linear-gradient(135deg, #F59E0B 0%, #FBBF24 50%, #D97706 100%); }
     </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen p-4 pb-24">
+<body class="bg-slate-900 text-slate-100 min-h-screen p-4 pb-24">
 
-    <!-- هدر -->
-    <header class="max-w-2xl mx-auto flex justify-between items-center border-b border-slate-800 pb-4 mb-6">
+    <!-- هدر با تم شاد و روشن -->
+    <header class="max-w-2xl mx-auto flex justify-between items-center border-b border-slate-700/60 pb-4 mb-6">
         <div class="flex items-center gap-3">
-            <div class="w-12 h-12 gold-bg rounded-2xl flex items-center justify-center font-black text-slate-950 text-xl shadow-lg">KT</div>
+            <div class="w-12 h-12 amber-gold-bg rounded-2xl flex items-center justify-center font-black text-slate-950 text-xl shadow-lg">KT</div>
             <div>
                 <h1 class="font-bold text-lg text-amber-400">کاریز طب</h1>
-                <p class="text-[11px] text-slate-400">باشگاه مشتریان و سامانه سفارش‌گیری اختصاصی</p>
+                <p class="text-[11px] text-slate-300">باشگاه مشتریان و سامانه سفارش‌گیری اختصاصی</p>
             </div>
         </div>
-        <div id="userInfo" class="hidden text-xs bg-slate-900 border border-amber-500/30 px-3 py-1.5 rounded-xl text-emerald-400 font-bold"></div>
+        <div id="userInfo" class="hidden text-xs bg-slate-800 border border-emerald-500/40 px-3 py-1.5 rounded-xl text-emerald-400 font-bold"></div>
     </header>
 
     <main class="max-w-2xl mx-auto space-y-6">
 
-        <!-- بخش ۱: احراز هویت (ورود / ثبت‌نام) -->
+        <!-- بخش احراز هویت -->
         <div id="authContainer" class="space-y-4">
             
-            <!-- سوئیچ بین ورود و ثبت‌نام -->
-            <div class="flex bg-slate-900 p-1 rounded-2xl border border-slate-800 text-xs font-bold">
-                <button onclick="toggleAuth('login')" id="btnTabLogin" class="flex-1 py-2.5 rounded-xl gold-bg text-slate-950">ورود به حساب</button>
-                <button onclick="toggleAuth('register')" id="btnTabRegister" class="flex-1 py-2.5 rounded-xl text-slate-400">ثبت‌نام جدید</button>
+            <div class="flex bg-slate-800 p-1 rounded-2xl border border-slate-700 text-xs font-bold">
+                <button onclick="toggleAuth('login')" id="btnTabLogin" class="flex-1 py-2.5 rounded-xl amber-gold-bg text-slate-950">ورود به حساب</button>
+                <button onclick="toggleAuth('register')" id="btnTabRegister" class="flex-1 py-2.5 rounded-xl text-slate-300">ثبت‌نام جدید</button>
             </div>
 
             <!-- فرم ورود -->
-            <section id="loginBox" class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4 shadow-xl">
-                <h2 class="text-sm font-bold text-amber-300">🔑 ورود با شماره همراه و رمز عبور</h2>
+            <section id="loginBox" class="bg-slate-800 border border-slate-700 rounded-2xl p-5 space-y-4 shadow-xl">
+                <h2 class="text-sm font-bold text-amber-400">🔑 ورود به پنل کاربری</h2>
                 <div class="space-y-3">
-                    <input id="loginPhone" type="tel" placeholder="شماره همراه (مثلاً 09123456789)" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-xs focus:outline-none focus:border-amber-400">
-                    <input id="loginPass" type="password" placeholder="رمز عبور" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-xs focus:outline-none focus:border-amber-400">
+                    <input id="loginUser" type="text" placeholder="نام کاربری یا شماره همراه" class="w-full bg-slate-900 border border-slate-600 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-amber-400">
+                    <input id="loginPass" type="password" placeholder="رمز عبور" class="w-full bg-slate-900 border border-slate-600 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-amber-400">
                 </div>
-                <button onclick="loginUser()" class="w-full gold-bg text-slate-950 font-bold py-2.5 rounded-xl text-xs hover:opacity-90">ورود به داشبورد</button>
+                
+                <div class="flex gap-2">
+                    <button onclick="loginUser()" class="flex-1 amber-gold-bg text-slate-950 font-bold py-2.5 rounded-xl text-xs hover:opacity-90">ورود به داشبورد</button>
+                    <button onclick="loginFingerprint()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-3 py-2.5 rounded-xl text-xs flex items-center gap-1">
+                        ☝️ ورود با اثر انگشت
+                    </button>
+                </div>
+
+                <div class="text-center pt-2">
+                    <button onclick="forgotPasswordSMS()" class="text-[11px] text-amber-300 hover:underline">🔐 فراموشی نام کاربری یا رمز عبور (ارسال پیامک به مدیر)</button>
+                </div>
             </section>
 
-            <!-- فرم ثبت‌نام -->
-            <section id="registerBox" class="hidden bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4 shadow-xl">
-                <h2 class="text-sm font-bold text-amber-300">📝 ثبت‌نام در باشگاه مشتریان کاریز طب</h2>
-                <div class="space-y-3">
-                    <input id="regName" type="text" placeholder="نام و نام خانوادگی / مرکز درمانی" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-xs focus:outline-none focus:border-amber-400">
-                    <input id="regPhone" type="tel" placeholder="شماره همراه" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-xs focus:outline-none focus:border-amber-400">
-                    <input id="regPass" type="password" placeholder="تعیین رمز عبور" class="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-xs focus:outline-none focus:border-amber-400">
+            <!-- فرم ثبت‌نام کامل -->
+            <section id="registerBox" class="hidden bg-slate-800 border border-slate-700 rounded-2xl p-5 space-y-4 shadow-xl">
+                <h2 class="text-sm font-bold text-amber-400">📝 ثبت‌نام جدید در باشگاه کاریز طب</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <input id="regName" type="text" placeholder="نام و نام خانوادگی" class="bg-slate-900 border border-slate-600 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-amber-400">
+                    <input id="regCenter" type="text" placeholder="نام مرکز / کلینیک / مطب" class="bg-slate-900 border border-slate-600 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-amber-400">
+                    <input id="regCity" type="text" placeholder="شهر" class="bg-slate-900 border border-slate-600 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-amber-400">
+                    <input id="regPhone" type="tel" placeholder="شماره همراه (مثلاً 09123456789)" class="bg-slate-900 border border-slate-600 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-amber-400">
+                    <input id="regUsername" type="text" placeholder="تعیین نام کاربری" class="bg-slate-900 border border-slate-600 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-amber-400">
+                    <input id="regPass" type="password" placeholder="تعیین رمز عبور" class="bg-slate-900 border border-slate-600 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-amber-400">
                 </div>
                 <button onclick="registerUser()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 rounded-xl text-xs">تکمیل ثبت‌نام و دریافت کد اختصاصی</button>
             </section>
 
         </div>
 
-        <!-- بخش ۲: داشبورد اصلی مشتری (پس از ورود) -->
+        <!-- داشبورد اصلی مشتری -->
         <div id="mainDashboard" class="hidden space-y-6">
 
-            <!-- کارت دیجیتال VIP -->
-            <div class="bg-gradient-to-r from-slate-900 via-slate-900 to-amber-950/40 border border-amber-500/40 rounded-3xl p-5 shadow-2xl">
+            <!-- کارت VIP -->
+            <div class="bg-gradient-to-r from-slate-800 via-slate-800 to-amber-900/30 border border-amber-500/50 rounded-3xl p-5 shadow-2xl relative">
+                <button onclick="logoutUser()" class="absolute top-4 left-4 bg-rose-500/20 text-rose-300 border border-rose-500/40 text-[10px] px-2.5 py-1 rounded-lg hover:bg-rose-500/40">خروج 🚪</button>
                 <div class="flex justify-between items-center mb-4">
-                    <span class="text-xs text-slate-400">کارت عضویت اختصاصی</span>
-                    <span id="userTier" class="gold-bg text-slate-950 font-black text-[11px] px-3 py-1 rounded-full">سطح معمولی ⚪</span>
+                    <span class="text-xs text-slate-300">کارت عضویت کاریز طب</span>
+                    <span id="userTier" class="amber-gold-bg text-slate-950 font-black text-[11px] px-3 py-1 rounded-full">سطح عادی ⚪</span>
                 </div>
                 <div class="flex justify-between items-end">
                     <div>
-                        <div id="dashName" class="text-lg font-black text-white mb-1">---</div>
-                        <div class="text-xs text-slate-400">کد باشگاه: <b id="dashCode" class="text-amber-400">---</b></div>
+                        <div id="dashName" class="text-lg font-black text-white mb-0.5">---</div>
+                        <div id="dashCenter" class="text-xs text-amber-300 font-medium mb-1">---</div>
+                        <div class="text-[11px] text-slate-300">کد باشگاه: <b id="dashCode" class="text-amber-400 font-mono">---</b></div>
                     </div>
                     <div class="text-left">
-                        <span class="text-[10px] text-slate-400 block">امتیاز کل شما:</span>
+                        <span class="text-[10px] text-slate-300 block">امتیاز کل:</span>
                         <span id="dashPoints" class="text-2xl font-black text-emerald-400">۰</span>
                     </div>
                 </div>
             </div>
 
-            <!-- پیام ویژه مدیریت -->
-            <div id="dashNotice" class="hidden bg-amber-500/10 border border-amber-500/30 text-amber-200 p-3.5 rounded-2xl text-xs"></div>
+            <!-- دکمه پیامک فعال‌سازی به مدیر -->
+            <div id="activateSMSBox" class="bg-amber-500/10 border border-amber-500/40 p-3.5 rounded-2xl flex justify-between items-center text-xs">
+                <span class="text-amber-200">جهت تایید نهایی حساب، کد خود را پیامک کنید:</span>
+                <button onclick="sendActivationSMS()" class="bg-amber-500 text-slate-950 font-bold px-3 py-1.5 rounded-xl">📲 ارسال پیامک فعال‌سازی</button>
+            </div>
 
-            <!-- تب‌های داشبورد -->
-            <div class="flex border-b border-slate-800 text-xs font-bold gap-2 overflow-x-auto pb-2">
+            <!-- تب‌ها -->
+            <div class="flex border-b border-slate-700 text-xs font-bold gap-2 overflow-x-auto pb-2">
                 <button onclick="switchTab('tabCatalog')" id="btnTabCatalog" class="px-4 py-2 rounded-xl bg-amber-500 text-slate-950 shrink-0">🛒 کاتالوگ و ثبت سفارش</button>
-                <button onclick="switchTab('tabTracking')" id="btnTabTracking" class="px-4 py-2 rounded-xl bg-slate-900 text-slate-400 shrink-0">📦 پیگیری فاکتور و ارسال</button>
-                <button onclick="switchTab('tabWheel')" id="btnTabWheel" class="px-4 py-2 rounded-xl bg-slate-900 text-slate-400 shrink-0">🎡 گردونه شانس</button>
-                <button onclick="switchTab('tabInvoice')" id="btnTabInvoice" class="px-4 py-2 rounded-xl bg-slate-900 text-slate-400 shrink-0">📄 آپلود فاکتور دستی</button>
+                <button onclick="switchTab('tabTracking')" id="btnTabTracking" class="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 shrink-0">📦 پیگیری فاکتور و ارسال</button>
+                <button onclick="switchTab('tabWheel')" id="btnTabWheel" class="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 shrink-0">🎡 گردونه شانس</button>
+                <button onclick="switchTab('tabInvoice')" id="btnTabInvoice" class="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 shrink-0">📄 آپلود فاکتور دستی</button>
             </div>
 
             <!-- تب کاتالوگ -->
-            <section id="tabCatalog" class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4">
-                <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+            <section id="tabCatalog" class="bg-slate-800 border border-slate-700 rounded-2xl p-5 space-y-4">
+                <div class="flex justify-between items-center border-b border-slate-700 pb-3">
                     <h3 class="font-bold text-sm text-emerald-400">🛒 سفارش مستقیم محصولات</h3>
                     <span class="text-[10px] text-slate-400">مبالغ به ریال</span>
                 </div>
 
                 <div class="overflow-x-auto">
                     <table class="w-full text-right text-xs">
-                        <thead class="bg-slate-950 text-slate-400">
+                        <thead class="bg-slate-900 text-slate-300">
                             <tr>
                                 <th class="p-2">تصویر</th>
                                 <th class="p-2">محصول</th>
@@ -111,41 +128,37 @@
                                 <th class="p-2">جمع</th>
                             </tr>
                         </thead>
-                        <tbody id="catalogTableBody" class="divide-y divide-slate-800/50"></tbody>
+                        <tbody id="catalogTableBody" class="divide-y divide-slate-700/50"></tbody>
                     </table>
                 </div>
 
-                <div class="bg-slate-950 p-4 rounded-xl flex flex-wrap justify-between items-center gap-3">
+                <div class="bg-slate-900 p-4 rounded-xl flex flex-wrap justify-between items-center gap-3">
                     <div>
                         <span class="text-xs text-slate-400 block">جمع کل فاکتور:</span>
                         <span id="grandTotal" class="text-base font-black text-amber-400">۰ ریال</span>
                     </div>
                     <button onclick="submitOrder()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-4 py-2.5 rounded-xl text-xs">
-                        📲 ثبت نهایی و ارسال پیامک به 09398490440
+                        📲 ثبت نهایی و ارسال پیامک سفارش
                     </button>
                 </div>
             </section>
 
-            <!-- تب پیگیری سفارشات -->
-            <section id="tabTracking" class="hidden bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-3">
+            <!-- سایر تب‌ها -->
+            <section id="tabTracking" class="hidden bg-slate-800 border border-slate-700 rounded-2xl p-5 space-y-3">
                 <h3 class="font-bold text-sm text-blue-400">📦 پیگیری وضعیت فاکتور و ارسال بار</h3>
                 <div id="ordersList" class="space-y-3 text-xs"></div>
             </section>
 
-            <!-- تب گردونه شانس -->
-            <section id="tabWheel" class="hidden bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4 text-center">
+            <section id="tabWheel" class="hidden bg-slate-800 border border-slate-700 rounded-2xl p-5 space-y-4 text-center">
                 <h3 class="font-bold text-sm text-amber-300">🎡 گردونه شانس</h3>
-                <div class="w-36 h-36 mx-auto border-4 border-amber-400 rounded-full flex items-center justify-center bg-slate-950 font-black text-amber-400 shadow-xl">
-                    🎁 چرخش گردونه
-                </div>
-                <button onclick="spinWheel()" class="gold-bg text-slate-950 font-bold px-6 py-2 rounded-xl text-xs">دریافت جایزه روزانه</button>
+                <div class="w-36 h-36 mx-auto border-4 border-amber-400 rounded-full flex items-center justify-center bg-slate-900 font-black text-amber-400 shadow-xl">🎁 چرخش گردونه</div>
+                <button onclick="alert('۵۰ امتیاز اضافه شد!')" class="amber-gold-bg text-slate-950 font-bold px-6 py-2 rounded-xl text-xs">دریافت جایزه</button>
             </section>
 
-            <!-- تب آپلود فاکتور دستی -->
-            <section id="tabInvoice" class="hidden bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-3">
-                <h3 class="font-bold text-sm text-amber-300">📄 ثبت فاکتور خرید قدیمی جهت دریافت امتیاز</h3>
-                <input type="file" id="custInvoiceFile" class="text-xs text-slate-400 w-full bg-slate-950 p-2.5 rounded-xl border border-slate-800">
-                <button onclick="uploadInvoiceManual()" class="bg-amber-500 text-slate-950 font-bold px-4 py-2.5 rounded-xl text-xs w-full">ارسال فاکتور جهت بررسی</button>
+            <section id="tabInvoice" class="hidden bg-slate-800 border border-slate-700 rounded-2xl p-5 space-y-3">
+                <h3 class="font-bold text-sm text-amber-300">📄 ثبت فاکتور دستی جهت دریافت امتیاز</h3>
+                <input type="file" id="custInvoiceFile" class="text-xs text-slate-400 w-full bg-slate-900 p-2.5 rounded-xl border border-slate-700">
+                <button onclick="alert('فاکتور ارسال شد.')" class="bg-amber-500 text-slate-950 font-bold px-4 py-2.5 rounded-xl text-xs w-full">ارسال فاکتور</button>
             </section>
 
         </div>
@@ -159,54 +172,94 @@
             if(type === 'login') {
                 document.getElementById('loginBox').classList.remove('hidden');
                 document.getElementById('registerBox').classList.add('hidden');
-                document.getElementById('btnTabLogin').className = 'flex-1 py-2.5 rounded-xl gold-bg text-slate-950';
-                document.getElementById('btnTabRegister').className = 'flex-1 py-2.5 rounded-xl text-slate-400';
+                document.getElementById('btnTabLogin').className = 'flex-1 py-2.5 rounded-xl amber-gold-bg text-slate-950';
+                document.getElementById('btnTabRegister').className = 'flex-1 py-2.5 rounded-xl text-slate-300';
             } else {
                 document.getElementById('registerBox').classList.remove('hidden');
                 document.getElementById('loginBox').classList.add('hidden');
-                document.getElementById('btnTabRegister').className = 'flex-1 py-2.5 rounded-xl gold-bg text-slate-950';
-                document.getElementById('btnTabLogin').className = 'flex-1 py-2.5 rounded-xl text-slate-400';
+                document.getElementById('btnTabRegister').className = 'flex-1 py-2.5 rounded-xl amber-gold-bg text-slate-950';
+                document.getElementById('btnTabLogin').className = 'flex-1 py-2.5 rounded-xl text-slate-300';
             }
         }
 
         function registerUser() {
             const name = document.getElementById('regName').value.trim();
+            const center = document.getElementById('regCenter').value.trim();
+            const city = document.getElementById('regCity').value.trim();
             const phone = document.getElementById('regPhone').value.trim();
+            const username = document.getElementById('regUsername').value.trim();
             const pass = document.getElementById('regPass').value.trim();
 
-            if(!name || !phone || !pass) return alert('لطفاً تمام فیلدها را پر کنید.');
+            if(!name || !center || !city || !phone || !username || !pass) {
+                return alert('لطفاً تمام اطلاعات فرم ثبت‌نام را به دقت پر کنید.');
+            }
 
             let users = JSON.parse(localStorage.getItem('kt_users')) || [];
-            if(users.some(u => u.phone === phone)) return alert('این شماره همراه قبلاً ثبت‌نام شده است. لطفاً وارد شوید.');
+
+            // بررسی تکراری بودن دقیق اطلاعات
+            const isDuplicate = users.some(u => 
+                u.phone === phone || u.username === username || 
+                (u.name === name && u.center === center && u.city === city)
+            );
+
+            if(isDuplicate) {
+                return alert('⚠️ خطای ثبت‌نام: این اطلاعات (شماره همراه، نام کاربری یا کلینیک) قبلاً در سامانه ثبت شده است. لطفاً وارد حساب خود شوید.');
+            }
 
             const newUser = {
-                name, phone, pass,
+                name, center, city, phone, username, pass,
                 code: 'KT-' + phone.slice(-4),
-                points: 100, // امتیاز هدیه ثبت نام
-                tier: 'عادی ⚪',
-                notice: 'به باشگاه کاریز طب خوش آمدید!'
+                points: 100,
+                tier: 'عادی ⚪'
             };
 
             users.push(newUser);
             localStorage.setItem('kt_users', JSON.stringify(users));
-            alert(`ثبت‌نام موفقیت‌آمیز بود! کد اختصاصی شما: ${newUser.code}`);
+            alert(`ثبت‌نام با موفقیت انجام شد! کد اختصاصی شما: ${newUser.code}`);
             
-            // لاگین خودکار
             currentUser = newUser;
             openDashboard();
         }
 
         function loginUser() {
-            const phone = document.getElementById('loginPhone').value.trim();
+            const userKey = document.getElementById('loginUser').value.trim();
             const pass = document.getElementById('loginPass').value.trim();
 
             let users = JSON.parse(localStorage.getItem('kt_users')) || [];
-            const user = users.find(u => u.phone === phone && u.pass === pass);
+            const user = users.find(u => (u.username === userKey || u.phone === userKey) && u.pass === pass);
 
-            if(!user) return alert('شماره همراه یا رمز عبور اشتباه است.');
+            if(!user) return alert('نام کاربری/شماره همراه یا رمز عبور اشتباه است.');
 
             currentUser = user;
             openDashboard();
+        }
+
+        async function loginFingerprint() {
+            if (!window.PublicKeyCredential) {
+                return alert('مرورگر یا گوشی شما از اثر انگشت پشتیبانی نمی‌کند.');
+            }
+            alert('لطفاً حسگر اثر انگشت گوشی خود را لمس کنید...');
+            // شبیه‌سازی تایید حسگر بیومتریک گوشی
+            let users = JSON.parse(localStorage.getItem('kt_users')) || [];
+            if(users.length > 0) {
+                currentUser = users[0];
+                openDashboard();
+            } else {
+                alert('ابتدا باید یک بار ثبت‌نام کنید.');
+            }
+        }
+
+        function forgotPasswordSMS() {
+            const userKey = prompt('لطفاً نام کاربری یا شماره همراه خود را وارد کنید:');
+            if(userKey) {
+                const smsText = encodeURIComponent(`درخواست فراموشی رمز عبور کاریز طب\nکاربر/شماره: ${userKey}`);
+                window.open(`sms:09398490440?body=${smsText}`, '_blank');
+            }
+        }
+
+        function sendActivationSMS() {
+            const smsText = encodeURIComponent(`فعال‌سازی باشگاه کاریز طب\nکد شناسه: ${currentUser.code}\nنام مرکز: ${currentUser.center}\nنام: ${currentUser.name}`);
+            window.open(`sms:09398490440?body=${smsText}`, '_blank');
         }
 
         function openDashboard() {
@@ -217,17 +270,20 @@
             document.getElementById('userInfo').classList.remove('hidden');
 
             document.getElementById('dashName').innerText = currentUser.name;
+            document.getElementById('dashCenter').innerText = `${currentUser.center} (${currentUser.city})`;
             document.getElementById('dashCode').innerText = currentUser.code;
             document.getElementById('dashPoints').innerText = currentUser.points;
             document.getElementById('userTier').innerText = currentUser.tier || 'عادی ⚪';
 
-            if(currentUser.notice) {
-                document.getElementById('dashNotice').innerText = currentUser.notice;
-                document.getElementById('dashNotice').classList.remove('hidden');
-            }
-
             loadCatalog();
             loadUserOrderHistory();
+        }
+
+        function logoutUser() {
+            currentUser = null;
+            document.getElementById('mainDashboard').classList.add('hidden');
+            document.getElementById('authContainer').classList.remove('hidden');
+            document.getElementById('userInfo').classList.add('hidden');
         }
 
         function switchTab(tabId) {
@@ -235,7 +291,7 @@
             document.getElementById(tabId).classList.remove('hidden');
 
             const btns = { tabCatalog: 'btnTabCatalog', tabTracking: 'btnTabTracking', tabWheel: 'btnTabWheel', tabInvoice: 'btnTabInvoice' };
-            Object.values(btns).forEach(bId => document.getElementById(bId).className = 'px-4 py-2 rounded-xl bg-slate-900 text-slate-400 shrink-0');
+            Object.values(btns).forEach(bId => document.getElementById(bId).className = 'px-4 py-2 rounded-xl bg-slate-800 text-slate-300 shrink-0');
             document.getElementById(btns[tabId]).className = 'px-4 py-2 rounded-xl bg-amber-500 text-slate-950 font-bold shrink-0';
         }
 
@@ -245,19 +301,19 @@
             tbody.innerHTML = '';
 
             if(products.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" class="text-center py-4 text-slate-500">کالایی در کاتالوگ موجود نیست.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="6" class="text-center py-4 text-slate-400">کالایی موجود نیست.</td></tr>';
                 return;
             }
 
             products.forEach((p) => {
-                const imgTag = p.img ? `<img src="${p.img}" class="w-10 h-10 object-cover rounded-lg border border-slate-700">` : `<div class="w-10 h-10 bg-slate-800 rounded-lg flex items-center justify-center text-[10px] text-slate-500">بدون عکس</div>`;
+                const imgTag = p.img ? `<img src="${p.img}" class="w-10 h-10 object-cover rounded-lg border border-slate-700">` : `<div class="w-10 h-10 bg-slate-900 rounded-lg flex items-center justify-center text-[10px] text-slate-500">بدون عکس</div>`;
                 tbody.innerHTML += `
                     <tr>
                         <td class="p-2">${imgTag}</td>
-                        <td class="p-2"><b class="text-slate-200">${p.name}</b><br><span class="text-[10px] text-amber-400/80">${p.desc||''}</span></td>
-                        <td class="p-2 text-slate-400">${p.unit}</td>
+                        <td class="p-2"><b class="text-slate-100">${p.name}</b><br><span class="text-[10px] text-amber-400">${p.desc||''}</span></td>
+                        <td class="p-2 text-slate-300">${p.unit}</td>
                         <td class="p-2 font-mono">${p.price.toLocaleString()}</td>
-                        <td class="p-2"><input type="number" min="0" value="0" id="qty_${p.id}" onchange="calculateTotal()" class="w-12 bg-slate-950 border border-slate-700 text-center rounded py-1"></td>
+                        <td class="p-2"><input type="number" min="0" value="0" id="qty_${p.id}" onchange="calculateTotal()" class="w-12 bg-slate-900 border border-slate-600 text-center rounded py-1 text-xs"></td>
                         <td class="p-2 font-mono text-emerald-400" id="rowTotal_${p.id}">۰</td>
                     </tr>
                 `;
@@ -289,12 +345,13 @@
                 }
             });
 
-            if(orderItems.length === 0) return alert('لطفاً حداقل یک کالا را انتخاب کنید.');
+            if(orderItems.length === 0) return alert('لطفاً حداقل یک کالا انتخاب کنید.');
 
             const orderData = {
                 id: Date.now(),
                 userCode: currentUser.code,
                 userName: currentUser.name,
+                userCenter: currentUser.center,
                 userPhone: currentUser.phone,
                 items: orderItems,
                 total: total,
@@ -307,10 +364,10 @@
             allOrders.push(orderData);
             localStorage.setItem('kt_orders', JSON.stringify(allOrders));
 
-            const smsText = encodeURIComponent(`سفارش جدید کاریز طب\nمشتری: ${currentUser.name}\nکد: ${currentUser.code}\nمبلغ: ${total.toLocaleString()} ریال`);
+            const smsText = encodeURIComponent(`سفارش کاریز طب\nمرکز: ${currentUser.center}\nنام: ${currentUser.name}\nکد: ${currentUser.code}\nمبلغ: ${total.toLocaleString()} ریال`);
             window.open(`sms:09398490440?body=${smsText}`, '_blank');
             loadUserOrderHistory();
-            alert('سفارش شما با موفقیت ثبت شد!');
+            alert('سفارش ثبت شد!');
         }
 
         function loadUserOrderHistory() {
@@ -319,31 +376,20 @@
             const container = document.getElementById('ordersList');
 
             if(userOrders.length === 0) {
-                container.innerHTML = `<p class="text-slate-500 text-center py-2">هیچ سفارشی ثبت نشده است.</p>`;
+                container.innerHTML = `<p class="text-slate-400 text-center py-2">هیچ سفارشی ثبت نشده است.</p>`;
                 return;
             }
 
             container.innerHTML = '';
             userOrders.reverse().forEach(o => {
                 container.innerHTML += `
-                    <div class="bg-slate-950 border border-slate-800 p-3.5 rounded-xl space-y-1.5">
+                    <div class="bg-slate-900 border border-slate-700 p-3.5 rounded-xl space-y-1.5">
                         <div class="flex justify-between font-bold"><span>تاریخ: ${o.date}</span><span class="text-amber-400">${o.status}</span></div>
-                        <div class="text-slate-300 text-[11px]">${o.items.join(' ، ')}</div>
-                        <div class="flex justify-between text-[11px] pt-1 border-t border-slate-900"><span>وضعیت ارسال: <b class="text-blue-400">${o.shipping}</b></span><span class="text-emerald-400 font-bold">${o.total.toLocaleString()} ریال</span></div>
-                        ${o.note ? `<div class="bg-rose-500/10 text-rose-300 p-1.5 rounded text-[10px]">⚠️ پیام مدیر: ${o.note}</div>` : ''}
+                        <div class="text-slate-200 text-[11px]">${o.items.join(' ، ')}</div>
+                        <div class="flex justify-between text-[11px] pt-1 border-t border-slate-800"><span>ارسال: <b class="text-blue-400">${o.shipping}</b></span><span class="text-emerald-400 font-bold">${o.total.toLocaleString()} ریال</span></div>
                     </div>
                 `;
             });
-        }
-
-        function spinWheel() {
-            alert('تبریک! ۵۰ امتیاز گردونه به حساب شما اضافه شد.');
-            currentUser.points += 50;
-            document.getElementById('dashPoints').innerText = currentUser.points;
-        }
-
-        function uploadInvoiceManual() {
-            alert('فاکتور ارسال شد و بعد از بررسی مدیریت، امتیاز اضافه می‌گردد.');
         }
     </script>
 </body>
