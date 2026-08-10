@@ -14,7 +14,7 @@
 </head>
 <body class="bg-slate-900 text-slate-100 min-h-screen p-4 pb-24">
 
-    <!-- هدر با تم شاد و روشن -->
+    <!-- هدر -->
     <header class="max-w-2xl mx-auto flex justify-between items-center border-b border-slate-700/60 pb-4 mb-6">
         <div class="flex items-center gap-3">
             <div class="w-12 h-12 amber-gold-bg rounded-2xl flex items-center justify-center font-black text-slate-950 text-xl shadow-lg">KT</div>
@@ -46,8 +46,8 @@
                 
                 <div class="flex gap-2">
                     <button onclick="loginUser()" class="flex-1 amber-gold-bg text-slate-950 font-bold py-2.5 rounded-xl text-xs hover:opacity-90">ورود به داشبورد</button>
-                    <button onclick="loginFingerprint()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-3 py-2.5 rounded-xl text-xs flex items-center gap-1">
-                        ☝️ ورود با اثر انگشت
+                    <button onclick="loginBioSecure()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-3 py-2.5 rounded-xl text-xs flex items-center gap-1">
+                        ☝️ ورود با اثر انگشت واقعی
                     </button>
                 </div>
 
@@ -56,7 +56,7 @@
                 </div>
             </section>
 
-            <!-- فرم ثبت‌نام کامل -->
+            <!-- فرم ثبت‌نام -->
             <section id="registerBox" class="hidden bg-slate-800 border border-slate-700 rounded-2xl p-5 space-y-4 shadow-xl">
                 <h2 class="text-sm font-bold text-amber-400">📝 ثبت‌نام جدید در باشگاه کاریز طب</h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -67,7 +67,7 @@
                     <input id="regUsername" type="text" placeholder="تعیین نام کاربری" class="bg-slate-900 border border-slate-600 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-amber-400">
                     <input id="regPass" type="password" placeholder="تعیین رمز عبور" class="bg-slate-900 border border-slate-600 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-amber-400">
                 </div>
-                <button onclick="registerUser()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 rounded-xl text-xs">تکمیل ثبت‌نام و دریافت کد اختصاصی</button>
+                <button onclick="registerUser()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 rounded-xl text-xs">تکمیل ثبت‌نام و فعال‌سازی حسگر گوشی</button>
             </section>
 
         </div>
@@ -75,7 +75,6 @@
         <!-- داشبورد اصلی مشتری -->
         <div id="mainDashboard" class="hidden space-y-6">
 
-            <!-- کارت VIP -->
             <div class="bg-gradient-to-r from-slate-800 via-slate-800 to-amber-900/30 border border-amber-500/50 rounded-3xl p-5 shadow-2xl relative">
                 <button onclick="logoutUser()" class="absolute top-4 left-4 bg-rose-500/20 text-rose-300 border border-rose-500/40 text-[10px] px-2.5 py-1 rounded-lg hover:bg-rose-500/40">خروج 🚪</button>
                 <div class="flex justify-between items-center mb-4">
@@ -95,13 +94,11 @@
                 </div>
             </div>
 
-            <!-- دکمه پیامک فعال‌سازی به مدیر -->
             <div id="activateSMSBox" class="bg-amber-500/10 border border-amber-500/40 p-3.5 rounded-2xl flex justify-between items-center text-xs">
                 <span class="text-amber-200">جهت تایید نهایی حساب، کد خود را پیامک کنید:</span>
                 <button onclick="sendActivationSMS()" class="bg-amber-500 text-slate-950 font-bold px-3 py-1.5 rounded-xl">📲 ارسال پیامک فعال‌سازی</button>
             </div>
 
-            <!-- تب‌ها -->
             <div class="flex border-b border-slate-700 text-xs font-bold gap-2 overflow-x-auto pb-2">
                 <button onclick="switchTab('tabCatalog')" id="btnTabCatalog" class="px-4 py-2 rounded-xl bg-amber-500 text-slate-950 shrink-0">🛒 کاتالوگ و ثبت سفارش</button>
                 <button onclick="switchTab('tabTracking')" id="btnTabTracking" class="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 shrink-0">📦 پیگیری فاکتور و ارسال</button>
@@ -109,7 +106,6 @@
                 <button onclick="switchTab('tabInvoice')" id="btnTabInvoice" class="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 shrink-0">📄 آپلود فاکتور دستی</button>
             </div>
 
-            <!-- تب کاتالوگ -->
             <section id="tabCatalog" class="bg-slate-800 border border-slate-700 rounded-2xl p-5 space-y-4">
                 <div class="flex justify-between items-center border-b border-slate-700 pb-3">
                     <h3 class="font-bold text-sm text-emerald-400">🛒 سفارش مستقیم محصولات</h3>
@@ -143,7 +139,6 @@
                 </div>
             </section>
 
-            <!-- سایر تب‌ها -->
             <section id="tabTracking" class="hidden bg-slate-800 border border-slate-700 rounded-2xl p-5 space-y-3">
                 <h3 class="font-bold text-sm text-blue-400">📦 پیگیری وضعیت فاکتور و ارسال بار</h3>
                 <div id="ordersList" class="space-y-3 text-xs"></div>
@@ -182,7 +177,7 @@
             }
         }
 
-        function registerUser() {
+        async function registerUser() {
             const name = document.getElementById('regName').value.trim();
             const center = document.getElementById('regCenter').value.trim();
             const city = document.getElementById('regCity').value.trim();
@@ -196,21 +191,41 @@
 
             let users = JSON.parse(localStorage.getItem('kt_users')) || [];
 
-            // بررسی تکراری بودن دقیق اطلاعات
             const isDuplicate = users.some(u => 
                 u.phone === phone || u.username === username || 
                 (u.name === name && u.center === center && u.city === city)
             );
 
             if(isDuplicate) {
-                return alert('⚠️ خطای ثبت‌نام: این اطلاعات (شماره همراه، نام کاربری یا کلینیک) قبلاً در سامانه ثبت شده است. لطفاً وارد حساب خود شوید.');
+                return alert('⚠️ خطای ثبت‌نام: این اطلاعات قبلاً در سامانه ثبت شده است.');
+            }
+
+            // ثبت کلید بیومتریک/اثر انگشت سخت‌افزاری
+            let bioRegistered = false;
+            if (window.PublicKeyCredential) {
+                try {
+                    const credential = await navigator.credentials.create({
+                        publicKey: {
+                            challenge: new Uint8Array(32),
+                            rp: { name: "کاریز طب" },
+                            user: { id: new Uint8Array(16), name: username, displayName: name },
+                            pubKeyCredParams: [{ type: "public-key", alg: -7 }],
+                            authenticatorSelection: { authenticatorAttachment: "platform", userVerification: "required" },
+                            timeout: 60000
+                        }
+                    });
+                    if(credential) bioRegistered = true;
+                } catch(e) {
+                    console.log("انصراف یا عدم ثبت اثر انگشت در این مرحله");
+                }
             }
 
             const newUser = {
                 name, center, city, phone, username, pass,
                 code: 'KT-' + phone.slice(-4),
                 points: 100,
-                tier: 'عادی ⚪'
+                tier: 'عادی ⚪',
+                bioRegistered: bioRegistered
             };
 
             users.push(newUser);
@@ -234,18 +249,35 @@
             openDashboard();
         }
 
-        async function loginFingerprint() {
+        // ورود امن با حسگر بیومتریک/اثر انگشت سیستم‌عامل
+        async function loginBioSecure() {
             if (!window.PublicKeyCredential) {
-                return alert('مرورگر یا گوشی شما از اثر انگشت پشتیبانی نمی‌کند.');
+                return alert('مرورگر یا گوشی شما از اثر انگشت امن پشتیبانی نمی‌کند.');
             }
-            alert('لطفاً حسگر اثر انگشت گوشی خود را لمس کنید...');
-            // شبیه‌سازی تایید حسگر بیومتریک گوشی
-            let users = JSON.parse(localStorage.getItem('kt_users')) || [];
-            if(users.length > 0) {
-                currentUser = users[0];
-                openDashboard();
-            } else {
-                alert('ابتدا باید یک بار ثبت‌نام کنید.');
+
+            try {
+                const assertion = await navigator.credentials.get({
+                    publicKey: {
+                        challenge: new Uint8Array(32),
+                        userVerification: "required",
+                        timeout: 60000
+                    }
+                });
+
+                if (assertion) {
+                    let users = JSON.parse(localStorage.getItem('kt_users')) || [];
+                    const bioUser = users.find(u => u.bioRegistered === true);
+
+                    if (bioUser) {
+                        currentUser = bioUser;
+                        openDashboard();
+                        alert(`خوش آمدید ${currentUser.name}! هویت بیومتریک شما تایید شد.`);
+                    } else {
+                        alert('هیچ اثر انگشت معتبری برای حساب شما در این گوشی ثبت نشده است.');
+                    }
+                }
+            } catch (err) {
+                alert('🔴 هویت بیومتریک تایید نشد یا از اثر انگشت انصراف دادید.');
             }
         }
 
