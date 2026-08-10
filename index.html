@@ -321,13 +321,6 @@
       margin-top: 14px;
       color: var(--primary);
     }
-
-    .loading-spinner {
-      font-size: 0.85rem;
-      color: var(--primary);
-      text-align: center;
-      margin: 10px 0;
-    }
   </style>
 </head>
 <body>
@@ -464,7 +457,7 @@
           </thead>
           <tbody id="customer-order-table-body">
             <tr>
-              <td colspan="6" class="empty-table-msg">در حال بارگذاری لیست محصولات...</td>
+              <td colspan="6" class="empty-table-msg">در حال دریافت جدیدترین لیست محصولات...</td>
             </tr>
           </tbody>
         </table>
@@ -492,9 +485,8 @@
 </div>
 
 <script>
-  // تنظیمات دیتابیس ابری (رایگان JSONBin)
-  const JSONBIN_BIN_ID = "66b8d234ad19ca34f892d71d"; 
-  const JSONBIN_API_KEY = "$2a$10$wT0lGfH2E8Yh/E9J5WvEdeX3Uv6d7b5U4I9r3j4d5m6n7o8p9q0r1";
+  // پایگاه داده ابری آنلاین مشترک برای سینک بین همه گوشی‌ها
+  const CLOUD_API_URL = "https://api.keyvalue.xyz/karizteb_database_v2_store";
 
   const defaultData = {
     users: [],
@@ -505,15 +497,17 @@
 
   async function getDB() {
     try {
-      const res = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}/latest`, {
-        headers: { 'X-Master-Key': JSONBIN_API_KEY }
-      });
+      const res = await fetch(CLOUD_API_URL, { cache: 'no-store' });
       if (res.ok) {
-        const data = await res.json();
-        return data.record || defaultData;
+        const text = await res.text();
+        if (text && text.trim() !== "") {
+          const data = JSON.parse(text);
+          localStorage.setItem('karizteb_db', JSON.stringify(data));
+          return data;
+        }
       }
     } catch (e) {
-      console.warn("استفاده از دیتابیس محلی به علت قطعی اینترنت", e);
+      console.warn("استفاده از حافظه محلی به علت عدم دسترسی به اینترنت", e);
     }
     return JSON.parse(localStorage.getItem('karizteb_db')) || defaultData;
   }
@@ -521,16 +515,12 @@
   async function saveDB(data) {
     localStorage.setItem('karizteb_db', JSON.stringify(data));
     try {
-      await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Master-Key': JSONBIN_API_KEY
-        },
+      await fetch(CLOUD_API_URL, {
+        method: 'POST',
         body: JSON.stringify(data)
       });
     } catch (e) {
-      console.error("خطا در ذخیره ابری:", e);
+      console.error("خطا در ذخیره‌سازی همگام ابری:", e);
     }
   }
 
@@ -551,7 +541,7 @@
   document.getElementById('register-form').addEventListener('submit', async function(e) {
     e.preventDefault();
     const regBtn = document.getElementById('reg-btn');
-    regBtn.innerText = 'در حال ثبت نام...';
+    regBtn.innerText = 'در حال ثبت اطلاعات در سرور...';
     regBtn.disabled = true;
 
     const username = document.getElementById('reg-username').value.trim();
@@ -562,7 +552,7 @@
 
     const isDuplicate = db.users.some(u => u.username === username || u.phone === phone);
     if (isDuplicate) {
-      alert('خطا: نام کاربری یا شماره همراه وارد شده قبلاً در سیستم ثبت شده است!');
+      alert('خطا: این نام کاربری یا شماره همراه قبلاً ثبت شده است!');
       regBtn.innerText = 'ثبت اطلاعات و ورود به سامانه';
       regBtn.disabled = false;
       return;
@@ -584,7 +574,7 @@
     db.users.push(newUser);
     await saveDB(db);
 
-    alert('ثبت‌نام با موفقیت انجام شد. اکنون می‌توانید وارد حساب خود شوید.');
+    alert('ثبت‌نام شما با موفقیت انجام شد و در پنل مدیریت همگام گردید.');
     regBtn.innerText = 'ثبت اطلاعات و ورود به سامانه';
     regBtn.disabled = false;
     toggleRegister(false);
@@ -593,7 +583,7 @@
   document.getElementById('login-form').addEventListener('submit', async function(e) {
     e.preventDefault();
     const loginBtn = document.getElementById('login-btn');
-    loginBtn.innerText = 'در حال بررسی...';
+    loginBtn.innerText = 'در حال برقراری ارتباط...';
     loginBtn.disabled = true;
 
     const u = document.getElementById('login-username').value.trim();
@@ -610,7 +600,7 @@
       await renderCustomerPanel();
       showPage('customer-panel');
     } else {
-      alert('نام کاربری یا رمز عبور اشتباه است یا حساب شما توسط مدیر حذف شده است.');
+      alert('نام کاربری یا رمز عبور اشتباه است.');
     }
   });
 
@@ -673,7 +663,7 @@
           <td>${p.unit}</td>
           <td>${p.price.toLocaleString()}</td>
           <td>
-            <input type="number" min="0" value="0" class="qty-input" id="qty-${p.id}" onchange="updateRowTotal(${p.id}, ${p.price})" onkeyup="updateRowTotal(${p.id}, ${p.price})">
+            <input type="number" min="0" value="0" class="qty-input" id="qty-${p.id}" onchange="updateRowTotal(${p.id},${p.price})" onkeyup="updateRowTotal(${p.id},${p.price})">
           </td>
           <td id="row-total-${p.id}" style="font-weight:bold; color:var(--primary);">۰</td>
         </tr>
@@ -719,7 +709,7 @@
         if (qty > 0) {
           const itemTotal = qty * p.price;
           grandTotal += itemTotal;
-          orderItems.push(`- ${p.name}: ${qty} ${p.unit} (${itemTotal.toLocaleString()} ریال)`);
+          orderItems.push(`- ${p.name}:${qty} ${p.unit} (${itemTotal.toLocaleString()} ریال)`);
         }
       }
     });
