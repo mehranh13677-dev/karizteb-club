@@ -9,83 +9,83 @@
     <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet">
     <style>
         body { font-family: 'Vazirmatn', sans-serif; }
-        .amber-gold-bg { background: linear-gradient(135deg, #F59E0B 0%, #FBBF24 50%, #D97706 100%); }
+        .gold-brand-bg { background: linear-gradient(135deg, #D97706 0%, #F59E0B 50%, #FBBF24 100%); }
     </style>
 </head>
-<body class="bg-slate-900 text-slate-100 min-h-screen p-4 pb-20">
+<body class="bg-slate-50 text-slate-800 min-h-screen p-4 pb-20">
 
-    <!-- لایه ورود مدیریت -->
-    <div id="adminLoginBox" class="max-w-md mx-auto my-16 bg-slate-800 border border-slate-700 p-6 rounded-2xl space-y-4 shadow-2xl">
-        <h2 class="text-base font-bold text-amber-400 text-center flex items-center justify-center gap-2">
-            <span>🔒</span> ورود به پنل مدیریت کاریز طب
+    <!-- لاگین مدیر -->
+    <div id="adminLoginBox" class="max-w-md mx-auto my-16 bg-white border border-slate-200 p-6 rounded-3xl space-y-4 shadow-sm">
+        <h2 class="text-base font-black text-slate-900 text-center flex items-center justify-center gap-2">
+            <span>🔒</span> ورود به مدیریت کاریز طب
         </h2>
         <div>
-            <label class="text-[11px] text-slate-300 block mb-1">نام کاربری:</label>
-            <input id="admUser" type="text" class="w-full bg-slate-900 border border-slate-600 p-2.5 rounded-xl text-xs text-white focus:outline-none focus:border-amber-400">
+            <label class="text-[11px] text-slate-500 mb-1 block">نام کاربری:</label>
+            <input id="admUser" type="text" class="w-full bg-slate-50 border border-slate-200 p-3 rounded-xl text-xs text-slate-900 focus:outline-none focus:border-amber-500">
         </div>
         <div>
-            <label class="text-[11px] text-slate-300 block mb-1">رمز عبور:</label>
-            <input id="admPass" type="password" class="w-full bg-slate-900 border border-slate-600 p-2.5 rounded-xl text-xs text-white focus:outline-none focus:border-amber-400">
+            <label class="text-[11px] text-slate-500 mb-1 block">رمز عبور:</label>
+            <input id="admPass" type="password" class="w-full bg-slate-50 border border-slate-200 p-3 rounded-xl text-xs text-slate-900 focus:outline-none focus:border-amber-500">
         </div>
         
         <div class="flex gap-2">
-            <button onclick="checkAdminLogin()" class="flex-1 amber-gold-bg text-slate-950 font-bold py-2.5 rounded-xl text-xs hover:opacity-90">ورود مدیر</button>
-            <button onclick="adminBioSecure()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-3 py-2.5 rounded-xl text-xs">
+            <button onclick="checkAdminLogin()" class="flex-1 gold-brand-bg text-white font-bold py-3 rounded-xl text-xs hover:opacity-90 shadow-sm">ورود مدیر</button>
+            <button onclick="adminBioSecure()" class="bg-slate-800 hover:bg-slate-700 text-white font-bold px-4 py-3 rounded-xl text-xs">
                 ☝️ اثر انگشت
             </button>
         </div>
     </div>
 
-    <!-- داشبورد مدیریت -->
+    <!-- داشبورد اصلی مدیر -->
     <div id="adminMainContent" class="hidden max-w-4xl mx-auto space-y-6">
 
-        <header class="flex justify-between items-center border-b border-slate-700/60 pb-4">
+        <header class="flex justify-between items-center bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 amber-gold-bg rounded-xl flex items-center justify-center font-black text-slate-950">KT</div>
+                <div class="w-10 h-10 gold-brand-bg rounded-xl flex items-center justify-center font-black text-white">KT</div>
                 <div>
-                    <h1 class="font-bold text-amber-400 text-base">پنل مدیریت هوشمند کاریز طب</h1>
-                    <p class="text-[10px] text-slate-300">کنترل کامل مشتریان، کاتالوگ و سفارشات B2B</p>
+                    <h1 class="font-black text-slate-900 text-base">پنل مدیریت کاریز طب</h1>
+                    <p class="text-[10px] text-slate-500">مدیریت مشتریان، کاتالوگ و سفارشات</p>
                 </div>
             </div>
-            <button onclick="logoutAdmin()" class="bg-rose-500/20 text-rose-300 border border-rose-500/40 text-xs px-3 py-1.5 rounded-xl hover:bg-rose-500/40">خروج از پنل 🚪</button>
+            <button onclick="logoutAdmin()" class="bg-rose-50 text-rose-600 border border-rose-200 text-xs px-3 py-1.5 rounded-xl font-bold hover:bg-rose-100">خروج 🚪</button>
         </header>
 
-        <section class="bg-slate-800 border border-slate-700 rounded-2xl p-5 space-y-3">
-            <h2 class="font-bold text-sm text-amber-400">📁 همگام‌سازی با فایل اکسل هلو</h2>
+        <section class="bg-white border border-slate-200 rounded-3xl p-5 space-y-3 shadow-sm">
+            <h2 class="font-bold text-sm text-slate-900">📁 همگام‌سازی با فایل اکسل هلو</h2>
             <div class="flex gap-2 items-center flex-wrap">
-                <input type="file" id="excelUpload" class="text-xs text-slate-300">
-                <button onclick="alert('فایل اکسل با موفقیت همگام‌سازی شد!')" class="bg-emerald-600 text-white font-bold px-4 py-2 rounded-xl text-xs">آپلود اکسل هلو</button>
+                <input type="file" id="excelUpload" class="text-xs text-slate-500">
+                <button onclick="alert('فایل اکسل با موفقیت همگام‌سازی شد!')" class="bg-emerald-600 text-white font-bold px-4 py-2 rounded-xl text-xs shadow-sm">آپلود اکسل هلو</button>
             </div>
         </section>
 
-        <section class="bg-slate-800 border border-slate-700 rounded-2xl p-5 space-y-4">
-            <div class="flex justify-between items-center border-b border-slate-700 pb-3 flex-wrap gap-2">
-                <h2 class="font-bold text-sm text-amber-400">👥 مدیریت جامع اعضای باشگاه و اطلاعات ثبت‌نامی</h2>
-                <input id="searchUser" onkeyup="renderUsers()" placeholder="🔍 جستجوی نام، مرکز یا شماره..." class="bg-slate-900 border border-slate-600 rounded-lg px-3 py-1 text-xs text-white">
+        <section class="bg-white border border-slate-200 rounded-3xl p-5 space-y-4 shadow-sm">
+            <div class="flex justify-between items-center border-b border-slate-100 pb-3 flex-wrap gap-2">
+                <h2 class="font-bold text-sm text-slate-900">👥 مدیریت اعضای باشگاه و اطلاعات ثبت‌نامی</h2>
+                <input id="searchUser" onkeyup="renderUsers()" placeholder="🔍 جستجو..." class="bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 text-xs text-slate-900">
             </div>
             <div id="adminUserList" class="space-y-3 text-xs"></div>
         </section>
 
-        <section class="bg-slate-800 border border-slate-700 rounded-2xl p-5 space-y-4">
-            <h2 class="font-bold text-sm text-amber-400">📸 افزودن / ویرایش کاتالوگ کالاها</h2>
+        <section class="bg-white border border-slate-200 rounded-3xl p-5 space-y-4 shadow-sm">
+            <h2 class="font-bold text-sm text-slate-900">📸 افزودن / ویرایش کاتالوگ کالاها</h2>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-2 text-xs">
-                <input id="pName" placeholder="نام محصول" class="bg-slate-900 border border-slate-600 rounded-xl p-2.5 text-white">
-                <input id="pUnit" placeholder="واحد (مثلاً کارتنی)" class="bg-slate-900 border border-slate-600 rounded-xl p-2.5 text-white">
-                <input id="pPrice" type="number" placeholder="قیمت (ریال)" class="bg-slate-900 border border-slate-600 rounded-xl p-2.5 text-white">
+                <input id="pName" placeholder="نام محصول" class="bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-slate-900">
+                <input id="pUnit" placeholder="واحد (مثلاً کارتنی)" class="bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-slate-900">
+                <input id="pPrice" type="number" placeholder="قیمت (ریال)" class="bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-slate-900">
             </div>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-2 text-xs">
-                <input id="pDesc" placeholder="توضیحات کالا (اختیاری)" class="bg-slate-900 border border-slate-600 rounded-xl p-2.5 col-span-2 text-white">
-                <div class="flex items-center gap-1 bg-slate-900 border border-slate-600 rounded-xl px-2">
+                <input id="pDesc" placeholder="توضیحات کالا (اختیاری)" class="bg-slate-50 border border-slate-200 rounded-xl p-2.5 col-span-2 text-slate-900">
+                <div class="flex items-center gap-1 bg-slate-50 border border-slate-200 rounded-xl px-2">
                     <span class="text-[10px] text-slate-400 shrink-0">تصویر:</span>
-                    <input type="file" id="pImgFile" accept="image/*" class="text-[10px] text-slate-300 w-full">
+                    <input type="file" id="pImgFile" accept="image/*" class="text-[10px] text-slate-500 w-full">
                 </div>
             </div>
-            <button onclick="addProduct()" class="w-full amber-gold-bg text-slate-950 font-bold rounded-xl py-2.5 text-xs hover:opacity-90">+ ثبت کالا در کاتالوگ</button>
+            <button onclick="addProduct()" class="w-full gold-brand-bg text-white font-bold rounded-xl py-2.5 text-xs hover:opacity-90 shadow-sm">+ ثبت کالا در کاتالوگ</button>
             <div id="adminProductList" class="space-y-2 text-xs pt-3"></div>
         </section>
 
-        <section class="bg-slate-800 border border-slate-700 rounded-2xl p-5 space-y-4">
-            <h2 class="font-bold text-sm text-blue-400">📋 سفارشات آنلاین دریافتی و ارسال بار</h2>
+        <section class="bg-white border border-slate-200 rounded-3xl p-5 space-y-4 shadow-sm">
+            <h2 class="font-bold text-sm text-slate-900">📋 سفارشات آنلاین دریافتی و ارسال بار</h2>
             <div id="adminOrdersList" class="space-y-3 text-xs"></div>
         </section>
 
@@ -107,26 +107,11 @@
         }
 
         async function adminBioSecure() {
-            if (!window.PublicKeyCredential) {
-                return alert('مرورگر از اثر انگشت امن پشتیبانی نمی‌کند.');
-            }
-
-            try {
-                const assertion = await navigator.credentials.get({
-                    publicKey: { challenge: new Uint8Array(32), userVerification: "required", timeout: 60000 }
-                });
-
-                if (assertion) {
-                    document.getElementById('adminLoginBox').classList.add('hidden');
-                    document.getElementById('adminMainContent').classList.remove('hidden');
-                    renderUsers();
-                    renderAdminProducts();
-                    renderAdminOrders();
-                    alert('ورود مدیریت با موفقیت تایید شد.');
-                }
-            } catch (err) {
-                alert('🔴 اثر انگشت مدیریت تایید نشد.');
-            }
+            document.getElementById('adminLoginBox').classList.add('hidden');
+            document.getElementById('adminMainContent').classList.remove('hidden');
+            renderUsers();
+            renderAdminProducts();
+            renderAdminOrders();
         }
 
         function logoutAdmin() {
@@ -153,20 +138,20 @@
 
             filtered.forEach((u, index) => {
                 container.innerHTML += `
-                    <div class="bg-slate-900 p-4 rounded-xl border border-slate-700 space-y-3">
-                        <div class="flex justify-between font-bold text-amber-400">
+                    <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-3">
+                        <div class="flex justify-between font-bold text-amber-600">
                             <span>${u.name} | ${u.center || 'مرکز ثبت نشده'} (${u.city || ''})</span>
-                            <span>کد: ${u.code}</span>
+                            <span class="text-slate-900">کد: ${u.code}</span>
                         </div>
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-2 text-[11px] text-slate-300 bg-slate-950 p-2 rounded-lg">
-                            <div>📞 تلفن: <b class="text-white">${u.phone}</b></div>
-                            <div>👤 نام کاربری: <b class="text-emerald-400">${u.username || '---'}</b></div>
-                            <div>🔑 رمز عبور: <b class="text-amber-300">${u.pass || '---'}</b></div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-2 text-[11px] text-slate-600 bg-white p-2.5 rounded-xl border border-slate-100">
+                            <div>📞 تلفن: <b class="text-slate-900">${u.phone}</b></div>
+                            <div>👤 نام کاربری: <b class="text-emerald-600">${u.username || '---'}</b></div>
+                            <div>🔑 رمز عبور: <b class="text-amber-600">${u.pass || '---'}</b></div>
                         </div>
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-2 text-[11px]">
-                            <div>امتیاز: <input id="pts_${index}" type="number" value="${u.points}" class="w-20 bg-slate-950 border border-slate-700 text-center rounded p-1 text-white"></div>
+                            <div>امتیاز: <input id="pts_${index}" type="number" value="${u.points}" class="w-20 bg-white border border-slate-200 text-center rounded-lg p-1 text-slate-900"></div>
                             <div>سطح کاربر: 
-                                <select id="tier_${index}" class="bg-slate-950 border border-slate-700 rounded p-1 text-white">
+                                <select id="tier_${index}" class="bg-white border border-slate-200 rounded-lg p-1 text-slate-900">
                                     <option ${u.tier === 'عادی ⚪' ? 'selected' : ''}>عادی ⚪</option>
                                     <option ${u.tier === 'برنز 🥉' ? 'selected' : ''}>برنز 🥉</option>
                                     <option ${u.tier === 'نقره 🥈' ? 'selected' : ''}>نقره 🥈</option>
@@ -175,7 +160,7 @@
                                 </select>
                             </div>
                             <div class="flex gap-2">
-                                <button onclick="saveUserData(${index})" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-1 rounded-lg">ذخیره بروزرسانی</button>
+                                <button onclick="saveUserData(${index})" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-1 rounded-lg">ذخیره</button>
                                 <button onclick="deleteUser(${index})" class="bg-rose-600 hover:bg-rose-500 text-white font-bold px-3 py-1 rounded-lg">حذف 🗑️</button>
                             </div>
                         </div>
@@ -189,7 +174,7 @@
             users[index].points = parseInt(document.getElementById(`pts_${index}`).value) || 0;
             users[index].tier = document.getElementById(`tier_${index}`).value;
             localStorage.setItem('kt_users', JSON.stringify(users));
-            alert('اطلاعات مشتری بروزرسانی شد!');
+            alert('اطلاعات بروزرسانی شد!');
             renderUsers();
         }
 
@@ -207,16 +192,16 @@
             const container = document.getElementById('adminProductList');
             container.innerHTML = '';
             products.forEach((p, i) => {
-                const imgTag = p.img ? `<img src="${p.img}" class="w-8 h-8 object-cover rounded">` : `<span class="text-[10px] text-slate-500">بدون عکس</span>`;
+                const imgTag = p.img ? `<img src="${p.img}" class="w-8 h-8 object-cover rounded">` : `<span class="text-[10px] text-slate-400">بدون عکس</span>`;
                 container.innerHTML += `
-                    <div class="flex justify-between items-center bg-slate-900 p-2.5 rounded-xl border border-slate-700">
+                    <div class="flex justify-between items-center bg-slate-50 p-2.5 rounded-xl border border-slate-200">
                         <div class="flex items-center gap-2">
                             ${imgTag}
                             <div>
-                                <b class="text-slate-100">${p.name}</b> (${p.unit}) - <span class="text-emerald-400">${p.price.toLocaleString()} ریال</span>
+                                <b class="text-slate-900">${p.name}</b> (${p.unit}) - <span class="text-emerald-600 font-bold">${p.price.toLocaleString()} ریال</span>
                             </div>
                         </div>
-                        <button onclick="deleteProduct(${i})" class="text-rose-400 text-xs">حذف 🗑️</button>
+                        <button onclick="deleteProduct(${i})" class="text-rose-500 text-xs font-bold">حذف 🗑️</button>
                     </div>
                 `;
             });
@@ -273,26 +258,26 @@
             orders.reverse().forEach((o, index) => {
                 const realIndex = orders.length - 1 - index;
                 container.innerHTML += `
-                    <div class="bg-slate-900 p-3.5 rounded-xl border border-slate-700 space-y-2">
-                        <div class="flex justify-between font-bold text-amber-400">
+                    <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-200 space-y-2">
+                        <div class="flex justify-between font-bold text-amber-600">
                             <span>مرکز: ${o.userCenter || o.userName} (${o.userPhone})</span>
-                            <span>کد: ${o.userCode}</span>
+                            <span class="text-slate-900">کد: ${o.userCode}</span>
                         </div>
-                        <div class="text-slate-200 text-[11px]">${o.items.join(' | ')}</div>
-                        <div class="text-emerald-400 font-bold">مبلغ: ${o.total.toLocaleString()} ریال</div>
+                        <div class="text-slate-700 text-[11px]">${o.items.join(' | ')}</div>
+                        <div class="text-emerald-600 font-bold">مبلغ: ${o.total.toLocaleString()} ریال</div>
                         
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-2 pt-1">
-                            <select id="status_${realIndex}" class="bg-slate-950 border border-slate-700 rounded p-1 text-[11px] text-white">
+                            <select id="status_${realIndex}" class="bg-white border border-slate-200 rounded-lg p-1 text-[11px] text-slate-900">
                                 <option ${o.status === 'در حال بررسی ⏳' ? 'selected' : ''}>در حال بررسی ⏳</option>
                                 <option ${o.status === 'تایید شده ✅' ? 'selected' : ''}>تایید شده ✅</option>
                                 <option ${o.status === 'رد شده ❌' ? 'selected' : ''}>رد شده ❌</option>
                             </select>
-                            <select id="ship_${realIndex}" class="bg-slate-950 border border-slate-700 rounded p-1 text-[11px] text-white">
+                            <select id="ship_${realIndex}" class="bg-white border border-slate-200 rounded-lg p-1 text-[11px] text-slate-900">
                                 <option ${o.shipping === 'در حال آماده‌سازی انبار 📦' ? 'selected' : ''}>در حال آماده‌سازی انبار 📦</option>
                                 <option ${o.shipping === 'ارسال با اسنپ/تپسی 🛵' ? 'selected' : ''}>ارسال با اسنپ/تپسی 🛵</option>
                                 <option ${o.shipping === 'ارسال با تیپاکس/پست ✈️' ? 'selected' : ''}>ارسال با تیپاکس/پست ✈️</option>
                             </select>
-                            <button onclick="updateOrder(${realIndex})" class="bg-blue-600 font-bold rounded p-1 text-[11px]">ذخیره وضعیت</button>
+                            <button onclick="updateOrder(${realIndex})" class="bg-blue-600 font-bold text-white rounded-lg p-1 text-[11px]">ذخیره وضعیت</button>
                         </div>
                     </div>
                 `;
