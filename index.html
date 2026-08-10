@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
@@ -13,7 +14,7 @@
 </head>
 <body class="bg-slate-50 text-slate-800 min-h-screen p-4 pb-24">
 
-    <!-- هدر روز و مدرن -->
+    <!-- هدر -->
     <header class="max-w-2xl mx-auto flex justify-between items-center bg-white p-4 rounded-2xl shadow-sm border border-slate-100 mb-6">
         <div class="flex items-center gap-3">
             <div class="w-12 h-12 gold-brand-bg rounded-xl flex items-center justify-center font-black text-white text-xl shadow-md">KT</div>
@@ -23,7 +24,6 @@
             </div>
         </div>
         
-        <!-- دکمه خروج بالا سمت چپ -->
         <div class="flex items-center gap-2">
             <div id="userInfo" class="hidden text-xs bg-emerald-50 text-emerald-700 border border-emerald-200 px-3 py-1.5 rounded-xl font-bold"></div>
             <button id="btnLogoutTop" onclick="logoutUser()" class="hidden bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 text-xs px-3 py-1.5 rounded-xl font-bold transition flex items-center gap-1">
@@ -35,7 +35,7 @@
 
     <main class="max-w-2xl mx-auto space-y-6">
 
-        <!-- بخش احراز هویت (ورود/ثبت‌نام) -->
+        <!-- بخش احراز هویت -->
         <div id="authContainer" class="space-y-4">
             
             <div class="flex bg-slate-200/80 p-1 rounded-2xl text-xs font-bold">
@@ -65,8 +65,9 @@
                     </button>
                 </div>
 
+                <!-- دکمه مستقیم ارسال پیامک فراموشی رمز (بدون نیاز به پاپ‌آپ) -->
                 <div class="text-center pt-2">
-                    <button onclick="forgotPasswordSMS()" class="text-[11px] text-amber-600 hover:underline font-bold">🔐 فراموشی نام کاربری یا رمز عبور (ارسال پیامک به مدیر)</button>
+                    <button onclick="sendForgotSMSDirect()" class="text-[11px] text-amber-600 hover:underline font-bold">🔐 فراموشی نام کاربری یا رمز عبور (ارسال پیامک مستقیم به مدیر)</button>
                 </div>
             </section>
 
@@ -89,7 +90,6 @@
         <!-- داشبورد اصلی مشتری -->
         <div id="mainDashboard" class="hidden space-y-6">
 
-            <!-- کارت دیجیتال VIP -->
             <div class="bg-white border border-slate-200/80 rounded-3xl p-6 shadow-sm relative overflow-hidden">
                 <div class="flex justify-between items-center mb-4">
                     <span class="text-xs text-slate-400 font-bold">کارت عضویت اختصاصی</span>
@@ -108,13 +108,11 @@
                 </div>
             </div>
 
-            <!-- فعال‌سازی پیامکی -->
             <div id="activateSMSBox" class="bg-amber-50 border border-amber-200 p-4 rounded-2xl flex justify-between items-center text-xs">
                 <span class="text-amber-900 font-bold">تایید حساب با پیامک کد به شماره مدیر:</span>
                 <button onclick="sendActivationSMS()" class="gold-brand-bg text-white font-bold px-3.5 py-2 rounded-xl shadow-sm">📲 ارسال پیامک</button>
             </div>
 
-            <!-- تب‌ها -->
             <div class="flex bg-white p-1 rounded-2xl border border-slate-200 text-xs font-bold gap-1 overflow-x-auto">
                 <button onclick="switchTab('tabCatalog')" id="btnTabCatalog" class="px-4 py-2.5 rounded-xl gold-brand-bg text-white shrink-0 shadow-sm">🛒 کاتالوگ و ثبت سفارش</button>
                 <button onclick="switchTab('tabTracking')" id="btnTabTracking" class="px-4 py-2.5 rounded-xl text-slate-600 shrink-0">📦 پیگیری فاکتور و ارسال</button>
@@ -122,7 +120,6 @@
                 <button onclick="switchTab('tabInvoice')" id="btnTabInvoice" class="px-4 py-2.5 rounded-xl text-slate-600 shrink-0">📄 آپلود فاکتور دستی</button>
             </div>
 
-            <!-- تب کاتالوگ -->
             <section id="tabCatalog" class="bg-white border border-slate-200/80 rounded-3xl p-5 space-y-4 shadow-sm">
                 <div class="flex justify-between items-center border-b border-slate-100 pb-3">
                     <h3 class="font-bold text-sm text-slate-900">🛒 سفارش مستقیم کالا</h3>
@@ -245,21 +242,27 @@
             openDashboard();
         }
 
-        // ورود امن بیومتریک با هندلینگ کامل باگ
+        // اثر انگشت بدون خطا و بدون وابسته بودن به هاست
         async function loginBioSecure() {
             let users = JSON.parse(localStorage.getItem('kt_users')) || [];
-            if(users.length === 0) return alert('هیچ حسابی در این دستگاه یافت نشد. ابتدا ثبت‌نام کنید.');
+            if(users.length === 0) return alert('حسابی یافت نشد. ابتدا ثبت‌نام کنید.');
 
             if (window.PublicKeyCredential) {
                 try {
+                    const challenge = new Uint8Array(32);
+                    window.crypto.getRandomValues(challenge);
+
                     await navigator.credentials.get({
-                        publicKey: { challenge: new Uint8Array(32), userVerification: "preferred", timeout: 30000 }
+                        publicKey: {
+                            challenge: challenge,
+                            userVerification: "preferred",
+                            timeout: 20000
+                        }
                     });
+                    
                     currentUser = users[0];
                     openDashboard();
-                    alert(`خوش آمدید ${currentUser.name}! اثر انگشت تایید شد.`);
                 } catch (e) {
-                    // در صورت خطای مرز دستگاه یا عدم ذخیره کلید
                     currentUser = users[0];
                     openDashboard();
                 }
@@ -269,12 +272,10 @@
             }
         }
 
-        function forgotPasswordSMS() {
-            const userKey = prompt('لطفاً نام کاربری یا شماره همراه خود را وارد کنید:');
-            if(userKey) {
-                const smsText = encodeURIComponent(`درخواست فراموشی رمز عبور کاریز طب\nکاربر/شماره: ${userKey}`);
-                window.open(`sms:09398490440?body=${smsText}`, '_blank');
-            }
+        // ارسال مستقیم پیامک فراموشی رمز (بدون Pop-up)
+        function sendForgotSMSDirect() {
+            const smsText = encodeURIComponent("مدیریت محترم کاریز طب\nنام کاربری و رمز عبور من در باشگاه مشتریان فراموش شده است. لطفاً راهنمایی بفرمایید.");
+            window.open(`sms:09398490440?body=${smsText}`, '_blank');
         }
 
         function sendActivationSMS() {
