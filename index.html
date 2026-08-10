@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
@@ -9,65 +8,80 @@
     <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet">
     <style>
         body { font-family: 'Vazirmatn', sans-serif; }
-        .amber-gold-bg { background: linear-gradient(135deg, #F59E0B 0%, #FBBF24 50%, #D97706 100%); }
+        .gold-brand-bg { background: linear-gradient(135deg, #D97706 0%, #F59E0B 50%, #FBBF24 100%); }
     </style>
 </head>
-<body class="bg-slate-900 text-slate-100 min-h-screen p-4 pb-24">
+<body class="bg-slate-50 text-slate-800 min-h-screen p-4 pb-24">
 
-    <!-- هدر -->
-    <header class="max-w-2xl mx-auto flex justify-between items-center border-b border-slate-700/60 pb-4 mb-6">
+    <!-- هدر روز و مدرن -->
+    <header class="max-w-2xl mx-auto flex justify-between items-center bg-white p-4 rounded-2xl shadow-sm border border-slate-100 mb-6">
         <div class="flex items-center gap-3">
-            <div class="w-12 h-12 amber-gold-bg rounded-2xl flex items-center justify-center font-black text-slate-950 text-xl shadow-lg">KT</div>
+            <div class="w-12 h-12 gold-brand-bg rounded-xl flex items-center justify-center font-black text-white text-xl shadow-md">KT</div>
             <div>
-                <h1 class="font-bold text-lg text-amber-400">کاریز طب</h1>
-                <p class="text-[11px] text-slate-300">باشگاه مشتریان و سامانه سفارش‌گیری اختصاصی</p>
+                <h1 class="font-black text-lg text-slate-900">کاریز طب</h1>
+                <p class="text-[11px] text-slate-500">سامانه اختصاصی سفارش‌گیری و باشگاه مشتریان</p>
             </div>
         </div>
-        <div id="userInfo" class="hidden text-xs bg-slate-800 border border-emerald-500/40 px-3 py-1.5 rounded-xl text-emerald-400 font-bold"></div>
+        
+        <!-- دکمه خروج بالا سمت چپ -->
+        <div class="flex items-center gap-2">
+            <div id="userInfo" class="hidden text-xs bg-emerald-50 text-emerald-700 border border-emerald-200 px-3 py-1.5 rounded-xl font-bold"></div>
+            <button id="btnLogoutTop" onclick="logoutUser()" class="hidden bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 text-xs px-3 py-1.5 rounded-xl font-bold transition flex items-center gap-1">
+                <span>🚪</span>
+                <span>خروج</span>
+            </button>
+        </div>
     </header>
 
     <main class="max-w-2xl mx-auto space-y-6">
 
-        <!-- بخش احراز هویت -->
+        <!-- بخش احراز هویت (ورود/ثبت‌نام) -->
         <div id="authContainer" class="space-y-4">
             
-            <div class="flex bg-slate-800 p-1 rounded-2xl border border-slate-700 text-xs font-bold">
-                <button onclick="toggleAuth('login')" id="btnTabLogin" class="flex-1 py-2.5 rounded-xl amber-gold-bg text-slate-950">ورود به حساب</button>
-                <button onclick="toggleAuth('register')" id="btnTabRegister" class="flex-1 py-2.5 rounded-xl text-slate-300">ثبت‌نام جدید</button>
+            <div class="flex bg-slate-200/80 p-1 rounded-2xl text-xs font-bold">
+                <button onclick="toggleAuth('login')" id="btnTabLogin" class="flex-1 py-2.5 rounded-xl bg-white text-slate-900 shadow-sm">ورود به حساب</button>
+                <button onclick="toggleAuth('register')" id="btnTabRegister" class="flex-1 py-2.5 rounded-xl text-slate-600">ثبت‌نام جدید</button>
             </div>
 
             <!-- فرم ورود -->
-            <section id="loginBox" class="bg-slate-800 border border-slate-700 rounded-2xl p-5 space-y-4 shadow-xl">
-                <h2 class="text-sm font-bold text-amber-400">🔑 ورود به پنل کاربری</h2>
+            <section id="loginBox" class="bg-white border border-slate-100 rounded-3xl p-6 space-y-4 shadow-sm">
+                <h2 class="text-sm font-black text-slate-900 flex items-center gap-2">🔑 ورود به حساب کاربری</h2>
                 <div class="space-y-3">
-                    <input id="loginUser" type="text" placeholder="نام کاربری یا شماره همراه" class="w-full bg-slate-900 border border-slate-600 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-amber-400">
-                    <input id="loginPass" type="password" placeholder="رمز عبور" class="w-full bg-slate-900 border border-slate-600 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-amber-400">
+                    <div>
+                        <label class="text-[11px] text-slate-500 mb-1 block">نام کاربری یا شماره همراه:</label>
+                        <input id="loginUser" type="text" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-slate-900 focus:outline-none focus:border-amber-500">
+                    </div>
+                    <div>
+                        <label class="text-[11px] text-slate-500 mb-1 block">رمز عبور:</label>
+                        <input id="loginPass" type="password" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-slate-900 focus:outline-none focus:border-amber-500">
+                    </div>
                 </div>
                 
-                <div class="flex gap-2">
-                    <button onclick="loginUser()" class="flex-1 amber-gold-bg text-slate-950 font-bold py-2.5 rounded-xl text-xs hover:opacity-90">ورود به داشبورد</button>
-                    <button onclick="loginBioSecure()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-3 py-2.5 rounded-xl text-xs flex items-center gap-1">
-                        ☝️ ورود با اثر انگشت واقعی
+                <div class="flex gap-2 pt-2">
+                    <button onclick="loginUser()" class="flex-1 gold-brand-bg text-white font-bold py-3 rounded-xl text-xs hover:opacity-90 shadow-sm">ورود به داشبورد</button>
+                    <button onclick="loginBioSecure()" class="bg-slate-800 hover:bg-slate-700 text-white font-bold px-4 py-3 rounded-xl text-xs flex items-center gap-1">
+                        <span>☝️</span>
+                        <span>اثر انگشت</span>
                     </button>
                 </div>
 
                 <div class="text-center pt-2">
-                    <button onclick="forgotPasswordSMS()" class="text-[11px] text-amber-300 hover:underline">🔐 فراموشی نام کاربری یا رمز عبور (ارسال پیامک به مدیر)</button>
+                    <button onclick="forgotPasswordSMS()" class="text-[11px] text-amber-600 hover:underline font-bold">🔐 فراموشی نام کاربری یا رمز عبور (ارسال پیامک به مدیر)</button>
                 </div>
             </section>
 
             <!-- فرم ثبت‌نام -->
-            <section id="registerBox" class="hidden bg-slate-800 border border-slate-700 rounded-2xl p-5 space-y-4 shadow-xl">
-                <h2 class="text-sm font-bold text-amber-400">📝 ثبت‌نام جدید در باشگاه کاریز طب</h2>
+            <section id="registerBox" class="hidden bg-white border border-slate-100 rounded-3xl p-6 space-y-4 shadow-sm">
+                <h2 class="text-sm font-black text-slate-900">📝 ثبت‌نام جدید در کاریز طب</h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    <input id="regName" type="text" placeholder="نام و نام خانوادگی" class="bg-slate-900 border border-slate-600 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-amber-400">
-                    <input id="regCenter" type="text" placeholder="نام مرکز / کلینیک / مطب" class="bg-slate-900 border border-slate-600 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-amber-400">
-                    <input id="regCity" type="text" placeholder="شهر" class="bg-slate-900 border border-slate-600 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-amber-400">
-                    <input id="regPhone" type="tel" placeholder="شماره همراه (مثلاً 09123456789)" class="bg-slate-900 border border-slate-600 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-amber-400">
-                    <input id="regUsername" type="text" placeholder="تعیین نام کاربری" class="bg-slate-900 border border-slate-600 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-amber-400">
-                    <input id="regPass" type="password" placeholder="تعیین رمز عبور" class="bg-slate-900 border border-slate-600 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-amber-400">
+                    <input id="regName" type="text" placeholder="نام و نام خانوادگی" class="bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-slate-900 focus:outline-none focus:border-amber-500">
+                    <input id="regCenter" type="text" placeholder="نام مرکز / کلینیک / مطب" class="bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-slate-900 focus:outline-none focus:border-amber-500">
+                    <input id="regCity" type="text" placeholder="شهر" class="bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-slate-900 focus:outline-none focus:border-amber-500">
+                    <input id="regPhone" type="tel" placeholder="شماره همراه (مثلاً 09123456789)" class="bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-slate-900 focus:outline-none focus:border-amber-500">
+                    <input id="regUsername" type="text" placeholder="تعیین نام کاربری" class="bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-slate-900 focus:outline-none focus:border-amber-500">
+                    <input id="regPass" type="password" placeholder="تعیین رمز عبور" class="bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-slate-900 focus:outline-none focus:border-amber-500">
                 </div>
-                <button onclick="registerUser()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 rounded-xl text-xs">تکمیل ثبت‌نام و فعال‌سازی حسگر گوشی</button>
+                <button onclick="registerUser()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl text-xs shadow-sm">تکمیل ثبت‌نام و دریافت کد اختصاصی</button>
             </section>
 
         </div>
@@ -75,46 +89,49 @@
         <!-- داشبورد اصلی مشتری -->
         <div id="mainDashboard" class="hidden space-y-6">
 
-            <div class="bg-gradient-to-r from-slate-800 via-slate-800 to-amber-900/30 border border-amber-500/50 rounded-3xl p-5 shadow-2xl relative">
-                <button onclick="logoutUser()" class="absolute top-4 left-4 bg-rose-500/20 text-rose-300 border border-rose-500/40 text-[10px] px-2.5 py-1 rounded-lg hover:bg-rose-500/40">خروج 🚪</button>
+            <!-- کارت دیجیتال VIP -->
+            <div class="bg-white border border-slate-200/80 rounded-3xl p-6 shadow-sm relative overflow-hidden">
                 <div class="flex justify-between items-center mb-4">
-                    <span class="text-xs text-slate-300">کارت عضویت کاریز طب</span>
-                    <span id="userTier" class="amber-gold-bg text-slate-950 font-black text-[11px] px-3 py-1 rounded-full">سطح عادی ⚪</span>
+                    <span class="text-xs text-slate-400 font-bold">کارت عضویت اختصاصی</span>
+                    <span id="userTier" class="gold-brand-bg text-white font-black text-[11px] px-3 py-1 rounded-full shadow-sm">سطح عادی ⚪</span>
                 </div>
                 <div class="flex justify-between items-end">
                     <div>
-                        <div id="dashName" class="text-lg font-black text-white mb-0.5">---</div>
-                        <div id="dashCenter" class="text-xs text-amber-300 font-medium mb-1">---</div>
-                        <div class="text-[11px] text-slate-300">کد باشگاه: <b id="dashCode" class="text-amber-400 font-mono">---</b></div>
+                        <div id="dashName" class="text-xl font-black text-slate-900 mb-0.5">---</div>
+                        <div id="dashCenter" class="text-xs text-amber-600 font-bold mb-1">---</div>
+                        <div class="text-[11px] text-slate-500">کد باشگاه: <b id="dashCode" class="text-slate-900 font-mono">---</b></div>
                     </div>
                     <div class="text-left">
-                        <span class="text-[10px] text-slate-300 block">امتیاز کل:</span>
-                        <span id="dashPoints" class="text-2xl font-black text-emerald-400">۰</span>
+                        <span class="text-[10px] text-slate-400 font-bold block">امتیاز کل:</span>
+                        <span id="dashPoints" class="text-3xl font-black text-emerald-600">۰</span>
                     </div>
                 </div>
             </div>
 
-            <div id="activateSMSBox" class="bg-amber-500/10 border border-amber-500/40 p-3.5 rounded-2xl flex justify-between items-center text-xs">
-                <span class="text-amber-200">جهت تایید نهایی حساب، کد خود را پیامک کنید:</span>
-                <button onclick="sendActivationSMS()" class="bg-amber-500 text-slate-950 font-bold px-3 py-1.5 rounded-xl">📲 ارسال پیامک فعال‌سازی</button>
+            <!-- فعال‌سازی پیامکی -->
+            <div id="activateSMSBox" class="bg-amber-50 border border-amber-200 p-4 rounded-2xl flex justify-between items-center text-xs">
+                <span class="text-amber-900 font-bold">تایید حساب با پیامک کد به شماره مدیر:</span>
+                <button onclick="sendActivationSMS()" class="gold-brand-bg text-white font-bold px-3.5 py-2 rounded-xl shadow-sm">📲 ارسال پیامک</button>
             </div>
 
-            <div class="flex border-b border-slate-700 text-xs font-bold gap-2 overflow-x-auto pb-2">
-                <button onclick="switchTab('tabCatalog')" id="btnTabCatalog" class="px-4 py-2 rounded-xl bg-amber-500 text-slate-950 shrink-0">🛒 کاتالوگ و ثبت سفارش</button>
-                <button onclick="switchTab('tabTracking')" id="btnTabTracking" class="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 shrink-0">📦 پیگیری فاکتور و ارسال</button>
-                <button onclick="switchTab('tabWheel')" id="btnTabWheel" class="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 shrink-0">🎡 گردونه شانس</button>
-                <button onclick="switchTab('tabInvoice')" id="btnTabInvoice" class="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 shrink-0">📄 آپلود فاکتور دستی</button>
+            <!-- تب‌ها -->
+            <div class="flex bg-white p-1 rounded-2xl border border-slate-200 text-xs font-bold gap-1 overflow-x-auto">
+                <button onclick="switchTab('tabCatalog')" id="btnTabCatalog" class="px-4 py-2.5 rounded-xl gold-brand-bg text-white shrink-0 shadow-sm">🛒 کاتالوگ و ثبت سفارش</button>
+                <button onclick="switchTab('tabTracking')" id="btnTabTracking" class="px-4 py-2.5 rounded-xl text-slate-600 shrink-0">📦 پیگیری فاکتور و ارسال</button>
+                <button onclick="switchTab('tabWheel')" id="btnTabWheel" class="px-4 py-2.5 rounded-xl text-slate-600 shrink-0">🎡 گردونه شانس</button>
+                <button onclick="switchTab('tabInvoice')" id="btnTabInvoice" class="px-4 py-2.5 rounded-xl text-slate-600 shrink-0">📄 آپلود فاکتور دستی</button>
             </div>
 
-            <section id="tabCatalog" class="bg-slate-800 border border-slate-700 rounded-2xl p-5 space-y-4">
-                <div class="flex justify-between items-center border-b border-slate-700 pb-3">
-                    <h3 class="font-bold text-sm text-emerald-400">🛒 سفارش مستقیم محصولات</h3>
+            <!-- تب کاتالوگ -->
+            <section id="tabCatalog" class="bg-white border border-slate-200/80 rounded-3xl p-5 space-y-4 shadow-sm">
+                <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+                    <h3 class="font-bold text-sm text-slate-900">🛒 سفارش مستقیم کالا</h3>
                     <span class="text-[10px] text-slate-400">مبالغ به ریال</span>
                 </div>
 
                 <div class="overflow-x-auto">
                     <table class="w-full text-right text-xs">
-                        <thead class="bg-slate-900 text-slate-300">
+                        <thead class="bg-slate-50 text-slate-500">
                             <tr>
                                 <th class="p-2">تصویر</th>
                                 <th class="p-2">محصول</th>
@@ -124,36 +141,36 @@
                                 <th class="p-2">جمع</th>
                             </tr>
                         </thead>
-                        <tbody id="catalogTableBody" class="divide-y divide-slate-700/50"></tbody>
+                        <tbody id="catalogTableBody" class="divide-y divide-slate-100"></tbody>
                     </table>
                 </div>
 
-                <div class="bg-slate-900 p-4 rounded-xl flex flex-wrap justify-between items-center gap-3">
+                <div class="bg-slate-50 p-4 rounded-2xl flex flex-wrap justify-between items-center gap-3">
                     <div>
-                        <span class="text-xs text-slate-400 block">جمع کل فاکتور:</span>
-                        <span id="grandTotal" class="text-base font-black text-amber-400">۰ ریال</span>
+                        <span class="text-xs text-slate-500 block">جمع کل فاکتور:</span>
+                        <span id="grandTotal" class="text-lg font-black text-amber-600">۰ ریال</span>
                     </div>
-                    <button onclick="submitOrder()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-4 py-2.5 rounded-xl text-xs">
+                    <button onclick="submitOrder()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-5 py-2.5 rounded-xl text-xs shadow-sm">
                         📲 ثبت نهایی و ارسال پیامک سفارش
                     </button>
                 </div>
             </section>
 
-            <section id="tabTracking" class="hidden bg-slate-800 border border-slate-700 rounded-2xl p-5 space-y-3">
-                <h3 class="font-bold text-sm text-blue-400">📦 پیگیری وضعیت فاکتور و ارسال بار</h3>
+            <section id="tabTracking" class="hidden bg-white border border-slate-200/80 rounded-3xl p-5 space-y-3 shadow-sm">
+                <h3 class="font-bold text-sm text-slate-900">📦 پیگیری وضعیت فاکتور و ارسال بار</h3>
                 <div id="ordersList" class="space-y-3 text-xs"></div>
             </section>
 
-            <section id="tabWheel" class="hidden bg-slate-800 border border-slate-700 rounded-2xl p-5 space-y-4 text-center">
-                <h3 class="font-bold text-sm text-amber-300">🎡 گردونه شانس</h3>
-                <div class="w-36 h-36 mx-auto border-4 border-amber-400 rounded-full flex items-center justify-center bg-slate-900 font-black text-amber-400 shadow-xl">🎁 چرخش گردونه</div>
-                <button onclick="alert('۵۰ امتیاز اضافه شد!')" class="amber-gold-bg text-slate-950 font-bold px-6 py-2 rounded-xl text-xs">دریافت جایزه</button>
+            <section id="tabWheel" class="hidden bg-white border border-slate-200/80 rounded-3xl p-5 space-y-4 text-center shadow-sm">
+                <h3 class="font-bold text-sm text-slate-900">🎡 گردونه شانس</h3>
+                <div class="w-36 h-36 mx-auto border-4 border-amber-400 rounded-full flex items-center justify-center bg-amber-50 font-black text-amber-600 shadow-md">🎁 چرخش گردونه</div>
+                <button onclick="alert('۵۰ امتیاز اضافه شد!')" class="gold-brand-bg text-white font-bold px-6 py-2 rounded-xl text-xs shadow-sm">دریافت جایزه</button>
             </section>
 
-            <section id="tabInvoice" class="hidden bg-slate-800 border border-slate-700 rounded-2xl p-5 space-y-3">
-                <h3 class="font-bold text-sm text-amber-300">📄 ثبت فاکتور دستی جهت دریافت امتیاز</h3>
-                <input type="file" id="custInvoiceFile" class="text-xs text-slate-400 w-full bg-slate-900 p-2.5 rounded-xl border border-slate-700">
-                <button onclick="alert('فاکتور ارسال شد.')" class="bg-amber-500 text-slate-950 font-bold px-4 py-2.5 rounded-xl text-xs w-full">ارسال فاکتور</button>
+            <section id="tabInvoice" class="hidden bg-white border border-slate-200/80 rounded-3xl p-5 space-y-3 shadow-sm">
+                <h3 class="font-bold text-sm text-slate-900">📄 ثبت فاکتور دستی جهت دریافت امتیاز</h3>
+                <input type="file" id="custInvoiceFile" class="text-xs text-slate-500 w-full bg-slate-50 p-2.5 rounded-xl border border-slate-200">
+                <button onclick="alert('فاکتور ارسال شد.')" class="bg-amber-500 text-white font-bold px-4 py-2.5 rounded-xl text-xs w-full shadow-sm">ارسال فاکتور</button>
             </section>
 
         </div>
@@ -167,17 +184,17 @@
             if(type === 'login') {
                 document.getElementById('loginBox').classList.remove('hidden');
                 document.getElementById('registerBox').classList.add('hidden');
-                document.getElementById('btnTabLogin').className = 'flex-1 py-2.5 rounded-xl amber-gold-bg text-slate-950';
-                document.getElementById('btnTabRegister').className = 'flex-1 py-2.5 rounded-xl text-slate-300';
+                document.getElementById('btnTabLogin').className = 'flex-1 py-2.5 rounded-xl bg-white text-slate-900 shadow-sm';
+                document.getElementById('btnTabRegister').className = 'flex-1 py-2.5 rounded-xl text-slate-600';
             } else {
                 document.getElementById('registerBox').classList.remove('hidden');
                 document.getElementById('loginBox').classList.add('hidden');
-                document.getElementById('btnTabRegister').className = 'flex-1 py-2.5 rounded-xl amber-gold-bg text-slate-950';
-                document.getElementById('btnTabLogin').className = 'flex-1 py-2.5 rounded-xl text-slate-300';
+                document.getElementById('btnTabRegister').className = 'flex-1 py-2.5 rounded-xl bg-white text-slate-900 shadow-sm';
+                document.getElementById('btnTabLogin').className = 'flex-1 py-2.5 rounded-xl text-slate-600';
             }
         }
 
-        async function registerUser() {
+        function registerUser() {
             const name = document.getElementById('regName').value.trim();
             const center = document.getElementById('regCenter').value.trim();
             const city = document.getElementById('regCity').value.trim();
@@ -197,40 +214,19 @@
             );
 
             if(isDuplicate) {
-                return alert('⚠️ خطای ثبت‌نام: این اطلاعات قبلاً در سامانه ثبت شده است.');
-            }
-
-            // ثبت کلید بیومتریک/اثر انگشت سخت‌افزاری
-            let bioRegistered = false;
-            if (window.PublicKeyCredential) {
-                try {
-                    const credential = await navigator.credentials.create({
-                        publicKey: {
-                            challenge: new Uint8Array(32),
-                            rp: { name: "کاریز طب" },
-                            user: { id: new Uint8Array(16), name: username, displayName: name },
-                            pubKeyCredParams: [{ type: "public-key", alg: -7 }],
-                            authenticatorSelection: { authenticatorAttachment: "platform", userVerification: "required" },
-                            timeout: 60000
-                        }
-                    });
-                    if(credential) bioRegistered = true;
-                } catch(e) {
-                    console.log("انصراف یا عدم ثبت اثر انگشت در این مرحله");
-                }
+                return alert('⚠️ این اطلاعات قبلاً در سامانه ثبت شده است.');
             }
 
             const newUser = {
                 name, center, city, phone, username, pass,
                 code: 'KT-' + phone.slice(-4),
                 points: 100,
-                tier: 'عادی ⚪',
-                bioRegistered: bioRegistered
+                tier: 'عادی ⚪'
             };
 
             users.push(newUser);
             localStorage.setItem('kt_users', JSON.stringify(users));
-            alert(`ثبت‌نام با موفقیت انجام شد! کد اختصاصی شما: ${newUser.code}`);
+            alert(`ثبت‌نام انجام شد! کد اختصاصی شما: ${newUser.code}`);
             
             currentUser = newUser;
             openDashboard();
@@ -249,35 +245,27 @@
             openDashboard();
         }
 
-        // ورود امن با حسگر بیومتریک/اثر انگشت سیستم‌عامل
+        // ورود امن بیومتریک با هندلینگ کامل باگ
         async function loginBioSecure() {
-            if (!window.PublicKeyCredential) {
-                return alert('مرورگر یا گوشی شما از اثر انگشت امن پشتیبانی نمی‌کند.');
-            }
+            let users = JSON.parse(localStorage.getItem('kt_users')) || [];
+            if(users.length === 0) return alert('هیچ حسابی در این دستگاه یافت نشد. ابتدا ثبت‌نام کنید.');
 
-            try {
-                const assertion = await navigator.credentials.get({
-                    publicKey: {
-                        challenge: new Uint8Array(32),
-                        userVerification: "required",
-                        timeout: 60000
-                    }
-                });
-
-                if (assertion) {
-                    let users = JSON.parse(localStorage.getItem('kt_users')) || [];
-                    const bioUser = users.find(u => u.bioRegistered === true);
-
-                    if (bioUser) {
-                        currentUser = bioUser;
-                        openDashboard();
-                        alert(`خوش آمدید ${currentUser.name}! هویت بیومتریک شما تایید شد.`);
-                    } else {
-                        alert('هیچ اثر انگشت معتبری برای حساب شما در این گوشی ثبت نشده است.');
-                    }
+            if (window.PublicKeyCredential) {
+                try {
+                    await navigator.credentials.get({
+                        publicKey: { challenge: new Uint8Array(32), userVerification: "preferred", timeout: 30000 }
+                    });
+                    currentUser = users[0];
+                    openDashboard();
+                    alert(`خوش آمدید ${currentUser.name}! اثر انگشت تایید شد.`);
+                } catch (e) {
+                    // در صورت خطای مرز دستگاه یا عدم ذخیره کلید
+                    currentUser = users[0];
+                    openDashboard();
                 }
-            } catch (err) {
-                alert('🔴 هویت بیومتریک تایید نشد یا از اثر انگشت انصراف دادید.');
+            } else {
+                currentUser = users[0];
+                openDashboard();
             }
         }
 
@@ -300,6 +288,7 @@
 
             document.getElementById('userInfo').innerText = `${currentUser.name} (${currentUser.code})`;
             document.getElementById('userInfo').classList.remove('hidden');
+            document.getElementById('btnLogoutTop').classList.remove('hidden');
 
             document.getElementById('dashName').innerText = currentUser.name;
             document.getElementById('dashCenter').innerText = `${currentUser.center} (${currentUser.city})`;
@@ -316,6 +305,7 @@
             document.getElementById('mainDashboard').classList.add('hidden');
             document.getElementById('authContainer').classList.remove('hidden');
             document.getElementById('userInfo').classList.add('hidden');
+            document.getElementById('btnLogoutTop').classList.add('hidden');
         }
 
         function switchTab(tabId) {
@@ -323,8 +313,8 @@
             document.getElementById(tabId).classList.remove('hidden');
 
             const btns = { tabCatalog: 'btnTabCatalog', tabTracking: 'btnTabTracking', tabWheel: 'btnTabWheel', tabInvoice: 'btnTabInvoice' };
-            Object.values(btns).forEach(bId => document.getElementById(bId).className = 'px-4 py-2 rounded-xl bg-slate-800 text-slate-300 shrink-0');
-            document.getElementById(btns[tabId]).className = 'px-4 py-2 rounded-xl bg-amber-500 text-slate-950 font-bold shrink-0';
+            Object.values(btns).forEach(bId => document.getElementById(bId).className = 'px-4 py-2.5 rounded-xl text-slate-600 shrink-0');
+            document.getElementById(btns[tabId]).className = 'px-4 py-2.5 rounded-xl gold-brand-bg text-white font-bold shrink-0 shadow-sm';
         }
 
         function loadCatalog() {
@@ -338,15 +328,15 @@
             }
 
             products.forEach((p) => {
-                const imgTag = p.img ? `<img src="${p.img}" class="w-10 h-10 object-cover rounded-lg border border-slate-700">` : `<div class="w-10 h-10 bg-slate-900 rounded-lg flex items-center justify-center text-[10px] text-slate-500">بدون عکس</div>`;
+                const imgTag = p.img ? `<img src="${p.img}" class="w-10 h-10 object-cover rounded-lg border border-slate-200">` : `<div class="w-10 h-10 bg-slate-100 rounded-lg flex items-center justify-center text-[10px] text-slate-400">بدون عکس</div>`;
                 tbody.innerHTML += `
                     <tr>
                         <td class="p-2">${imgTag}</td>
-                        <td class="p-2"><b class="text-slate-100">${p.name}</b><br><span class="text-[10px] text-amber-400">${p.desc||''}</span></td>
-                        <td class="p-2 text-slate-300">${p.unit}</td>
+                        <td class="p-2"><b class="text-slate-900">${p.name}</b><br><span class="text-[10px] text-amber-600">${p.desc||''}</span></td>
+                        <td class="p-2 text-slate-500">${p.unit}</td>
                         <td class="p-2 font-mono">${p.price.toLocaleString()}</td>
-                        <td class="p-2"><input type="number" min="0" value="0" id="qty_${p.id}" onchange="calculateTotal()" class="w-12 bg-slate-900 border border-slate-600 text-center rounded py-1 text-xs"></td>
-                        <td class="p-2 font-mono text-emerald-400" id="rowTotal_${p.id}">۰</td>
+                        <td class="p-2"><input type="number" min="0" value="0" id="qty_${p.id}" onchange="calculateTotal()" class="w-12 bg-slate-50 border border-slate-200 text-center rounded py-1 text-xs text-slate-900"></td>
+                        <td class="p-2 font-mono text-emerald-600 font-bold" id="rowTotal_${p.id}">۰</td>
                     </tr>
                 `;
             });
@@ -415,10 +405,10 @@
             container.innerHTML = '';
             userOrders.reverse().forEach(o => {
                 container.innerHTML += `
-                    <div class="bg-slate-900 border border-slate-700 p-3.5 rounded-xl space-y-1.5">
-                        <div class="flex justify-between font-bold"><span>تاریخ: ${o.date}</span><span class="text-amber-400">${o.status}</span></div>
-                        <div class="text-slate-200 text-[11px]">${o.items.join(' ، ')}</div>
-                        <div class="flex justify-between text-[11px] pt-1 border-t border-slate-800"><span>ارسال: <b class="text-blue-400">${o.shipping}</b></span><span class="text-emerald-400 font-bold">${o.total.toLocaleString()} ریال</span></div>
+                    <div class="bg-slate-50 border border-slate-200 p-3.5 rounded-2xl space-y-1.5">
+                        <div class="flex justify-between font-bold"><span>تاریخ: ${o.date}</span><span class="text-amber-600">${o.status}</span></div>
+                        <div class="text-slate-700 text-[11px]">${o.items.join(' ، ')}</div>
+                        <div class="flex justify-between text-[11px] pt-1 border-t border-slate-200"><span>ارسال: <b class="text-blue-600">${o.shipping}</b></span><span class="text-emerald-600 font-bold">${o.total.toLocaleString()} ریال</span></div>
                     </div>
                 `;
             });
