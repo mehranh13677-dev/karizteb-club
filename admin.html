@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
@@ -162,22 +163,34 @@
       margin-top: 8px;
     }
 
+    /* محیط اسکرول‌دار برای کالاها */
+    .scrollable-box {
+      max-height: 320px;
+      overflow-y: auto;
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 5px;
+      background: #ffffff;
+    }
+
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 10px;
       font-size: 0.85rem;
     }
 
     th, td {
       border: 1px solid var(--border-color);
-      padding: 9px;
+      padding: 8px 4px;
       text-align: center;
     }
 
     th {
       background-color: #f0f0f0;
       color: var(--text-main);
+      position: sticky;
+      top: 0;
+      z-index: 2;
     }
 
     .msg-card-item {
@@ -190,8 +203,8 @@
     }
 
     .prod-img-preview {
-      width: 45px;
-      height: 45px;
+      width: 40px;
+      height: 40px;
       object-fit: cover;
       border-radius: 6px;
       border: 1px solid var(--border-color);
@@ -214,7 +227,7 @@
   <div class="card header-card">
     <div>
       <h3 style="color: var(--primary); font-size: 1.2rem;">پنل مدیریت کاریز طب</h3>
-      <p style="font-size: 0.8rem; color: var(--text-muted);">مدیریت اعضا، محصولات و آیکون‌ها</p>
+      <p style="font-size: 0.8rem; color: var(--text-muted);">مدیریت اعضا، محصولات بی‌نهایت و آیکون‌ها</p>
     </div>
     <div style="display: flex; gap: 8px;">
       <button class="btn btn-danger" onclick="adminLogout()">🚪 خروج</button>
@@ -222,7 +235,7 @@
   </div>
 
   <div class="card">
-    <h4 style="color: var(--primary); margin-bottom: 10px;">📦 تعریف و مدیریت آیکون و کاتالوگ محصولات</h4>
+    <h4 style="color: var(--primary); margin-bottom: 10px;">📦 تعریف و مدیریت بی‌نهایت محصول</h4>
     
     <div class="form-group">
       <label for="prod-name">نام کالا</label>
@@ -254,8 +267,11 @@
 
     <hr style="margin: 15px 0; border: 0; border-top: 1px solid var(--border-color);">
 
-    <h5 style="color: var(--text-main); margin-bottom: 8px;">لیست محصولات و ویرایش آیکون‌ها:</h5>
-    <div id="products-table-container"></div>
+    <h5 style="color: var(--text-main); margin-bottom: 8px;">لیست محصولات در کادر اسکرول‌دار:</h5>
+    
+    <div class="scrollable-box">
+      <div id="products-table-container"></div>
+    </div>
   </div>
 
   <div class="card">
@@ -346,7 +362,6 @@
     document.getElementById('admin-ann-text').value = ann.text || '';
   }
 
-  // افزودن محصول دستی جدید
   function addNewProduct() {
     const name = document.getElementById('prod-name').value.trim();
     const unit = document.getElementById('prod-unit').value;
@@ -373,7 +388,7 @@
         db.products = db.products || [];
         db.products.push(newProd);
         saveDB();
-        alert('محصول با موفقیت اضافه شد.');
+        alert('محصول جدید با موفقیت اضافه شد.');
         clearProdForm();
         renderProductsList();
       };
@@ -382,7 +397,7 @@
       db.products = db.products || [];
       db.products.push(newProd);
       saveDB();
-      alert('محصول با موفقیت اضافه شد.');
+      alert('محصول جدید با موفقیت اضافه شد.');
       clearProdForm();
       renderProductsList();
     }
@@ -394,13 +409,12 @@
     document.getElementById('prod-img').value = '';
   }
 
-  // رندر لیست محصولات با قابلیت ویرایش تصویر و مشخصات
   function renderProductsList() {
     const container = document.getElementById('products-table-container');
     db.products = db.products || [];
 
     if (db.products.length === 0) {
-      container.innerHTML = '<p style="font-size:0.85rem; color:#888; text-align:center;">هیچ محصولی ثبت نشده است.</p>';
+      container.innerHTML = '<p style="font-size:0.85rem; color:#888; text-align:center; padding:10px;">هیچ محصولی ثبت نشده است.</p>';
       return;
     }
 
@@ -414,8 +428,8 @@
           <td>${p.unit}</td>
           <td>${p.price.toLocaleString()}</td>
           <td>
-            <button class="btn btn-accent" style="font-size:0.75rem; padding:4px 8px;" onclick="toggleEditProdBox(${p.id})">✏️ ویرایش</button>
-            <button class="btn btn-danger" style="font-size:0.75rem; padding:4px 8px;" onclick="deleteProduct(${p.id})">🗑️ حذف</button>
+            <button class="btn btn-accent" style="font-size:0.75rem; padding:4px 6px;" onclick="toggleEditProdBox(${p.id})">✏️</button>
+            <button class="btn btn-danger" style="font-size:0.75rem; padding:4px 6px;" onclick="deleteProduct(${p.id})">🗑️</button>
           </td>
         </tr>
         <tr id="edit-prod-row-${p.id}" style="display:none;">
@@ -430,7 +444,7 @@
                 <label style="font-size:0.75rem;">انتخاب آیکون/تصویر جدید:</label>
                 <input type="file" id="edit-pimg-${p.id}" accept="image/*" class="form-control" style="font-size:0.8rem;">
               </div>
-              <button class="btn btn-primary" style="font-size:0.75rem; padding:4px 10px;" onclick="saveProdChanges(${p.id})">💾 ذخیره تغییرات آیکون و محصول</button>
+              <button class="btn btn-primary" style="font-size:0.75rem; padding:4px 10px;" onclick="saveProdChanges(${p.id})">💾 ذخیره تغییرات</button>
             </div>
           </td>
         </tr>
@@ -440,7 +454,6 @@
     container.innerHTML = html;
   }
 
-  // نمایش/مخفی‌سازی باکس ویرایش آیکون و کالا
   function toggleEditProdBox(prodId) {
     const row = document.getElementById('edit-prod-row-' + prodId);
     if (row) {
@@ -448,7 +461,6 @@
     }
   }
 
-  // ذخیره ویرایش آیکون و مشخصات محصول
   function saveProdChanges(prodId) {
     const p = db.products.find(x => x.id === prodId);
     if (!p) return;
