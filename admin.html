@@ -237,7 +237,8 @@
       <p style="font-size: 0.8rem; color: var(--text-muted);">مدیریت اعضا، تعیین سطح VIP، امتیازات و کالاها</p>
     </div>
     <div style="display: flex; gap: 8px;">
-      <button class="btn btn-danger" onclick="adminLogout()">🚪 خروج</button>
+      <button class="btn btn-primary" style="padding: 8px 12px;" onclick="initAdmin()">🔄 به‌روزرسانی</button>
+      <button class="btn btn-danger" style="padding: 8px 12px;" onclick="adminLogout()">🚪 خروج</button>
     </div>
   </div>
 
@@ -390,12 +391,22 @@
     if (fileInput.files && fileInput.files[0]) {
       const reader = new FileReader();
       reader.onload = function(e) {
-        newProd.img = e.target.result;
-        db.products.push(newProd);
-        saveDB(db);
-        alert('محصول "' + name + '" با تصویر ثبت شد.');
-        clearProdForm();
-        renderProductsList();
+        const img = new Image();
+        img.onload = function() {
+          const canvas = document.createElement('canvas');
+          const ctx = canvas.getContext('2d');
+          canvas.width = 100;
+          canvas.height = 100;
+          ctx.drawImage(img, 0, 0, 100, 100);
+          newProd.img = canvas.toDataURL('image/jpeg', 0.8);
+
+          db.products.push(newProd);
+          saveDB(db);
+          alert('محصول "' + name + '" با آیکون ثبت شد.');
+          clearProdForm();
+          renderProductsList();
+        };
+        img.src = e.target.result;
       };
       reader.readAsDataURL(fileInput.files[0]);
     } else {
@@ -479,10 +490,20 @@
     if (fileInput.files && fileInput.files[0]) {
       const reader = new FileReader();
       reader.onload = function(e) {
-        p.img = e.target.result;
-        saveDB(db);
-        alert('آیکون و مشخصات محصول به‌روزرسانی شد.');
-        renderProductsList();
+        const img = new Image();
+        img.onload = function() {
+          const canvas = document.createElement('canvas');
+          const ctx = canvas.getContext('2d');
+          canvas.width = 100;
+          canvas.height = 100;
+          ctx.drawImage(img, 0, 0, 100, 100);
+          p.img = canvas.toDataURL('image/jpeg', 0.8);
+
+          saveDB(db);
+          alert('آیکون و مشخصات محصول به‌روزرسانی شد.');
+          renderProductsList();
+        };
+        img.src = e.target.result;
       };
       reader.readAsDataURL(fileInput.files[0]);
     } else {
@@ -501,7 +522,6 @@
     }
   }
 
-  // رندر اعضا با قابلیت تعیین سطح (عادی تا VIP) و امتیازات
   function renderUsersList() {
     const container = document.getElementById('users-list-container');
     container.innerHTML = '';
@@ -551,7 +571,7 @@
         </div>
 
         <div class="flex-gap">
-          <button class="btn btn-primary" style="font-size: 0.75rem; padding: 5px 10px; flex: 1;" onclick="updateUserInfo(${user.id})">✏️ ذخیره سطح و مشخصات</button>
+          <button class="btn btn-primary" style="font-size: 0.75rem; padding: 5px 10px; flex: 1;" onclick="updateUserInfo(${user.id})">✏️ ذخیره مشخصات و سطح</button>
           <button class="btn btn-accent" style="font-size: 0.75rem; padding: 5px 10px; flex: 1;" onclick="savePrivateMsg(${user.id})">✉️ ثبت پیام</button>
           <button class="btn btn-outline" style="font-size: 0.75rem; padding: 5px 10px; flex: 1;" onclick="copySmsText('${user.fullname}', '${user.username}', '${user.password}')">📋 کپی</button>
           <button class="btn btn-danger" style="font-size: 0.75rem; padding: 5px 10px; flex: 1;" onclick="deleteUser(${user.id})">🗑️ حذف</button>
@@ -562,7 +582,6 @@
     });
   }
 
-  // ثبت و به‌روزرسانی مشخصات، سطح VIP و امتیاز مشتری
   function updateUserInfo(userId) {
     const db = getDB();
     const user = (db.users || []).find(u => u.id === userId);
@@ -576,7 +595,7 @@
       user.level = document.getElementById('edit-level-' + userId).value;
 
       saveDB(db);
-      alert('سطح مشتری (' + user.level + ') و سایر اطلاعات با موفقیت ثبت شد.');
+      alert('مشخصات و سطح مشتری با موفقیت به‌روزرسانی شد.');
       renderUsersList();
     }
   }
