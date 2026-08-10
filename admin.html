@@ -216,6 +216,15 @@
       margin-top: 6px;
       font-size: 0.82rem;
     }
+
+    .vip-badge {
+      background: #fff7e6;
+      color: #d46b08;
+      border: 1px solid #ffd591;
+      padding: 2px 6px;
+      border-radius: 6px;
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
@@ -225,7 +234,7 @@
   <div class="card header-card">
     <div>
       <h3 style="color: var(--primary); font-size: 1.2rem;">پنل مدیریت کاریز طب</h3>
-      <p style="font-size: 0.8rem; color: var(--text-muted);">مدیریت اعضا، امتیازات، کالاها و گزارشات</p>
+      <p style="font-size: 0.8rem; color: var(--text-muted);">مدیریت اعضا، تعیین سطح VIP، امتیازات و کالاها</p>
     </div>
     <div style="display: flex; gap: 8px;">
       <button class="btn btn-danger" onclick="adminLogout()">🚪 خروج</button>
@@ -309,7 +318,7 @@
   </div>
 
   <div class="card">
-    <h4 style="color: var(--primary); margin-bottom: 10px;">👥 لیست تمامی اعضا و ثبت امتیاز باشگاه</h4>
+    <h4 style="color: var(--primary); margin-bottom: 10px;">👥 لیست اعضا، تعیین سطح VIP و ثبت امتیاز</h4>
     <div id="users-list-container"></div>
   </div>
 
@@ -492,7 +501,7 @@
     }
   }
 
-  // رندر اعضا با قابلیت ویرایش امتیاز مشتری
+  // رندر اعضا با قابلیت تعیین سطح (عادی تا VIP) و امتیازات
   function renderUsersList() {
     const container = document.getElementById('users-list-container');
     container.innerHTML = '';
@@ -505,13 +514,17 @@
     }
 
     users.forEach(function(user) {
+      const userLevel = user.level || 'عادی (برنز)';
       const item = document.createElement('div');
       item.className = 'user-bar-item';
 
       item.innerHTML = `
         <div class="user-bar-top">
           <strong style="color: var(--primary);">${user.fullname}</strong>
-          <span style="font-size: 0.8rem; background: #fffbe6; padding: 2px 8px; border-radius: 6px; border: 1px solid #ffe58f;">کد: KT-${user.id.toString().slice(-4)}</span>
+          <div>
+            <span class="vip-badge">${userLevel}</span>
+            <span style="font-size: 0.8rem; background: #fffbe6; padding: 2px 8px; border-radius: 6px; border: 1px solid #ffe58f; margin-right: 4px;">کد: KT-${user.id.toString().slice(-4)}</span>
+          </div>
         </div>
 
         <div class="user-bar-info">
@@ -521,6 +534,16 @@
           <div>👤 <strong>کاربری:</strong> <input type="text" id="edit-user-${user.id}" value="${user.username}" class="form-control" style="padding:4px 6px; font-size:0.8rem;"></div>
           <div>🔑 <strong>رمز عبور:</strong> <input type="text" id="edit-pass-${user.id}" value="${user.password}" class="form-control" style="padding:4px 6px; font-size:0.8rem;"></div>
           <div>⭐ <strong>امتیاز باشگاه:</strong> <input type="number" id="edit-points-${user.id}" value="${user.points || 100}" class="form-control" style="padding:4px 6px; font-size:0.8rem; font-weight:bold; color:var(--primary);"></div>
+          
+          <div style="grid-column: span 2; margin-top: 4px;">
+            💎 <strong>سطح مشتری:</strong> 
+            <select id="edit-level-${user.id}" class="form-control" style="padding:4px 6px; font-size:0.8rem; font-weight:bold; color:#d46b08; margin-top:2px;">
+              <option value="عادی (برنز)" ${userLevel === 'عادی (برنز)' ? 'selected' : ''}>🥉 عادی (برنز)</option>
+              <option value="نقره‌ای" ${userLevel === 'نقره‌ای' ? 'selected' : ''}>🥈 نقره‌ای</option>
+              <option value="طلایی" ${userLevel === 'طلایی' ? 'selected' : ''}>🥇 طلایی</option>
+              <option value="VIP (الماس)" ${userLevel === 'VIP (الماس)' ? 'selected' : ''}>💎 VIP (الماس)</option>
+            </select>
+          </div>
         </div>
 
         <div class="form-group" style="margin-top: 6px; margin-bottom: 8px;">
@@ -528,7 +551,7 @@
         </div>
 
         <div class="flex-gap">
-          <button class="btn btn-primary" style="font-size: 0.75rem; padding: 5px 10px; flex: 1;" onclick="updateUserInfo(${user.id})">✏️ ویرایش مشخصات و امتیاز</button>
+          <button class="btn btn-primary" style="font-size: 0.75rem; padding: 5px 10px; flex: 1;" onclick="updateUserInfo(${user.id})">✏️ ذخیره سطح و مشخصات</button>
           <button class="btn btn-accent" style="font-size: 0.75rem; padding: 5px 10px; flex: 1;" onclick="savePrivateMsg(${user.id})">✉️ ثبت پیام</button>
           <button class="btn btn-outline" style="font-size: 0.75rem; padding: 5px 10px; flex: 1;" onclick="copySmsText('${user.fullname}', '${user.username}', '${user.password}')">📋 کپی</button>
           <button class="btn btn-danger" style="font-size: 0.75rem; padding: 5px 10px; flex: 1;" onclick="deleteUser(${user.id})">🗑️ حذف</button>
@@ -539,7 +562,7 @@
     });
   }
 
-  // ثبت و به‌روزرسانی مشخصات و امتیازات مشتری
+  // ثبت و به‌روزرسانی مشخصات، سطح VIP و امتیاز مشتری
   function updateUserInfo(userId) {
     const db = getDB();
     const user = (db.users || []).find(u => u.id === userId);
@@ -550,9 +573,10 @@
       user.username = document.getElementById('edit-user-' + userId).value.trim();
       user.password = document.getElementById('edit-pass-' + userId).value.trim();
       user.points = parseInt(document.getElementById('edit-points-' + userId).value) || 0;
+      user.level = document.getElementById('edit-level-' + userId).value;
 
       saveDB(db);
-      alert('مشخصات و امتیاز مشتری با موفقیت به‌روزرسانی شد.');
+      alert('سطح مشتری (' + user.level + ') و سایر اطلاعات با موفقیت ثبت شد.');
       renderUsersList();
     }
   }
