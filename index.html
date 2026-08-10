@@ -278,7 +278,7 @@
 
     th, td {
       border: 1px solid #eeeeee;
-      padding: 9px 6px;
+      padding: 8px 4px;
       text-align: center;
     }
 
@@ -288,6 +288,21 @@
       font-weight: 600;
     }
 
+    .prod-thumb {
+      width: 40px;
+      height: 40px;
+      object-fit: cover;
+      border-radius: 6px;
+    }
+
+    .qty-input {
+      width: 45px;
+      padding: 4px;
+      text-align: center;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+    }
+
     .empty-table-msg {
       color: #aaaaaa;
       padding: 20px 0;
@@ -295,10 +310,10 @@
 
     .total-factor-price {
       text-align: left;
-      font-size: 0.85rem;
+      font-size: 0.95rem;
       font-weight: bold;
-      margin-top: 12px;
-      color: var(--text-muted);
+      margin-top: 14px;
+      color: var(--primary);
     }
   </style>
 </head>
@@ -421,6 +436,7 @@
       <p id="private-msg-text" style="margin-top: 6px; font-size: 0.9rem;"></p>
     </div>
 
+    <!-- ==================== بخش سفارش مستقیم کالا ==================== -->
     <div class="card">
       <h4 style="margin-bottom: 6px; color: var(--primary); font-size: 1rem;">🛒 سفارش مستقیم کالا</h4>
       <p style="font-size: 0.75rem; color: var(--text-muted); text-align: left; margin-bottom: 8px;">مبالغ به ریال</p>
@@ -437,7 +453,7 @@
               <th>جمع</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody id="customer-order-table-body">
             <tr>
               <td colspan="6" class="empty-table-msg">کالایی موجود نیست.</td>
             </tr>
@@ -445,7 +461,9 @@
         </table>
       </div>
 
-      <p class="total-factor-price">جمع کل فاکتور: ۰</p>
+      <p class="total-factor-price">جمع کل فاکتور: <span id="grand-total-val">۰</span> ریال</p>
+      
+      <button class="btn btn-primary" style="margin-top: 12px; font-size: 0.95rem;" onclick="submitDirectOrder()">📦 ثبت و ارسال سفارش به مدیریت</button>
     </div>
 
     <div class="card">
@@ -467,6 +485,7 @@
 <script>
   let db = JSON.parse(localStorage.getItem('karizteb_db')) || {
     users: [],
+    products: [],
     publicAnnouncement: { title: 'خوش آمدید', text: 'به باشگاه مشتریان کاریز طب خوش آمدید.', img: '' },
     messages: []
   };
@@ -570,6 +589,101 @@
     } else {
       privBox.classList.add('hidden');
     }
+
+    // رندر جدول محصولات برای مشتری
+    renderCustomerOrderTable();
+  }
+
+  // رندر جدول محصولات قابل سفارش برای مشتری
+  function renderCustomerOrderTable() {
+    const tbody = document.getElementById('customer-order-table-body');
+    db = JSON.parse(localStorage.getItem('karizteb_db')) || { products: [] };
+    db.products = db.products || [];
+
+    if (db.products.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="6" class="empty-table-msg">کالایی موجود نیست.</td></tr>';
+      document.getElementById('grand-total-val').innerText = '۰';
+      return;
+    }
+
+    let html = '';
+    db.products.forEach(function(p, idx) {
+      let imgTag = p.img ? `<img src="${p.img}" class="prod-thumb">` : '—';
+      html += `
+        <tr>
+          <td>${imgTag}</td>
+          <td><strong>${p.name}</strong></td>
+          <td>${p.unit}</td>
+          <td>${p.price.toLocaleString()}</td>
+          <td>
+            <input type="number" min="0" value="0" class="qty-input" id="qty-${p.id}" onchange="updateRowTotal(${p.id}, ${p.price})" onkeyup="updateRowTotal(${p.id}, ${p.price})">
+          </td>
+          <td id="row-total-${p.id}" style="font-weight:bold; color:var(--primary);">۰</td>
+        </tr>
+      `;
+    });
+
+    tbody.innerHTML = html;
+  }
+
+  // محاسبه زنده ردیف و جمع کل فاکتور
+  function updateRowTotal(prodId, price) {
+    const qty = parseInt(document.getElementById('qty-' + prodId).value) || 0;
+    const rowTotal = qty * price;
+    document.getElementById('row-total-' + prodId).innerText = rowTotal.toLocaleString();
+
+    calculateGrandTotal();
+  }
+
+  function calculateGrandTotal() {
+    let grandTotal = 0;
+    db.products.forEach(function(p) {
+      const qty = parseInt(document.getElementById('qty-' + p.id).value) || 0;
+      grandTotal += (qty * p.price);
+    });
+
+    document.getElementById('grand-total-val').innerText = grandTotal.toLocaleString();
+  }
+
+  // ثبت و ارسال سفارش به مدیریت از طریق پیامک به 09398490440
+  function submitDirectOrder() {
+    if (!currentUser) return;
+
+    let orderItems = [];
+    let grandTotal = 0;
+
+    db.products.forEach(function(p) {
+      const qty = parseInt(document.getElementById('qty-' + p.id).value) || 0;
+      if (qty > 0) {
+        const itemTotal = qty * p.price;
+        grandTotal += itemTotal;
+        orderItems.push(`- ${p.name}: ${qty} ${p.unit} (${itemTotal.toLocaleString()} ریال)`);
+      }
+    });
+
+    if (orderItems.length === 0) {
+      alert('لطفاً حداقل تعداد یکی از محصولات را مشخص کنید.');
+      return;
+    }
+
+    // متن پیامک رسمی و ویرایش‌شده حرفه‌ای
+    const smsText = `مدیریت محترم کاریز طب\nیک سفارش جدید توسط مشتری ثبت گردید.\n\n👤 مشتری: ${currentUser.fullname}\n🏥 مرکز: ${currentUser.center} (${currentUser.city})\n📱 همراه: ${currentUser.phone}\n\n📦 اقلام سفارشی:\n${orderItems.join('\n')}\n\n💰 جمع کل فاکتور: ${grandTotal.toLocaleString()} ریال`;
+
+    // ذخیره سفارش در پیام‌ها جهت نمایش در پنل مدیر
+    db.messages = db.messages || [];
+    db.messages.push({
+      id: Date.now(),
+      userId: currentUser.id,
+      userName: currentUser.fullname,
+      userCenter: currentUser.center,
+      text: `🛒 ثبت سفارش جدید به مبلغ ${grandTotal.toLocaleString()} ریال:\n` + orderItems.join('\n'),
+      date: new Date().toLocaleDateString('fa-IR'),
+      img: ''
+    });
+    saveDB();
+
+    // هدایت به نرم‌افزار پیامک گوشی
+    window.location.href = 'sms:09398490440?body=' + encodeURIComponent(smsText);
   }
 
   function sendSMSConfirm() {
