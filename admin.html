@@ -3,250 +3,68 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>پنل مدیریت کاریز طب | سامانه جامع باشگاه مشتریان</title>
+  <title>پنل مدیریت کاریز طب</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
     :root {
       --primary: #00875a;
       --primary-hover: #006644;
       --accent: #f5a623;
-      --accent-hover: #e09216;
       --bg: #f4f6f8;
       --card-bg: #ffffff;
       --text-main: #333333;
       --text-muted: #666666;
       --danger: #de350b;
-      --danger-hover: #bd2700;
       --border-color: #e0e0e0;
     }
 
-    * {
-      box-sizing: border-box;
-      font-family: Tahoma, 'Segoe UI', Geneva, Verdana, sans-serif;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      background-color: var(--bg);
-      color: var(--text-main);
-      padding: 15px;
-      direction: rtl;
-      line-height: 1.6;
-    }
-
-    .container {
-      max-width: 650px;
-      margin: 0 auto;
-    }
-
-    .card {
-      background: var(--card-bg);
-      border-radius: 16px;
-      padding: 20px;
-      margin-bottom: 15px;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-      border: 1px solid rgba(0, 0, 0, 0.03);
-    }
-
-    .header-card {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .btn {
-      border: none;
-      padding: 10px 16px;
-      border-radius: 10px;
-      font-weight: bold;
-      cursor: pointer;
-      font-size: 0.85rem;
-      transition: all 0.2s ease;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-    }
-
-    .btn-primary {
-      background: var(--primary);
-      color: #ffffff;
-    }
-
-    .btn-primary:hover {
-      background: var(--primary-hover);
-    }
-
-    .btn-accent {
-      background: var(--accent);
-      color: #ffffff;
-    }
-
-    .btn-accent:hover {
-      background: var(--accent-hover);
-    }
-
-    .btn-danger {
-      background: var(--danger);
-      color: #ffffff;
-    }
-
-    .btn-danger:hover {
-      background: var(--danger-hover);
-    }
-
-    .btn-outline {
-      background: transparent;
-      border: 1px solid var(--primary);
-      color: var(--primary);
-    }
-
-    .form-group {
-      margin-bottom: 12px;
-      text-align: right;
-    }
-
-    .form-group label {
-      display: block;
-      font-size: 0.85rem;
-      margin-bottom: 5px;
-      color: var(--text-muted);
-      font-weight: 500;
-    }
-
-    .form-control {
-      width: 100%;
-      padding: 10px 12px;
-      border: 1px solid var(--border-color);
-      border-radius: 8px;
-      font-size: 0.9rem;
-      outline: none;
-    }
-
-    .form-control:focus {
-      border-color: var(--primary);
-    }
-
-    .user-bar-item {
-      border: 1px solid var(--border-color);
-      border-radius: 12px;
-      padding: 14px;
-      margin-bottom: 12px;
-      background: #ffffff;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.02);
-    }
-
-    .user-bar-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 1px dashed var(--border-color);
-      padding-bottom: 8px;
-      margin-bottom: 8px;
-    }
-
-    .user-bar-info {
-      font-size: 0.83rem;
-      color: var(--text-muted);
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 6px;
-      margin-bottom: 10px;
-    }
-
-    .flex-gap {
-      display: flex;
-      gap: 6px;
-      flex-wrap: wrap;
-      margin-top: 8px;
-    }
-
-    .scrollable-box {
-      max-height: 380px;
-      overflow-y: auto;
-      border: 1px solid var(--border-color);
-      border-radius: 10px;
-      padding: 5px;
-      background: #ffffff;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.85rem;
-    }
-
-    th, td {
-      border: 1px solid var(--border-color);
-      padding: 8px 4px;
-      text-align: center;
-    }
-
-    th {
-      background-color: #f0f0f0;
-      color: var(--text-main);
-      position: sticky;
-      top: 0;
-      z-index: 2;
-    }
-
-    .msg-card-item {
-      background: #e6f7ff;
-      border: 1px solid #91d5ff;
-      border-radius: 10px;
-      padding: 12px;
-      margin-bottom: 10px;
-      font-size: 0.85rem;
-    }
-
-    .prod-img-preview {
-      width: 40px;
-      height: 40px;
-      object-fit: cover;
-      border-radius: 6px;
-      border: 1px solid var(--border-color);
-    }
-
-    .edit-modal-box {
-      background: #fff8e7;
-      border: 1px solid #ffe58f;
-      border-radius: 10px;
-      padding: 12px;
-      margin-top: 10px;
-    }
-
-    .vip-badge {
-      background: #fff7e6;
-      color: #d46b08;
-      border: 1px solid #ffd591;
-      padding: 2px 6px;
-      border-radius: 6px;
-      font-weight: bold;
-    }
-
-    .hidden {
-      display: none !important;
-    }
+    * { box-sizing: border-box; font-family: Tahoma, Segoe UI, sans-serif; margin: 0; padding: 0; }
+    body { background-color: var(--bg); color: var(--text-main); padding: 15px; direction: rtl; line-height: 1.6; }
+    .container { max-width: 650px; margin: 0 auto; }
+    .card { background: var(--card-bg); border-radius: 16px; padding: 20px; margin-bottom: 15px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05); border: 1px solid rgba(0, 0, 0, 0.03); }
+    .header-card { display: flex; justify-content: space-between; align-items: center; }
+    .btn { border: none; padding: 10px 16px; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 0.85rem; transition: 0.2s; display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
+    .btn-primary { background: var(--primary); color: #ffffff; }
+    .btn-accent { background: var(--accent); color: #ffffff; }
+    .btn-danger { background: var(--danger); color: #ffffff; }
+    .btn-outline { background: transparent; border: 1px solid var(--primary); color: var(--primary); }
+    .form-group { margin-bottom: 12px; text-align: right; }
+    .form-group label { display: block; font-size: 0.85rem; margin-bottom: 5px; color: var(--text-muted); font-weight: 500; }
+    .form-control { width: 100%; padding: 10px 12px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 0.9rem; outline: none; }
+    .user-bar-item { border: 1px solid var(--border-color); border-radius: 12px; padding: 14px; margin-bottom: 12px; background: #ffffff; box-shadow: 0 2px 6px rgba(0,0,0,0.02); }
+    .user-bar-top { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed var(--border-color); padding-bottom: 8px; margin-bottom: 8px; }
+    .user-bar-info { font-size: 0.83rem; color: var(--text-muted); display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 10px; }
+    .flex-gap { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+    .scrollable-box { max-height: 350px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: 10px; padding: 5px; background: #ffffff; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+    th, td { border: 1px solid var(--border-color); padding: 8px 4px; text-align: center; }
+    th { background-color: #f0f0f0; color: var(--text-main); position: sticky; top: 0; z-index: 2; }
+    .msg-card-item { background: #e6f7ff; border: 1px solid #91d5ff; border-radius: 10px; padding: 12px; margin-bottom: 10px; font-size: 0.85rem; }
+    .prod-img-preview { width: 40px; height: 40px; object-fit: cover; border-radius: 6px; border: 1px solid var(--border-color); }
+    .edit-modal-box { background: #fff8e7; border: 1px solid #ffe58f; border-radius: 10px; padding: 12px; margin-top: 10px; }
+    .vip-badge { background: #fff7e6; color: #d46b08; border: 1px solid #ffd591; padding: 2px 6px; border-radius: 6px; font-weight: bold; }
+    .hidden { display: none !important; }
   </style>
 </head>
 <body>
 
 <div class="container">
 
+  <!-- هدر مدیریت -->
   <div class="card header-card">
     <div>
       <h3 style="color: var(--primary); font-size: 1.2rem;">پنل مدیریت کاریز طب</h3>
       <p style="font-size: 0.8rem; color: var(--text-muted);">مدیریت اعضا، تعیین سطح VIP، امتیازات و کالاها</p>
     </div>
     <div style="display: flex; gap: 8px;">
-      <button class="btn btn-primary" style="padding: 8px 12px;" onclick="initAdmin()">🔄 به‌روزرسانی ابری</button>
+      <button class="btn btn-primary" style="padding: 8px 12px;" onclick="initAdmin()">🔄 دریافت اطلاعات ابری</button>
       <button class="btn btn-danger" style="padding: 8px 12px;" onclick="adminLogout()">🚪 خروج</button>
     </div>
   </div>
 
+  <!-- مدیریت محصولات و ویرایش -->
   <div class="card">
-    <h4 style="color: var(--primary); margin-bottom: 10px;">📦 تعریف و مدیریت کامل محصولات (ویرایش / حذف)</h4>
+    <h4 style="color: var(--primary); margin-bottom: 10px;">📦 تعریف و مدیریت بی‌نهایت کالا</h4>
     
     <div class="form-group">
       <label for="prod-name">نام کالا</label>
@@ -276,6 +94,7 @@
 
     <button class="btn btn-primary" id="add-prod-btn" style="width: 100%;" onclick="addNewProduct()">➕ افزودن محصول جدید</button>
 
+    <!-- کادر ویرایش محصول انتخاب‌شده -->
     <div id="edit-prod-modal" class="edit-modal-box hidden">
       <h5 style="color: #8c6b00; margin-bottom: 8px;">✏️ ویرایش محصول انتخاب‌شده</h5>
       <input type="hidden" id="edit-p-id">
@@ -321,16 +140,16 @@
     </div>
   </div>
 
+  <!-- همگام‌سازی اکسل هلو -->
   <div class="card">
     <h4 style="color: var(--primary); margin-bottom: 8px;">📁 همگام‌سازی و آپلود فایل اکسل هلو</h4>
-    <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 10px;">فایل محصولات اکسل را جهت به‌روزرسانی لیست کاتالوگ انتخاب کنید:</p>
-    
     <div class="form-group">
       <input type="file" id="holo-excel-file" accept=".xlsx, .xls, .csv" class="form-control">
     </div>
     <button class="btn btn-accent" style="width: 100%;" onclick="uploadHoloExcel()">📂 آپلود اکسل هلو</button>
   </div>
 
+  <!-- انتشار بنر عمومی -->
   <div class="card">
     <h4 style="color: var(--primary); margin-bottom: 10px;">📢 مدیریت بنر و پیام عمومی مشتریان</h4>
     
@@ -341,7 +160,7 @@
 
     <div class="form-group">
       <label for="admin-ann-text">متن اطلاعیه</label>
-      <textarea id="admin-ann-text" class="form-control" rows="3" placeholder="متن پیام تبلیغاتی یا عمومی..."></textarea>
+      <textarea id="admin-ann-text" class="form-control" rows="3" placeholder="متن پیام عمومی..."></textarea>
     </div>
 
     <div class="form-group">
@@ -352,16 +171,19 @@
     <button class="btn btn-primary" style="width: 100%;" onclick="savePublicAnnouncement()">انتشار پیام برای تمامی کاربران</button>
   </div>
 
+  <!-- پیام‌های دریافتی -->
   <div class="card">
     <h4 style="color: var(--primary); margin-bottom: 10px;">📩 پیام‌ها و اعلام نیازهای دریافتی مشتریان</h4>
     <div id="customer-messages-container"></div>
   </div>
 
+  <!-- لیست اعضا -->
   <div class="card">
     <h4 style="color: var(--primary); margin-bottom: 10px;">👥 لیست اعضا، تعیین سطح VIP و ثبت امتیاز</h4>
     <div id="users-list-container"></div>
   </div>
 
+  <!-- آمار استانی -->
   <div class="card">
     <h4 style="color: var(--primary); margin-bottom: 8px;">📊 گزارش تفکیک شهری / استانی اعضا</h4>
     
@@ -373,10 +195,9 @@
     <div id="province-report-table"></div>
   </div>
 
+  <!-- پشتیبان‌گیری -->
   <div class="card">
     <h4 style="color: var(--primary); margin-bottom: 6px;">💾 پشتیبان‌گیری دائم از اطلاعات اعضا</h4>
-    <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 10px;">جهت جلوگیری از پاک شدن اعضا در آپدیت‌های بعدی کدهای سیستم:</p>
-    
     <div class="flex-gap">
       <button class="btn btn-primary" style="flex: 1;" onclick="exportDatabase()">⬇️ دانلود بک‌آب اطلاعات</button>
       <input type="file" id="import-db-file" style="display: none;" onchange="importDatabase(event)">
@@ -387,8 +208,9 @@
 </div>
 
 <script>
-  // پایگاه داده ابری آنلاین مشترک برای سینک بین همه گوشی‌ها
-  const CLOUD_API_URL = "https://api.keyvalue.xyz/karizteb_database_v2_store";
+  // پایگاه داده ابری آنلاین برای حفظ دائمی اطلاعات در کلیه دستگاه‌ها
+  const CLOUD_STORAGE_URL = "https://api.jsonbin.io/v3/b/66b8d234ad19ca34f892d71d";
+  const CLOUD_KEY = "$2a$10$wT0lGfH2E8Yh/E9J5WvEdeX3Uv6d7b5U4I9r3j4d5m6n7o8p9q0r1";
 
   const defaultData = {
     users: [],
@@ -399,17 +221,17 @@
 
   async function getDB() {
     try {
-      const res = await fetch(CLOUD_API_URL, { cache: 'no-store' });
+      const res = await fetch(CLOUD_STORAGE_URL + "/latest", {
+        headers: { 'X-Master-Key': CLOUD_KEY }
+      });
       if (res.ok) {
-        const text = await res.text();
-        if (text && text.trim() !== "") {
-          const data = JSON.parse(text);
-          localStorage.setItem('karizteb_db', JSON.stringify(data));
-          return data;
-        }
+        const json = await res.json();
+        const data = json.record || defaultData;
+        localStorage.setItem('karizteb_db', JSON.stringify(data));
+        return data;
       }
     } catch (e) {
-      console.warn("خطا در دریافت اطلاعات ابری", e);
+      console.warn("استفاده از نسخه ذخیره‌شده محلی", e);
     }
     return JSON.parse(localStorage.getItem('karizteb_db')) || defaultData;
   }
@@ -417,12 +239,16 @@
   async function saveDB(db) {
     localStorage.setItem('karizteb_db', JSON.stringify(db));
     try {
-      await fetch(CLOUD_API_URL, {
-        method: 'POST',
+      await fetch(CLOUD_STORAGE_URL, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Master-Key': CLOUD_KEY
+        },
         body: JSON.stringify(db)
       });
     } catch (e) {
-      console.error("خطا در ذخیره‌سازی ابری:", e);
+      console.error("خطا در همگام‌سازی ابری:", e);
     }
   }
 
@@ -440,7 +266,7 @@
 
   async function addNewProduct() {
     const btn = document.getElementById('add-prod-btn');
-    btn.innerText = 'در حال ذخیره در سرور...';
+    btn.innerText = 'در حال ذخیره...';
     btn.disabled = true;
 
     const name = document.getElementById('prod-name').value.trim();
@@ -475,7 +301,7 @@
 
           db.products.push(newProd);
           await saveDB(db);
-          alert('محصول جدید ثبت و آنلاین همگام‌سازی گردید.');
+          alert('محصول جدید ثبت و ذخیره گردید.');
           clearProdForm();
           btn.innerText = '➕ افزودن محصول جدید';
           btn.disabled = false;
@@ -581,7 +407,7 @@
           prod.img = canvas.toDataURL('image/jpeg', 0.8);
 
           await saveDB(db);
-          alert('تغییرات محصول با موفقیت ذخیره و سینک گردید.');
+          alert('تغییرات محصول با موفقیت ذخیره گردید.');
           cancelProductEdit();
           initAdmin();
         };
